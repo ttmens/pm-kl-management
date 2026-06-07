@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="filter-bar">
+    <select id="statusFilter" hx-get="/hx/biz-list" hx-target="#listContent" hx-trigger="change">
+        <option value="">全部状态</option>
+        <option value="draft" {% if status == 'draft' %}selected{% endif %}>草稿</option>
+        <option value="reviewing" {% if status == 'reviewing' %}selected{% endif %}>审核中</option>
+        <option value="published" {% if status == 'published' %}selected{% endif %}>已发布</option>
+        <option value="archived" {% if status == 'archived' %}selected{% endif %}>已归档</option>
+    </select>
+    <input type="text" placeholder="搜索..." value="{{ q }}" hx-get="/hx/biz-list" hx-target="#listContent" hx-trigger="keyup changed delay:300ms" name="q">
+</div>
+<div id="listContent">
+{% if items %}
+<table>
+    <thead>
+        <tr><th>名称</th><th>类型</th><th>状态</th><th>标签</th><th>版本</th><th>更新</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td><a href="/biz/{{ item.id }}" style="color:var(--biz-accent);text-decoration:none">{{ item.name }}</a></td>
+            <td>{{ item.type }}</td>
+            <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
+            <td>{% for tag in item.tags %}<span class="biz-tag">{{ tag }}</span>{% endfor %}</td>
+            <td>v{{ item.version }}</td>
+            <td style="color:var(--text-secondary);font-size:12px">{{ item.updated_at[:19] if item.updated_at else '' }}</td>
+            <td><a href="/biz/{{ item.id }}" class="btn btn-small btn-secondary">详情</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">暂无业务知识条目</div>
+{% endif %}
+</div>
+{% endblock %}

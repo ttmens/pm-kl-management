@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="header">
+    <div class="container">
+        <h1><a href="/" style="text-decoration:none;color:inherit">📚</a> / 知识包导出</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h2 style="margin-bottom:12px">选择业务知识条目</h2>
+        <div id="bizCheckboxes">
+        {% for item in items %}
+        <label style="display:block;padding:8px 0;border-bottom:1px solid var(--border)">
+            <input type="checkbox" class="biz-checkbox" value="{{ item.id }}" onchange="updatePreview()">
+            {{ item.name }} <span class="biz-tag">{{ item.type }}</span>
+        </label>
+        {% endfor %}
+        {% if not items %}
+        <div class="empty-state">暂无已发布的业务知识条目</div>
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="btn" onclick="downloadPackage('json')">下载 JSON</button>
+            <button class="btn btn-secondary" onclick="downloadPackage('md')">下载 Markdown</button>
+        </div>
+        <h3 style="margin-bottom:8px">预览</h3>
+        <pre id="preview" style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px;max-height:400px;overflow:auto;font-size:12px;white-space:pre-wrap"></pre>
+    </div>
+</div>
+<script>
+function getSelectedIds() {
+    const checks = document.querySelectorAll('.biz-checkbox:checked');
+    return Array.from(checks).map(c => c.value).join(',');
+}
+
+function updatePreview() {
+    const ids = getSelectedIds();
+    if (!ids) { document.getElementById('preview').textContent = ''; return; }
+    fetch(`/api/packages?biz_ids=${ids}`)
+        .then(r => r.json())
+        .then(data => { document.getElementById('preview').textContent = JSON.stringify(data, null, 2); })
+        .catch(() => { document.getElementById('preview').textContent = '加载失败'; });
+}
+
+function downloadPackage(format) {
+    const ids = getSelectedIds();
+    if (!ids) { alert('请选择至少一个条目'); return; }
+    const url = format === 'md' ? `/api/packages/${ids}.md` : `/api/packages?biz_ids=${ids}`;
+    window.open(url, '_blank');
+}
+</script>
+{% endblock %}

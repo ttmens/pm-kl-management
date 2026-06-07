@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="header">
+    <div class="container">
+        <h1><a href="/" style="text-decoration:none;color:inherit">📚</a> / 批量导入</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h2 style="margin-bottom:8px">导入业务知识 (biz_kl)</h2>
+        <p style="color:var(--text-secondary);margin-bottom:16px">格式: 每段以 # 名称 开头, 空行, 描述, 类型: xxx, 标签: tag1, tag2</p>
+
+        <div style="margin-bottom:8px">
+            <label style="display:block;margin-bottom:4px;font-weight:600">操作用户 ID</label>
+            <input type="text" id="userId" value="user-expert-001" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px">
+        </div>
+
+        <div style="margin-bottom:8px">
+            <label style="display:block;margin-bottom:4px;font-weight:600">Markdown 内容</label>
+            <textarea id="content" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;height:200px;font-family:var(--font-code);font-size:12px" placeholder="# 订单处理流程&#10;&#10;用户下单后的处理逻辑...&#10;&#10;类型: 流程&#10;标签: 订单, 支付"></textarea>
+        </div>
+
+        <button class="btn" onclick="doImport()">导入为草稿</button>
+
+        <div id="result" style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:4px;display:none"></div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom:8px">格式示例</h3>
+        <pre style="background:var(--surface);padding:12px;border-radius:4px;font-size:12px;overflow:auto"># 订单处理流程
+
+用户下单后，系统依次进行库存校验、支付处理、物流分配。
+
+类型: 流程
+标签: 订单, 支付, 物流
+
+# 退货规则
+
+用户申请退货需满足: 1. 订单已签收 2. 7天内 3. 商品完好。
+
+类型: 规则
+标签: 售后, 退货</pre>
+    </div>
+</div>
+<script>
+function doImport() {
+    const userId = document.getElementById('userId').value;
+    const content = document.getElementById('content').value;
+    const result = document.getElementById('result');
+    result.style.display = 'block';
+    result.textContent = '正在导入...';
+
+    fetch('/api/import/biz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-User-Id': userId },
+        body: JSON.stringify({ content: content })
+    })
+    .then(r => r.json())
+    .then(data => {
+        result.textContent = `导入成功: ${data.count} 条, IDs: ${data.ids.join(', ')}`;
+        result.style.borderColor = 'var(--success)';
+    })
+    .catch(err => {
+        result.textContent = '导入失败: ' + err;
+        result.style.borderColor = 'var(--danger)';
+    });
+}
+</script>
+{% endblock %}

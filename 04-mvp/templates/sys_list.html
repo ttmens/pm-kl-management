@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="filter-bar">
+    <select id="layerFilter" hx-get="/hx/sys-list" hx-target="#listContent" hx-trigger="change" name="layer">
+        <option value="">全部层级</option>
+        <option value="domain" {% if layer == 'domain' %}selected{% endif %}>domain</option>
+        <option value="application" {% if layer == 'application' %}selected{% endif %}>application</option>
+        <option value="infrastructure" {% if layer == 'infrastructure' %}selected{% endif %}>infrastructure</option>
+    </select>
+    <input type="text" placeholder="搜索..." value="{{ q }}" hx-get="/hx/sys-list" hx-target="#listContent" hx-trigger="keyup changed delay:300ms" name="q">
+</div>
+<div id="listContent">
+{% if items %}
+<table>
+    <thead>
+        <tr><th>名称</th><th>DDD层级</th><th>路径</th><th>状态</th><th>更新</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td><a href="/sys/{{ item.id }}" style="color:var(--sys-accent);text-decoration:none">{{ item.name }}</a></td>
+            <td><span class="sys-tag">{{ item.layer }}</span></td>
+            <td style="font-family:var(--font-code);font-size:12px">{{ item.file_path or '-' }}</td>
+            <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
+            <td style="color:var(--text-secondary);font-size:12px">{{ item.updated_at[:19] if item.updated_at else '' }}</td>
+            <td><a href="/sys/{{ item.id }}" class="btn btn-small btn-secondary">详情</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">暂无系统知识条目</div>
+{% endif %}
+</div>
+{% endblock %}

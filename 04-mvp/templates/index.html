@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}产品知识平台 - 首页{% endblock %}
+{% block content %}
+<div class="header">
+    <div class="container">
+        <h1>📚 产品知识平台</h1>
+        <div class="nav">
+            <a href="/" class="active">首页</a>
+            <a href="/export">知识包</a>
+            <a href="/import">批量导入</a>
+            <a href="/audit">审计日志</a>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="搜索知识条目..." value="{{ q }}">
+        <button class="btn" onclick="performSearch()">搜索</button>
+    </div>
+    <div class="tabs">
+        <div class="tab {% if tab == 'biz' %}active-biz{% endif %}" onclick="switchTab('biz')">业务知识 (biz_kl)</div>
+        <div class="tab {% if tab == 'sys' %}active-sys{% endif %}" onclick="switchTab('sys')">系统知识 (sys_kl)</div>
+    </div>
+
+    {% if tab == 'biz' %}
+    <div id="listContent">
+    {% if biz_items %}
+    <table>
+        <thead>
+            <tr><th>名称</th><th>类型</th><th>状态</th><th>标签</th><th>更新</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+        {% for item in biz_items %}
+            <tr>
+                <td><a href="/biz/{{ item.id }}" style="color:var(--biz-accent);text-decoration:none">{{ item.name }}</a></td>
+                <td>{{ item.type }}</td>
+                <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
+                <td>{% for tag in item.tags %}<span class="biz-tag">{{ tag }}</span>{% endfor %}</td>
+                <td style="color:var(--text-secondary);font-size:12px">{{ item.updated_at[:19] if item.updated_at else '' }}</td>
+                <td><a href="/biz/{{ item.id }}" class="btn btn-small btn-secondary">详情</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">暂无业务知识条目</div>
+    {% endif %}
+    </div>
+    {% endif %}
+
+    {% if tab == 'sys' %}
+    <div id="listContent">
+    {% if sys_items %}
+    <table>
+        <thead>
+            <tr><th>名称</th><th>DDD层级</th><th>路径</th><th>状态</th><th>更新</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+        {% for item in sys_items %}
+            <tr>
+                <td><a href="/sys/{{ item.id }}" style="color:var(--sys-accent);text-decoration:none">{{ item.name }}</a></td>
+                <td><span class="sys-tag">{{ item.layer }}</span></td>
+                <td style="font-family:var(--font-code);font-size:12px">{{ item.file_path }}</td>
+                <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
+                <td style="color:var(--text-secondary);font-size:12px">{{ item.updated_at[:19] if item.updated_at else '' }}</td>
+                <td><a href="/sys/{{ item.id }}" class="btn btn-small btn-secondary">详情</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">暂无系统知识条目</div>
+    {% endif %}
+    </div>
+    {% endif %}
+</div>
+<script>
+function switchTab(tab) {
+    const q = document.getElementById('searchInput').value;
+    window.location.href = `/?tab=${tab}&q=${encodeURIComponent(q)}`;
+}
+function performSearch() {
+    const q = document.getElementById('searchInput').value;
+    const tab = '{{ tab }}';
+    window.location.href = `/?tab=${tab}&q=${encodeURIComponent(q)}`;
+}
+</script>
+{% endblock %}

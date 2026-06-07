@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}产品知识平台{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-hover: #1e40af;
+            --surface: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-secondary: #64748b;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --biz-accent: #7c3aed;
+            --sys-accent: #0891b2;
+            --font-body: system-ui, -apple-system, sans-serif;
+            --font-heading: system-ui, -apple-system, sans-serif;
+            --font-code: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--surface); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px; }
+        .header .container { display: flex; align-items: center; justify-content: space-between; }
+        .header h1 { font-size: 24px; font-weight: 600; color: var(--text); }
+        .nav { display: flex; gap: 16px; }
+        .nav a { color: var(--text-secondary); text-decoration: none; padding: 4px 8px; }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 16px; margin-bottom: 16px; }
+        .btn { background: var(--primary); color: #fff; border: 1px solid var(--primary); border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; }
+        .btn:hover { background: var(--primary-hover); }
+        .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        .btn-small { padding: 4px 10px; font-size: 12px; }
+        .badge { border-radius: 100px; padding: 2px 8px; font-size: 11px; display: inline-block; }
+        .badge-published { background: #d1fae5; color: var(--success); }
+        .badge-reviewing { background: #fef3c7; color: var(--warning); }
+        .badge-draft { background: #f1f5f9; color: var(--text-secondary); }
+        .biz-tag { background: #ede9fe; color: var(--biz-accent); border-radius: 4px; padding: 2px 8px; font-size: 12px; display: inline-block; margin-right: 4px; }
+        .sys-tag { background: #cffafe; color: var(--sys-accent); border-radius: 4px; padding: 2px 8px; font-size: 12px; display: inline-block; margin-right: 4px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: var(--surface); }
+        th { font-size: 12px; color: var(--text-secondary); padding: 8px; text-align: left; }
+        td { padding: 8px; }
+        tbody tr:nth-child(even) td { background: var(--surface); }
+        tbody tr:hover td { background: #f0f7ff; }
+        .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+        .search-bar input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+        .tab { padding: 8px 16px; cursor: pointer; border: 1px solid var(--border); border-radius: 4px; background: var(--card); color: var(--text-secondary); }
+        .tab.active-biz { border-color: var(--biz-accent); color: var(--biz-accent); background: #ede9fe; }
+        .tab.active-sys { border-color: var(--sys-accent); color: var(--sys-accent); background: #cffafe; }
+        .link-card { border: 1px solid var(--border); border-radius: 4px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .link-card a { text-decoration: none; color: var(--primary); }
+        .link-card a:hover { text-decoration: underline; }
+        .filter-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .filter-bar select, .filter-bar input { padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; }
+        .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

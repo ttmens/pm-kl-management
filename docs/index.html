@@ -33,9 +33,9 @@
   <div class="meta">
     Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
     Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
-    Commit: 2dbf57f · Built: 2026-06-07 09:50 UTC
+    Commit: 35352cb · Built: 2026-06-07 10:25 UTC
   </div>
-  <div class="badges"><span class="badge pass">prototype</span> <span class="badge overall pass">overall: pass</span></div>
+  <div class="badges"><span class="badge pass">mvp</span> <span class="badge overall pass">overall: pass</span></div>
 
   <div class="tabs" id="tabs">
     <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button>
@@ -1626,7 +1626,81 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 - `/sys/{id}`：条目详情页，展示完整信息和关联 biz_kl
 - 列表页支持「创建系统知识条目」按钮
 - 详情页支持「添加关联」操作，提供 biz_kl 搜索选择器</pre></div>
-  <div class="panel" id="mvp-panel"><p><em>MVP not built yet.</em></p></div>
+  <div class="panel" id="mvp-panel">
+    <pre class="md-source"># 产品知识平台 MVP（KL Management）
+
+管理业务知识（biz_kl）和系统知识（sys_kl）的结构化平台，支持知识包导出和 AI Agent 消费。
+
+## 技术栈
+
+- 后端：Python FastAPI
+- 存储：SQLite
+- 前端：HTML + HTMX + Jinja2
+- 测试：pytest + httpx
+
+## 快速启动
+
+```bash
+bash run.sh
+```
+
+或手动启动：
+
+```bash
+pip install -r requirements.txt
+python seed_data.py
+uvicorn app:app --port 8000
+```
+
+## API 文档
+
+启动后访问 `http://localhost:8000/docs` 查看 OpenAPI 文档。
+
+## 核心流程
+
+1. **业务知识管理 (US-1)**: 创建 → 编辑 → 提交审核 → 发布（支持 Markdown 批量导入）
+2. **系统知识管理 (US-2)**: 按 DDD 分层创建 → 关联 biz_kl → 双向查询
+3. **知识包导出 (US-3)**: 选择 biz_kl → 生成 JSON/Markdown → 下载供 Agent 消费
+4. **知识检索浏览 (US-4)**: 全局搜索 → tab 切换 → 详情页互链跳转
+5. **审计日志 (US-5)**: 按条目/操作人/时间筛选操作记录
+
+## API 端点
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET/POST | `/api/biz` | 业务知识列表/创建 |
+| GET/PUT | `/api/biz/{id}` | 详情/更新 |
+| POST | `/api/biz/{id}/submit` | 提交审核 |
+| POST | `/api/biz/{id}/publish` | 发布（admin） |
+| GET/POST | `/api/sys` | 系统知识列表/创建 |
+| GET/PUT | `/api/sys/{id}` | 详情/更新 |
+| POST/DELETE | `/api/sys/{id}/link[/{link_id}]` | 关联管理 |
+| GET | `/api/packages?biz_ids=` | 知识包 JSON |
+| GET | `/api/packages/{biz_ids}.md` | 知识包 Markdown |
+| GET | `/api/audit` | 审计日志 |
+| POST | `/api/import/biz` | Markdown 批量导入 |
+
+## 页面
+
+| 路径 | 说明 |
+|------|------|
+| `/` | 知识列表首页 |
+| `/biz` | 业务知识列表 |
+| `/sys` | 系统知识列表 |
+| `/export` | 知识包导出 |
+| `/audit` | 审计日志 |
+| `/import` | 批量导入 |
+
+## 测试
+
+```bash
+pytest . -v
+python smoke_test.py
+```
+</pre>
+    <h3>Files</h3><ul><li>.pytest_cache/.gitignore</li><li>.pytest_cache/CACHEDIR.TAG</li><li>.pytest_cache/README.md</li><li>.pytest_cache/v/cache/lastfailed</li><li>.pytest_cache/v/cache/nodeids</li><li>.pytest_cache/v/cache/stepwise</li><li>__pycache__/app.cpython-312.pyc</li><li>__pycache__/conftest.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/models.cpython-311.pyc</li><li>__pycache__/models.cpython-312.pyc</li><li>__pycache__/smoke_test.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_audit.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_api.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_review.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_import.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_links.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package_md.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_sys_api.cpython-312-pytest-8.3.3.pyc</li><li>app.py</li><li>conftest.py</li><li>data/kl.db</li><li>data/test_kl.db</li><li>DESIGN.md</li><li>models.py</li><li>README.md</li><li>requirements.txt</li><li>run.sh</li><li>schema.sql</li><li>seed_data.py</li><li>smoke_test.py</li><li>templates/audit.html</li><li>templates/base.html</li><li>templates/biz_detail.html</li><li>templates/biz_list.html</li><li>templates/export.html</li><li>templates/import.html</li><li>templates/index.html</li><li>templates/sys_detail.html</li><li>templates/sys_list.html</li></ul>
+    <p><em>Flask MVP is not executed on GitHub Pages. Run locally per README.</em></p>
+    </div>
   <div class="panel" id="proto-panel"><iframe class="proto-frame" src="prototype/index.html" title="prototype"></iframe></div>
 
   <script>
