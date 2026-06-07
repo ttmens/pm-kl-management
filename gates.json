@@ -1,0 +1,18 @@
+{
+  "run": "pm-kl-management",
+  "path": "D:\\workspace\\projects\\pm-kl-management",
+  "pipeline_version": "3.0.0",
+  "validated_at": "2026-06-07T09:15:15.151769+00:00",
+  "stages": {
+    "align": {
+      "pass": true,
+      "checks": [
+        "glossary_terms>=7",
+        "no_tbd",
+        "context_exists"
+      ],
+      "notes": ""
+    }
+  },
+  "overall": "pass"
+}

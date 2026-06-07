@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PM Pipeline — kl-management</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, sans-serif; background:#0f1419; color:#e7ecf3; }
+    body { margin:0; padding:16px; max-width:960px; margin-inline:auto; }
+    h1 { font-size:1.4rem; margin-bottom:8px; }
+    .meta { color:#9aa7b5; font-size:.9rem; margin-bottom:16px; }
+    .meta a { color:#6cb6ff; }
+    .badges { margin:12px 0 20px; display:flex; flex-wrap:wrap; gap:8px; }
+    .badge { padding:4px 10px; border-radius:999px; font-size:.8rem; background:#243044; }
+    .badge.pass { background:#1f4d2e; color:#9be7b0; }
+    .badge.fail { background:#5a2323; color:#ffb4b4; }
+    .badge.overall.pass { background:#2d4a7a; }
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .tab { background:#1a2332; color:#dce6f2; border:1px solid #2b3b52; padding:8px 12px; border-radius:8px; cursor:pointer; }
+    .tab.active { background:#2d4a7a; border-color:#4d7ec2; }
+    .panel { display:none; background:#151d29; border:1px solid #2b3b52; border-radius:12px; padding:16px; }
+    .panel.active { display:block; }
+    .md-render { line-height:1.55; }
+    .md-render h2 { margin-top:1.2em; }
+    pre.md-source { display:none; }
+    .proto-frame { width:100%; min-height:420px; border:1px solid #2b3b52; border-radius:8px; background:#fff; }
+    section { margin-top:24px; }
+  </style>
+</head>
+<body>
+  <h1>PM Idea → MVP — kl-management</h1>
+  <div class="meta">
+    Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
+    Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
+    Commit: n/a · Built: 2026-06-07 09:15 UTC
+  </div>
+  <div class="badges"><span class="badge pass">align</span> <span class="badge overall pass">overall: pass</span></div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button>
+    <button class="tab" data-tab="openspec-panel">OpenSpec</button>
+    <button class="tab" data-tab="mvp-panel">MVP</button>
+    <button class="tab" data-tab="proto-panel">Prototype</button>
+  </div>
+
+  <div class="panel" id="RUN-md"><pre class="md-source"># 产品知识平台（pm-kl-management）— 运行说明
+
+## 流水线概览
+
+本流水线按 `pm-idea-to-mvp v3` 执行，共 7 个阶段（Stage 0 → Stage 6）。
+
+## Kanban 任务图
+
+```
+T1 (ready)   pm-aligner    → Stage 0+1: 对齐想法 &amp; 产出 CONTEXT.md
+  └─ T2 (todo) pm-researcher → Stage 2: 深度调研
+       └─ T3 (todo) pm-analyst   → Stage 3: 方案论证
+            └─ T4 (todo) pm-planner  → Stage 4: 原型+PRD+OpenSpec
+                 └─ T5 (todo) pm-builder  → Stage 5: MVP 实现
+                      └─ T6 (todo) pm-builder  → Stage 6: Retro + 自进化
+```
+
+## 任务 ID
+
+| 阶段 | 任务 ID | 状态 | 负责人 |
+|------|---------|------|--------|
+| 0+1 Align | `t_cbef8b9e` | ready | pm-aligner |
+| 2 Research | `t_8180aedb` | todo | pm-researcher |
+| 3 Analysis | `t_99248123` | todo | pm-analyst |
+| 4 Spec | `t_a523399c` | todo | pm-planner |
+| 5 MVP | `t_62c97069` | todo | pm-builder |
+| 6 Retro | `t_a79213fd` | todo | pm-builder |
+
+## 人工检查点
+
+流水线默认在两处暂停，等待用户确认后继续：
+
+1. **Align 完成后**：等待用户确认 CONTEXT.md 和 brief 的对齐结果
+2. **Spec 完成后**：等待用户确认 PRD 和原型范围
+
+用户通过 `hermes kanban unblock &lt;task_id&gt;` 解锁。
+
+## 产物目录
+
+```
+D:/workspace/projects/pm-kl-management/
+  00-brief.md          ← 已创建
+  gates.json           ← 已创建
+  CONTEXT.md           ← Align 阶段产出
+  decisions.md         ← Align/Analysis 阶段产出
+  01-research.md       ← Research 阶段产出
+  02-analysis.md       ← Analysis 阶段产出
+  02b-prototype/       ← Spec 阶段产出（原型）
+  03-prd.md            ← Spec 阶段产出
+  openspec/            ← Spec 阶段产出
+  04-mvp/              ← MVP 阶段产出
+  05-retro.md          ← Retro 阶段产出
+```
+
+## 跟踪进度
+
+```bash
+hermes kanban show &lt;task_id&gt;
+hermes kanban tail &lt;task_id&gt;
+```
+
+## GitHub Pages（完成后发布）
+
+- Pages: https://ttmens.github.io/pm-kl-management/
+- GitHub: https://github.com/ttmens/pm-kl-management
+</pre></div><div class="panel" id="00-brief-md"><pre class="md-source"># 产品简报：产品知识平台（KL Management）
+
+## 一句话描述
+面向企业 AI 编程场景的「产品知识平台」，将业务知识（biz_kl）与系统逻辑知识（sys_kl）结构化沉淀，供 Agent/IDE 消费，解决「懂业务 + 懂系统」的上下文碎片化问题。
+
+## 背景
+企业 AI 编程强依赖内部业务知识。以供应链 IT 为例：需在百万行级存量系统上做功能维护与演进，必须先把「产品知识」结构化沉淀，再供 Agent/IDE 消费。
+
+知识分两层：
+- **biz_kl（业务知识库）**：以产品历史设计文档、PRD、运维/变更记录为输入，压缩抽象为可检索的业务语义（领域概念、流程、规则、边界）。
+- **sys_kl（系统逻辑知识库）**：以代码为基准，按 DDD 分层（领域/应用/基础设施等）叠加专家标注，逆向沉淀模块职责、调用链、扩展点、与 biz_kl 的映射。
+
+## 要解决的问题
+团队目前知识分散在文档、代码、人口述中，AI 编程时上下文碎片化，无法稳定支撑「懂业务 + 懂系统」的协同维护。
+
+## 目标用户
+1. **领域专家 / 老产品**：贡献与审核 biz_kl、sys_kl
+2. **开发 / AI 编程使用者**：在编码、评审、排障时消费知识
+3. **平台管理员**：权限、版本、质量与治理
+
+## 核心能力（产品范围）
+1. **知识构建**：多人协作录入/导入/逆向草稿 + 审核发布
+2. **知识应用**：对接 AI 编程（上下文注入、问答、变更影响分析）
+3. **知识管理**：版本、权限、血缘、过期与冲突处理
+
+## MVP 范围
+- 单产品、单仓库试点（供应链 IT 子系统 1 个 bounded context）
+- biz_kl：支持文档导入 + 结构化条目（概念/流程/规则）+ 简单检索
+- sys_kl：支持按 DDD 模块手工/半自动挂载代码路径 + 专家注释（不要求首轮全自动百万行逆向）
+- 应用：提供「给 Agent 用的知识包」导出或 API（先只读）
+- 管理：草稿/已发布、负责人、基础审计日志
+
+## 成功指标（MVP）
+1. 一个试点 BC 内，biz_kl + sys_kl 各 ≥20 条可发布条目，且可互链（业务概念 ↔ 代码模块）
+2. 给定 1 个真实维护场景（小功能变更），Agent 仅消费本平台知识即可完成方案草稿（人工验收通过率 ≥70%）
+3. 3 角色（专家/开发/管理员）协作流程跑通，无人口述补全关键上下文
+
+## 约束
+- 产物与界面文案：简体中文
+- 架构思路：DDD；知识模型需区分 biz_kl / sys_kl，禁止混库
+- 首期不做：全仓自动静态分析引擎、多租户 SaaS 计费、替换现有 Git/文档系统
+
+## 非目标
+- 不做通用企业搜索/大杂烩 RAG
+- 不做全自动百万行代码逆向（首期允许人工+模板+半自动）
+- 不做完整 IDE 插件市场（先 API/导出）
+
+## 开放假设（Open Assumptions）
+1. **供应链 IT 团队愿意配合试点**（confidence: high）—— 需要至少 1 名领域专家 + 2 名开发承诺在 MVP 周期内贡献 biz_kl / sys_kl 条目并参与验收。
+2. **现有代码仓库可被安全访问用于静态分析**（confidence: medium）—— sys_kl 半自动挂载需要读取代码结构；若仓库权限或合规流程阻碍，首轮可能需要手动截图/导出替代。
+3. **Agent 消费端已有基础上下文注入能力**（confidence: medium）—— 成功指标 #2 假设 Agent 端能够接收并解析本平台导出的「知识包」；若 Agent 侧尚未就绪，MVP 验收需要改为人工模拟消费。
+4. **DDD 分层映射可由现有架构师/老员工提供**（confidence: high）—— sys_kl 的 DDD 模块划分依赖领域知识，假设团队内有熟悉 DDD 的架构师可参与标注。
+5. **首期试点范围控制在单个 bounded context**（confidence: high）—— 避免 MVP 阶段跨多个 BC 导致知识模型复杂度爆炸；后续迭代再扩展。
+</pre></div><div class="panel" id="CONTEXT-md"><pre class="md-source"># 上下文：产品知识平台（KL Management）
+
+## Glossary（术语表）
+
+| 术语 | 英文 | 说明 |
+|------|------|------|
+| **biz_kl** | Business Knowledge Library | 业务知识库，以产品历史设计文档、PRD、运维/变更记录为输入，压缩抽象为可检索的业务语义（领域概念、流程、规则、边界）。 |
+| **sys_kl** | System Knowledge Library | 系统逻辑知识库，以代码为基准，按 DDD 分层叠加专家标注，逆向沉淀模块职责、调用链、扩展点，以及与 biz_kl 的映射关系。 |
+| **BC** | Bounded Context | 领域驱动设计中的有界上下文，界定一个模型的适用边界；MVP 试点限定在单个 BC 内。 |
+| **DDD** | Domain-Driven Design | 领域驱动设计方法论，用于指导 sys_kl 的分层结构（领域层、应用层、基础设施层）与业务模型的映射。 |
+| **知识包** | Knowledge Package | 平台输出的结构化知识单元，供 Agent/IDE 消费，包含 biz_kl 条目、sys_kl 条目及两者间的互链关系；MVP 阶段支持只读导出或 API 拉取。 |
+| **血缘** | Lineage | 知识条目的来源追踪与版本关联，记录条目由谁创建/修改、依据什么原始文档或代码片段生成，用于审计与冲突解决。 |
+
+## 领域上下文
+
+### 用户角色与职责
+- **领域专家 / 老产品**：拥有业务上下文深度，负责 biz_kl 条目的贡献、审核与业务语义校准。
+- **开发 / AI 编程使用者**：在编码、评审、排障场景中消费知识，是平台的最终用户与价值验证者。
+- **平台管理员**：负责权限管理、版本治理、质量审核与审计日志，保障平台运行的秩序与合规。
+
+### 关键业务流程
+1. **知识构建**：录入/导入 → 草稿 → 审核 → 发布（多人协作）
+2. **知识应用**：Agent 请求知识包 → 平台返回结构化上下文 → Agent 消费生成方案
+3. **知识管理**：版本控制、权限分配、血缘追踪、过期与冲突处理
+
+### 技术约束
+- 产物与界面文案使用简体中文
+- 知识模型严格区分 biz_kl / sys_kl，禁止混库
+- 架构采用 DDD 思路，sys_kl 按 DDD 分层组织
+</pre></div><div class="panel" id="decisions-md"><pre class="md-source"># 决策日志（Architecture Decision Records）
+
+## ADR-001: biz_kl 与 sys_kl 严格分离，禁止混库
+
+**状态**: Accepted  
+**决策日期**: 2026-06-07  
+**决策者**: pm-aligner（基于简报约束推导）
+
+### 背景
+平台需要同时管理业务知识（biz_kl）和系统逻辑知识（sys_kl），两者来源、生命周期、消费场景均不同。简报明确要求&quot;知识模型需区分 biz_kl / sys_kl，禁止混库&quot;。
+
+### 决策
+biz_kl 与 sys_kl 采用独立存储与独立数据模型，仅通过互链关系（业务概念 ↔ 代码模块）建立关联。
+
+### 理由
+- 业务知识变更频率低、依赖专家审核；系统知识变更频率高、随代码迭代
+- 两者的检索模式不同：biz_kl 偏语义检索，sys_kl 偏结构化查询
+- 分离便于权限控制（专家管 biz_kl，开发管 sys_kl）
+- 降低 MVP 阶段的模型复杂度
+
+### 后果
+- ✅ 模型清晰，便于分角色治理
+- ⚠️ 需要维护跨库的互链关系，增加一致性校验成本
+- ⚠️ 跨库联合查询需要额外设计（如知识包组装时的拼接逻辑）
+
+---
+
+## ADR-002: MVP 阶段 sys_kl 采用半自动挂载，不追求全自动逆向
+
+**状态**: Accepted  
+**决策日期**: 2026-06-07  
+**决策者**: pm-aligner（基于简报约束推导）
+
+### 背景
+供应链 IT 系统为百万行级存量代码，全自动静态分析引擎建设成本高、周期长。简报明确&quot;首期不做全仓自动静态分析引擎&quot;，但允许&quot;人工+模板+半自动&quot;。
+
+### 决策
+MVP 阶段 sys_kl 条目通过以下方式生成：
+1. 专家手工标注核心模块
+2. 半自动工具辅助提取模块结构（如 AST 解析、调用链提取）
+3. 模板化批量导入辅助数据
+
+### 理由
+- 百万行代码全自动逆向工程投入产出比低
+- 核心模块（高频变更、高业务价值）优先覆盖即可验证价值
+- 半自动方式可快速迭代，积累标注数据后反哺自动化引擎
+
+### 后果
+- ✅ 大幅降低 MVP 开发成本，缩短验证周期
+- ⚠️ 需要领域专家投入时间进行手工标注
+- ⚠️ 覆盖率有限，初期可能遗漏边缘模块
+
+---
+
+## ADR-003: MVP 阶段知识消费仅提供只读 API/导出，不建设 IDE 插件
+
+**状态**: Accepted  
+**决策日期**: 2026-06-07  
+**决策者**: pm-aligner（基于简报约束推导）
+
+### 背景
+简报明确&quot;不做完整 IDE 插件市场（先 API/导出）&quot;，MVP 范围中知识应用定位为&quot;给 Agent 用的知识包导出或 API（先只读）&quot;。
+
+### 决策
+MVP 阶段知识消费接口：
+1. RESTful API：Agent 可拉取知识包（JSON 格式）
+2. 文件导出：支持 JSON/Markdown 格式离线使用
+3. 仅支持只读操作，不开放写入或交互式编辑
+
+### 理由
+- IDE 插件开发涉及多编辑器兼容、UI/UX 设计，投入大
+- Agent 消费是核心验证场景，API 接口更直接
+- 只读设计降低安全与权限复杂度
+
+### 后果
+- ✅ 聚焦核心价值验证，避免 IDE 兼容性泥潭
+- ⚠️ 开发者体验不如原生 IDE 插件流畅
+- ⚠️ 需要 Agent 侧具备 API 消费能力（见 Assumption #3）
+</pre></div><div class="panel" id="01-research-md"><p><em>Not generated yet.</em></p></div><div class="panel" id="02-analysis-md"><p><em>Not generated yet.</em></p></div><div class="panel" id="03-prd-md"><p><em>Not generated yet.</em></p></div><div class="panel" id="05-retro-md"><p><em>Not generated yet.</em></p></div>
+  <div class="panel" id="openspec-panel"><p><em>OpenSpec not generated yet.</em></p></div>
+  <div class="panel" id="mvp-panel"><p><em>MVP not built yet.</em></p></div>
+  <div class="panel" id="proto-panel"><p><em>No static prototype (02b-prototype/index.html) yet.</em></p></div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    function activate(id) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+      panels.forEach(p => p.classList.toggle('active', p.id === id));
+    }
+    tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
+    document.querySelectorAll('.md-source').forEach((pre, i) => {
+      const panel = pre.parentElement;
+      const div = document.createElement('div');
+      div.className = 'md-render';
+      div.innerHTML = marked.parse(pre.textContent);
+      panel.insertBefore(div, pre);
+    });
+    activate(tabs[0]?.dataset.tab || 'RUN-md');
+  </script>
+</body>
+</html>
