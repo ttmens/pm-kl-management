@@ -33,9 +33,9 @@
   <div class="meta">
     Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
     Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
-    Commit: 87a2440 · Built: 2026-06-07 09:35 UTC
+    Commit: 2dbf57f · Built: 2026-06-07 09:50 UTC
   </div>
-  <div class="badges"><span class="badge pass">research</span> <span class="badge overall pass">overall: pass</span></div>
+  <div class="badges"><span class="badge pass">prototype</span> <span class="badge overall pass">overall: pass</span></div>
 
   <div class="tabs" id="tabs">
     <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button>
@@ -63,14 +63,16 @@ T1 (ready)   pm-aligner    → Stage 0+1: 对齐想法 &amp; 产出 CONTEXT.md
 
 ## 任务 ID
 
-| 阶段 | 任务 ID | 状态 | 负责人 |
-|------|---------|------|--------|
-| 0+1 Align | `t_cbef8b9e` | ready | pm-aligner |
-| 2 Research | `t_8180aedb` | todo | pm-researcher |
-| 3 Analysis | `t_99248123` | todo | pm-analyst |
-| 4 Spec | `t_a523399c` | todo | pm-planner |
-| 5 MVP | `t_62c97069` | todo | pm-builder |
-| 6 Retro | `t_a79213fd` | todo | pm-builder |
+
+| 阶段         | 任务 ID        | 状态    | 负责人           |
+| ---------- | ------------ | ----- | ------------- |
+| 0+1 Align  | `t_cbef8b9e` | ready | pm-aligner    |
+| 2 Research | `t_8180aedb` | todo  | pm-researcher |
+| 3 Analysis | `t_99248123` | todo  | pm-analyst    |
+| 4 Spec     | `t_a523399c` | todo  | pm-planner    |
+| 5 MVP      | `t_62c97069` | todo  | pm-builder    |
+| 6 Retro    | `t_a79213fd` | todo  | pm-builder    |
+
 
 ## 人工检查点
 
@@ -107,34 +109,42 @@ hermes kanban tail &lt;task_id&gt;
 
 ## GitHub Pages（完成后发布）
 
-- Pages: https://ttmens.github.io/pm-kl-management/
-- GitHub: https://github.com/ttmens/pm-kl-management
+- Pages: [https://ttmens.github.io/pm-kl-management/](https://ttmens.github.io/pm-kl-management/)
+- GitHub: [https://github.com/ttmens/pm-kl-management](https://github.com/ttmens/pm-kl-management)
+
 </pre></div><div class="panel" id="00-brief-md"><pre class="md-source"># 产品简报：产品知识平台（KL Management）
 
 ## 一句话描述
+
 面向企业 AI 编程场景的「产品知识平台」，将业务知识（biz_kl）与系统逻辑知识（sys_kl）结构化沉淀，供 Agent/IDE 消费，解决「懂业务 + 懂系统」的上下文碎片化问题。
 
 ## 背景
+
 企业 AI 编程强依赖内部业务知识。以供应链 IT 为例：需在百万行级存量系统上做功能维护与演进，必须先把「产品知识」结构化沉淀，再供 Agent/IDE 消费。
 
 知识分两层：
+
 - **biz_kl（业务知识库）**：以产品历史设计文档、PRD、运维/变更记录为输入，压缩抽象为可检索的业务语义（领域概念、流程、规则、边界）。
 - **sys_kl（系统逻辑知识库）**：以代码为基准，按 DDD 分层（领域/应用/基础设施等）叠加专家标注，逆向沉淀模块职责、调用链、扩展点、与 biz_kl 的映射。
 
 ## 要解决的问题
+
 团队目前知识分散在文档、代码、人口述中，AI 编程时上下文碎片化，无法稳定支撑「懂业务 + 懂系统」的协同维护。
 
 ## 目标用户
+
 1. **领域专家 / 老产品**：贡献与审核 biz_kl、sys_kl
 2. **开发 / AI 编程使用者**：在编码、评审、排障时消费知识
 3. **平台管理员**：权限、版本、质量与治理
 
 ## 核心能力（产品范围）
+
 1. **知识构建**：多人协作录入/导入/逆向草稿 + 审核发布
 2. **知识应用**：对接 AI 编程（上下文注入、问答、变更影响分析）
 3. **知识管理**：版本、权限、血缘、过期与冲突处理
 
 ## MVP 范围
+
 - 单产品、单仓库试点（供应链 IT 子系统 1 个 bounded context）
 - biz_kl：支持文档导入 + 结构化条目（概念/流程/规则）+ 简单检索
 - sys_kl：支持按 DDD 模块手工/半自动挂载代码路径 + 专家注释（不要求首轮全自动百万行逆向）
@@ -142,56 +152,63 @@ hermes kanban tail &lt;task_id&gt;
 - 管理：草稿/已发布、负责人、基础审计日志
 
 ## 成功指标（MVP）
+
 1. 一个试点 BC 内，biz_kl + sys_kl 各 ≥20 条可发布条目，且可互链（业务概念 ↔ 代码模块）
 2. 给定 1 个真实维护场景（小功能变更），Agent 仅消费本平台知识即可完成方案草稿（人工验收通过率 ≥70%）
 3. 3 角色（专家/开发/管理员）协作流程跑通，无人口述补全关键上下文
 
 ## 约束
+
 - 产物与界面文案：简体中文
 - 架构思路：DDD；知识模型需区分 biz_kl / sys_kl，禁止混库
 - 首期不做：全仓自动静态分析引擎、多租户 SaaS 计费、替换现有 Git/文档系统
 
 ## 非目标
+
 - 不做通用企业搜索/大杂烩 RAG
 - 不做全自动百万行代码逆向（首期允许人工+模板+半自动）
 - 不做完整 IDE 插件市场（先 API/导出）
 
 ## 开放假设（Open Assumptions）
+
 1. **供应链 IT 团队愿意配合试点**（confidence: high）—— 需要至少 1 名领域专家 + 2 名开发承诺在 MVP 周期内贡献 biz_kl / sys_kl 条目并参与验收。
 2. **现有代码仓库可被安全访问用于静态分析**（confidence: medium）—— sys_kl 半自动挂载需要读取代码结构；若仓库权限或合规流程阻碍，首轮可能需要手动截图/导出替代。
 3. **Agent 消费端已有基础上下文注入能力**（confidence: medium）—— 成功指标 #2 假设 Agent 端能够接收并解析本平台导出的「知识包」；若 Agent 侧尚未就绪，MVP 验收需要改为人工模拟消费。
 4. **DDD 分层映射可由现有架构师/老员工提供**（confidence: high）—— sys_kl 的 DDD 模块划分依赖领域知识，假设团队内有熟悉 DDD 的架构师可参与标注。
-5. **首期试点范围控制在单个 bounded context**（confidence: high）—— 避免 MVP 阶段跨多个 BC 导致知识模型复杂度爆炸；后续迭代再扩展。
-</pre></div><div class="panel" id="CONTEXT-md"><pre class="md-source"># 上下文：产品知识平台（KL Management）
+5. **首期试点范围控制在单个 bounded context**（confidence: high）—— 避免 MVP 阶段跨多个 BC 导致知识模型复杂度爆炸；后续迭代再扩展。</pre></div><div class="panel" id="CONTEXT-md"><pre class="md-source"># 上下文：产品知识平台（KL Management）
 
 ## Glossary（术语表）
 
-| 术语 | 英文 | 说明 |
-|------|------|------|
-| **biz_kl** | Business Knowledge Library | 业务知识库，以产品历史设计文档、PRD、运维/变更记录为输入，压缩抽象为可检索的业务语义（领域概念、流程、规则、边界）。 |
-| **sys_kl** | System Knowledge Library | 系统逻辑知识库，以代码为基准，按 DDD 分层叠加专家标注，逆向沉淀模块职责、调用链、扩展点，以及与 biz_kl 的映射关系。 |
-| **BC** | Bounded Context | 领域驱动设计中的有界上下文，界定一个模型的适用边界；MVP 试点限定在单个 BC 内。 |
-| **DDD** | Domain-Driven Design | 领域驱动设计方法论，用于指导 sys_kl 的分层结构（领域层、应用层、基础设施层）与业务模型的映射。 |
-| **知识包** | Knowledge Package | 平台输出的结构化知识单元，供 Agent/IDE 消费，包含 biz_kl 条目、sys_kl 条目及两者间的互链关系；MVP 阶段支持只读导出或 API 拉取。 |
-| **血缘** | Lineage | 知识条目的来源追踪与版本关联，记录条目由谁创建/修改、依据什么原始文档或代码片段生成，用于审计与冲突解决。 |
+
+| 术语         | 英文                         | 说明                                                                                |
+| ---------- | -------------------------- | --------------------------------------------------------------------------------- |
+| **biz_kl** | Business Knowledge Library | 业务知识库，以产品历史设计文档、PRD、运维/变更记录为输入，压缩抽象为可检索的业务语义（领域概念、流程、规则、边界）。                      |
+| **sys_kl** | System Knowledge Library   | 系统逻辑知识库，以代码为基准，按 DDD 分层叠加专家标注，逆向沉淀模块职责、调用链、扩展点，以及与 biz_kl 的映射关系。                  |
+| **BC**     | Bounded Context            | 领域驱动设计中的有界上下文，界定一个模型的适用边界；MVP 试点限定在单个 BC 内。                                       |
+| **DDD**    | Domain-Driven Design       | 领域驱动设计方法论，用于指导 sys_kl 的分层结构（领域层、应用层、基础设施层）与业务模型的映射。                               |
+| **知识包**    | Knowledge Package          | 平台输出的结构化知识单元，供 Agent/IDE 消费，包含 biz_kl 条目、sys_kl 条目及两者间的互链关系；MVP 阶段支持只读导出或 API 拉取。 |
+| **血缘**     | Lineage                    | 知识条目的来源追踪与版本关联，记录条目由谁创建/修改、依据什么原始文档或代码片段生成，用于审计与冲突解决。                             |
+
 
 ## 领域上下文
 
 ### 用户角色与职责
+
 - **领域专家 / 老产品**：拥有业务上下文深度，负责 biz_kl 条目的贡献、审核与业务语义校准。
 - **开发 / AI 编程使用者**：在编码、评审、排障场景中消费知识，是平台的最终用户与价值验证者。
 - **平台管理员**：负责权限管理、版本治理、质量审核与审计日志，保障平台运行的秩序与合规。
 
 ### 关键业务流程
+
 1. **知识构建**：录入/导入 → 草稿 → 审核 → 发布（多人协作）
 2. **知识应用**：Agent 请求知识包 → 平台返回结构化上下文 → Agent 消费生成方案
 3. **知识管理**：版本控制、权限分配、血缘追踪、过期与冲突处理
 
 ### 技术约束
+
 - 产物与界面文案使用简体中文
 - 知识模型严格区分 biz_kl / sys_kl，禁止混库
-- 架构采用 DDD 思路，sys_kl 按 DDD 分层组织
-</pre></div><div class="panel" id="decisions-md"><pre class="md-source"># 决策日志（Architecture Decision Records）
+- 架构采用 DDD 思路，sys_kl 按 DDD 分层组织</pre></div><div class="panel" id="decisions-md"><pre class="md-source"># 决策日志（Architecture Decision Records）
 
 ## ADR-001: biz_kl 与 sys_kl 严格分离，禁止混库
 
@@ -200,18 +217,22 @@ hermes kanban tail &lt;task_id&gt;
 **决策者**: pm-aligner（基于简报约束推导）
 
 ### 背景
+
 平台需要同时管理业务知识（biz_kl）和系统逻辑知识（sys_kl），两者来源、生命周期、消费场景均不同。简报明确要求&quot;知识模型需区分 biz_kl / sys_kl，禁止混库&quot;。
 
 ### 决策
+
 biz_kl 与 sys_kl 采用独立存储与独立数据模型，仅通过互链关系（业务概念 ↔ 代码模块）建立关联。
 
 ### 理由
+
 - 业务知识变更频率低、依赖专家审核；系统知识变更频率高、随代码迭代
 - 两者的检索模式不同：biz_kl 偏语义检索，sys_kl 偏结构化查询
 - 分离便于权限控制（专家管 biz_kl，开发管 sys_kl）
 - 降低 MVP 阶段的模型复杂度
 
 ### 后果
+
 - ✅ 模型清晰，便于分角色治理
 - ⚠️ 需要维护跨库的互链关系，增加一致性校验成本
 - ⚠️ 跨库联合查询需要额外设计（如知识包组装时的拼接逻辑）
@@ -225,20 +246,25 @@ biz_kl 与 sys_kl 采用独立存储与独立数据模型，仅通过互链关�
 **决策者**: pm-aligner（基于简报约束推导）
 
 ### 背景
+
 供应链 IT 系统为百万行级存量代码，全自动静态分析引擎建设成本高、周期长。简报明确&quot;首期不做全仓自动静态分析引擎&quot;，但允许&quot;人工+模板+半自动&quot;。
 
 ### 决策
+
 MVP 阶段 sys_kl 条目通过以下方式生成：
+
 1. 专家手工标注核心模块
 2. 半自动工具辅助提取模块结构（如 AST 解析、调用链提取）
 3. 模板化批量导入辅助数据
 
 ### 理由
+
 - 百万行代码全自动逆向工程投入产出比低
 - 核心模块（高频变更、高业务价值）优先覆盖即可验证价值
 - 半自动方式可快速迭代，积累标注数据后反哺自动化引擎
 
 ### 后果
+
 - ✅ 大幅降低 MVP 开发成本，缩短验证周期
 - ⚠️ 需要领域专家投入时间进行手工标注
 - ⚠️ 覆盖率有限，初期可能遗漏边缘模块
@@ -252,20 +278,25 @@ MVP 阶段 sys_kl 条目通过以下方式生成：
 **决策者**: pm-aligner（基于简报约束推导）
 
 ### 背景
+
 简报明确&quot;不做完整 IDE 插件市场（先 API/导出）&quot;，MVP 范围中知识应用定位为&quot;给 Agent 用的知识包导出或 API（先只读）&quot;。
 
 ### 决策
+
 MVP 阶段知识消费接口：
+
 1. RESTful API：Agent 可拉取知识包（JSON 格式）
 2. 文件导出：支持 JSON/Markdown 格式离线使用
 3. 仅支持只读操作，不开放写入或交互式编辑
 
 ### 理由
+
 - IDE 插件开发涉及多编辑器兼容、UI/UX 设计，投入大
 - Agent 消费是核心验证场景，API 接口更直接
 - 只读设计降低安全与权限复杂度
 
 ### 后果
+
 - ✅ 聚焦核心价值验证，避免 IDE 兼容性泥潭
 - ⚠️ 开发者体验不如原生 IDE 插件流畅
 - ⚠️ 需要 Agent 侧具备 API 消费能力（见 Assumption #3）
@@ -330,8 +361,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
-- ⚠️ JSON Schema 需要版本管理，向后兼容
-</pre></div><div class="panel" id="01-research-md"><pre class="md-source"># 调研报告：产品知识平台（KL Management）
+- ⚠️ JSON Schema 需要版本管理，向后兼容</pre></div><div class="panel" id="01-research-md"><pre class="md-source"># 调研报告：产品知识平台（KL Management）
 
 &gt; 调研日期：2026-06-07
 &gt; 调研范围：企业知识管理平台竞品、代码知识库工具、DDD 知识建模、AI 编程上下文注入
@@ -343,15 +373,17 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 竞品对比表
 
-| # | 产品 | AI 能力概要 | 定价模型 | 目标用户 | 优势 | 劣势 | 相关度 | 来源 URL | 置信度 |
-|---|------|-----------|---------|---------|------|------|--------|---------|--------|
-| 1 | **Confluence + Rovo** | Rovo AI：草稿生成、跨应用搜索、页面摘要、AI Agent 工作流自动化、文本转可视化 | Free（≤10人）→ Standard ~$5.75/人/月 → Premium ~$11/人/月 → Enterprise（定制） | Atlassian 生态内中大型企业 | 深度集成 Jira/GitHub、Rovo AI 含于所有付费层、开发者工作流友好 | 重/复杂不适合小团队、AI 仅云端、大规模性能瓶颈 | 中：通用 KM+AI，但不面向 Agent 消费 | https://www.atlassian.com/software/confluence | [HIGH] |
-| 2 | **Notion AI** | Notion Agent（自主 AI 任务）、Enterprise Search、Custom Agents + Workers、写作助手 | Free → Plus ($10/人/月) → Business ($20/人/月，AI 需此层) → Enterprise（定制） | 知识密集型团队、灵活工作流 | 灵活的数据库/块模型、AI Agent 能力强、零数据留存 | 大规模性能差、AI 需 Business 层起步、离线受限 | 中：通用 KM+AI，但知识库无结构化分层 | https://www.notion.com/pricing | [HIGH] |
-| 3 | **Glean（Work AI）** | Glean Assistant/Agents、混合搜索（企业图谱+个人图谱）、MCP Gateway、代码智能 | 仅企业定制定价 | 500+ 人大型企业 | 100+ 应用连接器、权限感知索引、93% 采纳率、开发者功能强 | 昂贵、主要是搜索而非知识创建工具 | 高：权限感知+AI Agent 知识交付，但无 biz_kl/sys_kl 分离 | https://www.glean.com | [HIGH] |
-| 4 | **Guru** | 知识 Agent（引用式回答）、AI 搜索、MCP 交付给外部 AI 工具、自动化知识质量维护 | 企业定制定价（非 SaaS 按座席） | 客服/销售/HR 等对准确性要求高的团队 | 人工审核降低幻觉、MCP 交付任何 AI Agent、SOC2/HIPAA 合规 | 定价不透明、非开发者导向、卡片结构刚性 | 中：治理型知识交付，但不面向代码/系统知识 | https://www.getguru.com/pricing | [MEDIUM] |
-| 5 | **GitBook** | AI Assistant（可嵌入聊天）、AI Agent（主动改进建议）、内建 MCP Server（LLM 可发现）、AI 内容审查 | Free（公开文档）→ Premium ($65/站+$12/人/月) → Ultimate ($249/站+$12/人/月) | 开发者团队、API 产品、技术文档 | 开发者专用、Git/GitHub 同步、MCP Server 使知识对 LLM 原生可发现 | 双重定价模型、仅面向文档（非完整 KM）、索引延迟 ~1h | 高：MCP Server + 开发者知识原生消费，最接近 KL 定位 | https://www.gitbook.com | [HIGH] |
-| 6 | **Mintlify** | AI 写作 Agent、AI 助手、MCP Server、LLMs.txt 生成、自更新文档工作流 | Starter（$0）→ Pro (~$250-300/月+计量 AI) → Enterprise（定制） | 开发者优先公司（Anthropic/Coinbase/Cursor 等使用） | AI 原生、自动更新文档、LLM 优化输出 | 定价跳跃大（免费→$250+）、计量 AI 费用高 | 高：文档即基础设施理念验证了 sys_kl 方向，但无 DDD 映射 | https://www.mintlify.com/pricing | [HIGH] |
-| 7 | **Slab** | 无显著 AI 功能（2025/2026 年为竞品空白） | Free（≤10人）→ Startup ($6.67/人/月) → Business ($12.50/人/月) → Enterprise（定制） | 初创/中型团队的简单内部 Wiki | 最便宜、UI 简洁、层次结构清晰 | 无 AI 功能（重大短板）、无精细权限、大规模知识库吃力 | 低：无 AI 能力 | https://slab.com/pricing | [MEDIUM] |
+
+| #   | 产品                    | AI 能力概要                                                               | 定价模型                                                                     | 目标用户                                   | 优势                                            | 劣势                            | 相关度                                      | 来源 URL                                                                                         | 置信度      |
+| --- | --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------- | --------------------------------------------- | ----------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------- | -------- |
+| 1   | **Confluence + Rovo** | Rovo AI：草稿生成、跨应用搜索、页面摘要、AI Agent 工作流自动化、文本转可视化                        | Free（≤10人）→ Standard ~$5.75/人/月 → Premium ~$11/人/月 → Enterprise（定制）      | Atlassian 生态内中大型企业                     | 深度集成 Jira/GitHub、Rovo AI 含于所有付费层、开发者工作流友好     | 重/复杂不适合小团队、AI 仅云端、大规模性能瓶颈     | 中：通用 KM+AI，但不面向 Agent 消费                 | [https://www.atlassian.com/software/confluence](https://www.atlassian.com/software/confluence) | [HIGH]   |
+| 2   | **Notion AI**         | Notion Agent（自主 AI 任务）、Enterprise Search、Custom Agents + Workers、写作助手 | Free → Plus ($10/人/月) → Business ($20/人/月，AI 需此层) → Enterprise（定制）       | 知识密集型团队、灵活工作流                          | 灵活的数据库/块模型、AI Agent 能力强、零数据留存                 | 大规模性能差、AI 需 Business 层起步、离线受限 | 中：通用 KM+AI，但知识库无结构化分层                    | [https://www.notion.com/pricing](https://www.notion.com/pricing)                               | [HIGH]   |
+| 3   | **Glean（Work AI）**    | Glean Assistant/Agents、混合搜索（企业图谱+个人图谱）、MCP Gateway、代码智能               | 仅企业定制定价                                                                  | 500+ 人大型企业                             | 100+ 应用连接器、权限感知索引、93% 采纳率、开发者功能强              | 昂贵、主要是搜索而非知识创建工具              | 高：权限感知+AI Agent 知识交付，但无 biz_kl/sys_kl 分离 | [https://www.glean.com](https://www.glean.com)                                                 | [HIGH]   |
+| 4   | **Guru**              | 知识 Agent（引用式回答）、AI 搜索、MCP 交付给外部 AI 工具、自动化知识质量维护                       | 企业定制定价（非 SaaS 按座席）                                                       | 客服/销售/HR 等对准确性要求高的团队                   | 人工审核降低幻觉、MCP 交付任何 AI Agent、SOC2/HIPAA 合规      | 定价不透明、非开发者导向、卡片结构刚性           | 中：治理型知识交付，但不面向代码/系统知识                    | [https://www.getguru.com/pricing](https://www.getguru.com/pricing)                             | [MEDIUM] |
+| 5   | **GitBook**           | AI Assistant（可嵌入聊天）、AI Agent（主动改进建议）、内建 MCP Server（LLM 可发现）、AI 内容审查   | Free（公开文档）→ Premium ($65/站+$12/人/月) → Ultimate ($249/站+$12/人/月)          | 开发者团队、API 产品、技术文档                      | 开发者专用、Git/GitHub 同步、MCP Server 使知识对 LLM 原生可发现 | 双重定价模型、仅面向文档（非完整 KM）、索引延迟 ~1h | 高：MCP Server + 开发者知识原生消费，最接近 KL 定位       | [https://www.gitbook.com](https://www.gitbook.com)                                             | [HIGH]   |
+| 6   | **Mintlify**          | AI 写作 Agent、AI 助手、MCP Server、LLMs.txt 生成、自更新文档工作流                     | Starter（$0）→ Pro (~$250-300/月+计量 AI) → Enterprise（定制）                    | 开发者优先公司（Anthropic/Coinbase/Cursor 等使用） | AI 原生、自动更新文档、LLM 优化输出                         | 定价跳跃大（免费→$250+）、计量 AI 费用高     | 高：文档即基础设施理念验证了 sys_kl 方向，但无 DDD 映射       | [https://www.mintlify.com/pricing](https://www.mintlify.com/pricing)                           | [HIGH]   |
+| 7   | **Slab**              | 无显著 AI 功能（2025/2026 年为竞品空白）                                           | Free（≤10人）→ Startup ($6.67/人/月) → Business ($12.50/人/月) → Enterprise（定制） | 初创/中型团队的简单内部 Wiki                      | 最便宜、UI 简洁、层次结构清晰                              | 无 AI 功能（重大短板）、无精细权限、大规模知识库吃力  | 低：无 AI 能力                                | [https://slab.com/pricing](https://slab.com/pricing)                                           | [MEDIUM] |
+
 
 ---
 
@@ -359,16 +391,18 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 竞品对比表
 
-| # | 产品 | 代码上下文处理方式 | AI 能力 | IDE 集成 | 持久知识 | DDD 感知 | 来源 URL | 置信度 |
-|---|------|------------------|---------|---------|---------|---------|---------|--------|
-| 1 | **Sourcegraph Cody** | 跨仓库符号感知搜索（Sourcegraph Search API）；@提及文件/符号/仓库 | Chat、自动编辑、自定义 Prompt、调试；顶级 LLM | VS Code, JetBrains, Visual Studio, Web, CLI | 无 | 部分（符号图谱） | https://sourcegraph.com/docs/cody | [HIGH] |
-| 2 | **Bloop** | RAG 管线（GPT-4 重写→MiniLM/Qdrant 语义搜索→LLM 排序→溯源回答）；Tree-sitter 导航 | 对话式代码搜索、Code Studio 实验环境 | 独立桌面应用（Mac/Win/Linux），非 IDE 插件 | 无 | 无 | https://github.com/bloopAI/bloop | [HIGH] |
-| 3 | **GitHub Copilot** | 即时语义索引（秒级）；@workspace/#codebase 修饰符；多仓库搜索 | 补全、Chat、Agent 模式（VS Code 自主多步）、PR 生成、代码审查 | VS Code（原生）, github.com, JetBrains, Visual Studio, CLI | 无 | 无 | https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot | [HIGH] |
-| 4 | **Cursor** | 工作区语义索引；.cursor/rules/ 持久项目级指令；@codebase 查询；文档索引；MCP 支持 | Tab 补全、Chat、Composer（多文件 Agent）、Bugbot 审查、云端 Agent | 独立 IDE（VS Code fork），兼容 VS Code 扩展 | 部分（.cursor/rules/） | 无 | https://cursor.com | [HIGH] |
-| 5 | **Devin（Cognition）** | 自主读取整个代码库（嵌入式 IDE+Shell+浏览器）；每次任务重新读取 | 全自主执行、并行 Agent、迁移、重构、PR 审查、测试生成 | Web IDE (app.devin.ai), CLI, Slack/Teams | 无 | 无 | https://docs.devin.ai/get-started/devin-intro | [MEDIUM] |
-| 6 | **Sweep.dev** | 全代码库感知搜索 + 上下文感知补全；发布 Agent 文件读取策略研究 | Tab 补全（自研模型，毫秒延迟）、AI 代码审查 | 仅 JetBrains 插件 | 无 | 无 | https://sweep.dev | [MEDIUM] |
-| 7 | **Composio** | 不管理代码上下文；为 Agent 提供 1000+ 应用/20,000+ 工具集成（MCP 或直接 API） | 工具执行、安全 OAuth、沙箱环境、并行执行、&quot;学习型工具&quot; | 适用于任何 MCP 兼容 IDE/Agent，CLI 管理 | 不适用（非代码知识工具） | 无 | https://composio.dev | [HIGH] |
-| 8 | **Mintlify** | 文档即 AI Agent 基础设施；自更新工作流保持文档与代码同步 | 文档问答助手、自动文档生成/更新、Claude Opus 集成 | CI/CD、GitHub 仓库、API（非 IDE 工具） | 是（自更新文档） | 无 | https://www.mintlify.com | [HIGH] |
+
+| #   | 产品                   | 代码上下文处理方式                                                      | AI 能力                                              | IDE 集成                                                 | 持久知识               | DDD 感知   | 来源 URL                                                                                                                                                                                                                                                 | 置信度      |
+| --- | -------------------- | -------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------ | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| 1   | **Sourcegraph Cody** | 跨仓库符号感知搜索（Sourcegraph Search API）；@提及文件/符号/仓库                  | Chat、自动编辑、自定义 Prompt、调试；顶级 LLM                     | VS Code, JetBrains, Visual Studio, Web, CLI            | 无                  | 部分（符号图谱） | [https://sourcegraph.com/docs/cody](https://sourcegraph.com/docs/cody)                                                                                                                                                                                 | [HIGH]   |
+| 2   | **Bloop**            | RAG 管线（GPT-4 重写→MiniLM/Qdrant 语义搜索→LLM 排序→溯源回答）；Tree-sitter 导航 | 对话式代码搜索、Code Studio 实验环境                           | 独立桌面应用（Mac/Win/Linux），非 IDE 插件                         | 无                  | 无        | [https://github.com/bloopAI/bloop](https://github.com/bloopAI/bloop)                                                                                                                                                                                   | [HIGH]   |
+| 3   | **GitHub Copilot**   | 即时语义索引（秒级）；@workspace/#codebase 修饰符；多仓库搜索                      | 补全、Chat、Agent 模式（VS Code 自主多步）、PR 生成、代码审查          | VS Code（原生）, github.com, JetBrains, Visual Studio, CLI | 无                  | 无        | [https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot](https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot) | [HIGH]   |
+| 4   | **Cursor**           | 工作区语义索引；.cursor/rules/ 持久项目级指令；@codebase 查询；文档索引；MCP 支持        | Tab 补全、Chat、Composer（多文件 Agent）、Bugbot 审查、云端 Agent | 独立 IDE（VS Code fork），兼容 VS Code 扩展                     | 部分（.cursor/rules/） | 无        | [https://cursor.com](https://cursor.com)                                                                                                                                                                                                               | [HIGH]   |
+| 5   | **Devin（Cognition）** | 自主读取整个代码库（嵌入式 IDE+Shell+浏览器）；每次任务重新读取                          | 全自主执行、并行 Agent、迁移、重构、PR 审查、测试生成                    | Web IDE (app.devin.ai), CLI, Slack/Teams               | 无                  | 无        | [https://docs.devin.ai/get-started/devin-intro](https://docs.devin.ai/get-started/devin-intro)                                                                                                                                                         | [MEDIUM] |
+| 6   | **Sweep.dev**        | 全代码库感知搜索 + 上下文感知补全；发布 Agent 文件读取策略研究                           | Tab 补全（自研模型，毫秒延迟）、AI 代码审查                          | 仅 JetBrains 插件                                         | 无                  | 无        | [https://sweep.dev](https://sweep.dev)                                                                                                                                                                                                                 | [MEDIUM] |
+| 7   | **Composio**         | 不管理代码上下文；为 Agent 提供 1000+ 应用/20,000+ 工具集成（MCP 或直接 API）         | 工具执行、安全 OAuth、沙箱环境、并行执行、&quot;学习型工具&quot;                    | 适用于任何 MCP 兼容 IDE/Agent，CLI 管理                          | 不适用（非代码知识工具）       | 无        | [https://composio.dev](https://composio.dev)                                                                                                                                                                                                           | [HIGH]   |
+| 8   | **Mintlify**         | 文档即 AI Agent 基础设施；自更新工作流保持文档与代码同步                              | 文档问答助手、自动文档生成/更新、Claude Opus 集成                    | CI/CD、GitHub 仓库、API（非 IDE 工具）                          | 是（自更新文档）           | 无        | [https://www.mintlify.com](https://www.mintlify.com)                                                                                                                                                                                                   | [HIGH]   |
+
 
 ### 关键发现（方向 1 + 2 综合）
 
@@ -385,26 +419,26 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 3.1 Bounded Context（有界上下文）作为知识边界
 
-- **核心概念**：Bounded Context 是 DDD 中划分大型领域模型的核心战略模式。每个上下文维护内部一致的通用语言（Ubiquitous Language）。边界由团队间的语言/文化差异驱动，而非技术考虑。来源：https://martinfowler.com/bliki/BoundedContext.html [HIGH]
-- **一词多义处理**：相同术语在不同部门含义不同（如 &quot;meter&quot; 对电网运维 vs 计费）。Eric Evans 明确反对强制统一。来源：https://martinfowler.com/bliki/BoundedContext.html [HIGH]
-- **上下文类型**（Context Mapper 分类）：FEATURE（功能）、APPLICATION（逻辑）、SYSTEM（部署）、TEAM（组织）。来源：https://contextmapper.org/docs/bounded-context [MEDIUM]
+- **核心概念**：Bounded Context 是 DDD 中划分大型领域模型的核心战略模式。每个上下文维护内部一致的通用语言（Ubiquitous Language）。边界由团队间的语言/文化差异驱动，而非技术考虑。来源：[https://martinfowler.com/bliki/BoundedContext.html](https://martinfowler.com/bliki/BoundedContext.html) [HIGH]
+- **一词多义处理**：相同术语在不同部门含义不同（如 &quot;meter&quot; 对电网运维 vs 计费）。Eric Evans 明确反对强制统一。来源：[https://martinfowler.com/bliki/BoundedContext.html](https://martinfowler.com/bliki/BoundedContext.html) [HIGH]
+- **上下文类型**（Context Mapper 分类）：FEATURE（功能）、APPLICATION（逻辑）、SYSTEM（部署）、TEAM（组织）。来源：[https://contextmapper.org/docs/bounded-context](https://contextmapper.org/docs/bounded-context) [MEDIUM]
 
 ### 3.2 上下文映射（Context Mapping）模式
 
-- **9 种模式**（ddd-crew）：Partnership、Customer-Supplier、Shared Kernel、Conformist、Open-Host Service、Published Language、Anticorruption Layer (ACL)、Separate Ways、Big Ball of Mud。来源：https://github.com/ddd-crew/context-mapping [HIGH]
-- **最佳实践**：&quot;从团队边界开始映射；将地图视为活文档；模式与实际组织能力匹配。&quot; — Alberto Brandolini, InfoQ。来源：https://www.infoq.com/articles/ddd-contextmapping [HIGH]
-- **关键引述**：&quot;上下文地图提供了 UML 或架构图完全无法呈现的系统全局视图。&quot;来源：https://www.infoq.com/articles/ddd-contextmapping [HIGH]
+- **9 种模式**（ddd-crew）：Partnership、Customer-Supplier、Shared Kernel、Conformist、Open-Host Service、Published Language、Anticorruption Layer (ACL)、Separate Ways、Big Ball of Mud。来源：[https://github.com/ddd-crew/context-mapping](https://github.com/ddd-crew/context-mapping) [HIGH]
+- **最佳实践**：&quot;从团队边界开始映射；将地图视为活文档；模式与实际组织能力匹配。&quot; — Alberto Brandolini, InfoQ。来源：[https://www.infoq.com/articles/ddd-contextmapping](https://www.infoq.com/articles/ddd-contextmapping) [HIGH]
+- **关键引述**：&quot;上下文地图提供了 UML 或架构图完全无法呈现的系统全局视图。&quot;来源：[https://www.infoq.com/articles/ddd-contextmapping](https://www.infoq.com/articles/ddd-contextmapping) [HIGH]
 
 ### 3.3 通用语言（Ubiquitous Language）文档化
 
-- **定义**：开发者与领域专家之间的共同、严谨语言，基于领域模型。来源：https://martinfowler.com/bliki/UbiquitousLanguage.html [HIGH]
-- **文档方法**：将 UL 文档视为词汇表/术语管理项目。建议采用文档软件进行词汇管理。来源：https://softwareengineering.stackexchange.com/questions/304471/how-to-document-a-ubiquitous-language [MEDIUM]
-- **关键实践**：&quot;在代码、文档、讨论中普遍使用该语言。领域专家应对别扭的术语提出反对；开发者应警惕歧义。&quot;来源：https://martinfowler.com/bliki/UbiquitousLanguage.html [HIGH]
+- **定义**：开发者与领域专家之间的共同、严谨语言，基于领域模型。来源：[https://martinfowler.com/bliki/UbiquitousLanguage.html](https://martinfowler.com/bliki/UbiquitousLanguage.html) [HIGH]
+- **文档方法**：将 UL 文档视为词汇表/术语管理项目。建议采用文档软件进行词汇管理。来源：[https://softwareengineering.stackexchange.com/questions/304471/how-to-document-a-ubiquitous-language](https://softwareengineering.stackexchange.com/questions/304471/how-to-document-a-ubiquitous-language) [MEDIUM]
+- **关键实践**：&quot;在代码、文档、讨论中普遍使用该语言。领域专家应对别扭的术语提出反对；开发者应警惕歧义。&quot;来源：[https://martinfowler.com/bliki/UbiquitousLanguage.html](https://martinfowler.com/bliki/UbiquitousLanguage.html) [HIGH]
 
 ### 3.4 结构化工具
 
-- **Bounded Context Canvas**（ddd-crew）：结构化画布，用于设计/记录每个 BC：名称、描述、职责、公共接口、依赖。来源：https://github.com/ddd-crew/bounded-context-canvas [HIGH]
-- **Context Mapper DSL (CML)**：代码优先的 DSL，用文本文件描述上下文映射并自动生成图表。来源：https://contextmapper.org/docs/bounded-context [MEDIUM]
+- **Bounded Context Canvas**（ddd-crew）：结构化画布，用于设计/记录每个 BC：名称、描述、职责、公共接口、依赖。来源：[https://github.com/ddd-crew/bounded-context-canvas](https://github.com/ddd-crew/bounded-context-canvas) [HIGH]
+- **Context Mapper DSL (CML)**：代码优先的 DSL，用文本文件描述上下文映射并自动生成图表。来源：[https://contextmapper.org/docs/bounded-context](https://contextmapper.org/docs/bounded-context) [MEDIUM]
 
 ---
 
@@ -412,37 +446,36 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 4.1 上下文工程（Context Engineering） &gt; 提示工程
 
-- **定义**：上下文工程 = 在 LLM 推理期间对**所有上下文组件**（系统 Prompt、工具、MCP、外部数据、消息历史）进行最优 token 策展。Prompt 工程是其中的子集。来源：https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents [HIGH]
-- **关键引述**：&quot;上下文工程就是策展模型看到的内容，从而获得更好的结果。&quot; — Birgitta Bockeler, Thoughtworks。来源：https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html [HIGH]
+- **定义**：上下文工程 = 在 LLM 推理期间对**所有上下文组件**（系统 Prompt、工具、MCP、外部数据、消息历史）进行最优 token 策展。Prompt 工程是其中的子集。来源：[https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) [HIGH]
+- **关键引述**：&quot;上下文工程就是策展模型看到的内容，从而获得更好的结果。&quot; — Birgitta Bockeler, Thoughtworks。来源：[https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html](https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html) [HIGH]
 
 ### 4.2 上下文窗口管理
 
-- **上下文衰减**：注意力随 token 数量递减——不是悬崖而是梯度。Stanford/UC Berkeley 研究显示，尽管窗口支持 1M+ token，但正确性在约 32K token 处开始下降。来源：https://www.faros.ai/blog/context-engineering-for-developers [HIGH]
-- **&quot;迷失在中间&quot;效应**：注意力机制高度加权开头和结尾，中间内容变成噪声。来源：https://www.faros.ai/blog/context-engineering-for-developers [HIGH]
+- **上下文衰减**：注意力随 token 数量递减——不是悬崖而是梯度。Stanford/UC Berkeley 研究显示，尽管窗口支持 1M+ token，但正确性在约 32K token 处开始下降。来源：[https://www.faros.ai/blog/context-engineering-for-developers](https://www.faros.ai/blog/context-engineering-for-developers) [HIGH]
+- **&quot;迷失在中间&quot;效应**：注意力机制高度加权开头和结尾，中间内容变成噪声。来源：[https://www.faros.ai/blog/context-engineering-for-developers](https://www.faros.ai/blog/context-engineering-for-developers) [HIGH]
 - **位置排序（关键）**：
   1. **开头**：关键约束/规则
   2. **早期**：工具定义、API 文档
   3. **中间**：仓库结构、示例
   4. **末尾前**：近期变更
   5. **结尾**：当前任务
-
   将 AGENTS.md 从中间移到开头，代码风格违规减少 35-40%。来源：https://www.faros.ai/blog/context-engineering-for-developers [HIGH]
-- **压缩策略**：接近限制时总结对话，用高保真摘要重启；丢弃冗余工具输出，保留架构决策。来源：https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents [HIGH]
-- **子 Agent 模式**：主 Agent 协调；专业子 Agent 在干净上下文中处理深度任务，返回精简摘要（~1K-2K token）。来源：https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents [HIGH]
+- **压缩策略**：接近限制时总结对话，用高保真摘要重启；丢弃冗余工具输出，保留架构决策。来源：[https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) [HIGH]
+- **子 Agent 模式**：主 Agent 协调；专业子 Agent 在干净上下文中处理深度任务，返回精简摘要（~1K-2K token）。来源：[https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) [HIGH]
 
 ### 4.3 上下文文件生态（AGENTS.md / CLAUDE.md）
 
-- **AGENTS.md**：开放、厂商无关的标准，已被 Claude Code、Codex CLI、Sourcegraph Amp 等采用。来源：https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6 [HIGH]
-- **分层架构**：根目录 CLAUDE.md 用于全局约定，子目录 CLAUDE.md 用于领域特定（后端、前端、基础设施）。各层继承父上下文。来源：https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices [MEDIUM]
-- **保持精简**：聚焦的 ~400 token 文件优于 sprawling 的 4,000 token 文件。仅在出现差距时添加具体内容。来源：https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices [MEDIUM]
-- **工具特定文件**：Cursor: `.cursor/rules/`；GitHub Copilot: `.github/copilot-instructions.md`；JetBrains: `.aiassistant/rules/*.md`；Gemini: `GEMINI.md`。来源：https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6 [HIGH]
-- **HumanLayer 洞察**：如果 Claude 认为 CLAUDE.md 内容与当前任务无关，它会忽略。非通用信息越多，被跳过的概率越大。来源：https://www.humanlayer.dev/blog/writing-a-good-claude-md [MEDIUM]
+- **AGENTS.md**：开放、厂商无关的标准，已被 Claude Code、Codex CLI、Sourcegraph Amp 等采用。来源：[https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6](https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6) [HIGH]
+- **分层架构**：根目录 CLAUDE.md 用于全局约定，子目录 CLAUDE.md 用于领域特定（后端、前端、基础设施）。各层继承父上下文。来源：[https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices](https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices) [MEDIUM]
+- **保持精简**：聚焦的 ~400 token 文件优于 sprawling 的 4,000 token 文件。仅在出现差距时添加具体内容。来源：[https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices](https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices) [MEDIUM]
+- **工具特定文件**：Cursor: `.cursor/rules/`；GitHub Copilot: `.github/copilot-instructions.md`；JetBrains: `.aiassistant/rules/*.md`；Gemini: `GEMINI.md`。来源：[https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6](https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6) [HIGH]
+- **HumanLayer 洞察**：如果 Claude 认为 CLAUDE.md 内容与当前任务无关，它会忽略。非通用信息越多，被跳过的概率越大。来源：[https://www.humanlayer.dev/blog/writing-a-good-claude-md](https://www.humanlayer.dev/blog/writing-a-good-claude-md) [MEDIUM]
 
 ### 4.4 结构化上下文注入
 
-- **DICE 框架**（Domain-Integrated Context Engineering）：使用领域对象作为一等上下文单元，而非原始 JSON 转储。强制执行双向对齐——Agent 输出必须能回验到领域不变量。来源：https://engineeringagents.substack.com/p/domain-driven-agent-design [MEDIUM]
-- **Few-shot 原则**：用具体的 before/after 代码示例配对规则。示例是高信号&quot;图片&quot;，而非穷尽规则书。来源：https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents [HIGH]
-- **即时检索（JIT Retrieval）**：Agent 维护轻量级标识符，通过工具动态加载数据（glob、grep、定向查询）。混合策略：预加载关键静态上下文 + JIT 探索。来源：https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents [HIGH]
+- **DICE 框架**（Domain-Integrated Context Engineering）：使用领域对象作为一等上下文单元，而非原始 JSON 转储。强制执行双向对齐——Agent 输出必须能回验到领域不变量。来源：[https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design) [MEDIUM]
+- **Few-shot 原则**：用具体的 before/after 代码示例配对规则。示例是高信号&quot;图片&quot;，而非穷尽规则书。来源：[https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) [HIGH]
+- **即时检索（JIT Retrieval）**：Agent 维护轻量级标识符，通过工具动态加载数据（glob、grep、定向查询）。混合策略：预加载关键静态上下文 + JIT 探索。来源：[https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) [HIGH]
 
 ---
 
@@ -450,18 +483,18 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 5.1 Bounded Context = AI 知识包
 
-- DDD Bounded Context 解决了单体架构中 LLM 的认知过载。每个上下文作为独立 SDK，对其他领域内部零感知。来源：https://understandingdata.com/posts/ddd-bounded-contexts-for-llms [MEDIUM]
-- **通用语言作为语义锚**：代码镜像业务术语为 LLM 提供语义锚点。`confirmOrder()` &gt; `processStatus()`。当存在通用语言时，LLM 生成更高质量的代码。来源：https://understandingdata.com/posts/ddd-bounded-contexts-for-llms [MEDIUM]
+- DDD Bounded Context 解决了单体架构中 LLM 的认知过载。每个上下文作为独立 SDK，对其他领域内部零感知。来源：[https://understandingdata.com/posts/ddd-bounded-contexts-for-llms](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms) [MEDIUM]
+- **通用语言作为语义锚**：代码镜像业务术语为 LLM 提供语义锚点。`confirmOrder()` &gt; `processStatus()`。当存在通用语言时，LLM 生成更高质量的代码。来源：[https://understandingdata.com/posts/ddd-bounded-contexts-for-llms](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms) [MEDIUM]
 
 ### 5.2 领域驱动 Agent 设计
 
-- **Russ Miles 框架**：先做 Event Storming 和领域映射。**先定义 Bounded Context，再写 Prompt**。使用领域类型塑造 Prompt，而非临时 JSON 转储。Agent 输出必须针对领域不变量验证。来源：https://engineeringagents.substack.com/p/domain-driven-agent-design [MEDIUM]
-- **关键引述**：&quot;一个没有领域的 Agent 就像一个没有地图的游客。&quot;来源：https://engineeringagents.substack.com/p/domain-driven-agent-design [MEDIUM]
+- **Russ Miles 框架**：先做 Event Storming 和领域映射。**先定义 Bounded Context，再写 Prompt**。使用领域类型塑造 Prompt，而非临时 JSON 转储。Agent 输出必须针对领域不变量验证。来源：[https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design) [MEDIUM]
+- **关键引述**：&quot;一个没有领域的 Agent 就像一个没有地图的游客。&quot;来源：[https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design) [MEDIUM]
 
 ### 5.3 多 Agent 系统与 DDD
 
-- 每个 AI Agent = Bounded Context 专家。编排模式（顺序、并发、交接、群聊、管理器）镜像 DDD 上下文关系模式。来源：https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems [MEDIUM]
-- 通过结构化输出或 MCP 实现明确定义的契约。Agent 之间松耦合。来源：https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems [MEDIUM]
+- 每个 AI Agent = Bounded Context 专家。编排模式（顺序、并发、交接、群聊、管理器）镜像 DDD 上下文关系模式。来源：[https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems](https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems) [MEDIUM]
+- 通过结构化输出或 MCP 实现明确定义的契约。Agent 之间松耦合。来源：[https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems](https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems) [MEDIUM]
 
 ---
 
@@ -469,13 +502,15 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 6.1 核心差异化
 
-| 维度 | 现有竞品现状 | KL Management 差异化 |
-|------|------------|---------------------|
-| 知识分层 | 所有竞品为单一知识库（文档/代码/搜索混杂） | **biz_kl / sys_kl 严格分离**，业务与系统逻辑互不混淆 |
-| 知识消费端 | 面向人类阅读为主，AI 消费为附加（GitBook/Mintlify MCP 除外） | **原生面向 Agent/IDE 消费**，输出结构化&quot;知识包&quot; |
-| 领域结构 | 无工具拥有 DDD/领域感知的代码知识图谱 | **sys_kl 按 DDD 分层**，每个 Bounded Context = 一个知识包 |
-| 持久性 | 所有代码工具为&quot;每次查询时&quot;检索 | **持久化知识图谱**，支持版本、血缘、审核 |
-| 知识构建 | 全自动逆向或纯人工 | **半自动+专家标注**，平衡准确度与成本 |
+
+| 维度    | 现有竞品现状                                     | KL Management 差异化                              |
+| ----- | ------------------------------------------ | ---------------------------------------------- |
+| 知识分层  | 所有竞品为单一知识库（文档/代码/搜索混杂）                     | **biz_kl / sys_kl 严格分离**，业务与系统逻辑互不混淆           |
+| 知识消费端 | 面向人类阅读为主，AI 消费为附加（GitBook/Mintlify MCP 除外） | **原生面向 Agent/IDE 消费**，输出结构化&quot;知识包&quot;               |
+| 领域结构  | 无工具拥有 DDD/领域感知的代码知识图谱                      | **sys_kl 按 DDD 分层**，每个 Bounded Context = 一个知识包 |
+| 持久性   | 所有代码工具为&quot;每次查询时&quot;检索                           | **持久化知识图谱**，支持版本、血缘、审核                         |
+| 知识构建  | 全自动逆向或纯人工                                  | **半自动+专家标注**，平衡准确度与成本                          |
+
 
 ### 6.2 最接近竞品与差距
 
@@ -503,37 +538,38 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ## 七、来源汇总
 
-| 编号 | 来源 | URL |
-|------|------|-----|
-| 1 | Confluence + Rovo | https://www.atlassian.com/software/confluence |
-| 2 | Notion AI | https://www.notion.com/pricing |
-| 3 | Glean | https://www.glean.com |
-| 4 | Guru | https://www.getguru.com/pricing |
-| 5 | GitBook | https://www.gitbook.com |
-| 6 | Mintlify | https://www.mintlify.com/pricing |
-| 7 | Slab | https://slab.com/pricing |
-| 8 | Sourcegraph Cody | https://sourcegraph.com/docs/cody |
-| 9 | Bloop | https://github.com/bloopAI/bloop |
-| 10 | GitHub Copilot 语义索引 | https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot |
-| 11 | Cursor | https://cursor.com |
-| 12 | Devin | https://docs.devin.ai/get-started/devin-intro |
-| 13 | Sweep.dev | https://sweep.dev |
-| 14 | Composio | https://composio.dev |
-| 15 | Martin Fowler: Bounded Context | https://martinfowler.com/bliki/BoundedContext.html |
-| 16 | Martin Fowler: Ubiquitous Language | https://martinfowler.com/bliki/UbiquitousLanguage.html |
-| 17 | DDD Crew: Context Mapping | https://github.com/ddd-crew/context-mapping |
-| 18 | DDD Crew: Bounded Context Canvas | https://github.com/ddd-crew/bounded-context-canvas |
-| 19 | Context Mapper | https://contextmapper.org/docs/bounded-context |
-| 20 | InfoQ: DDD Context Mapping | https://www.infoq.com/articles/ddd-contextmapping |
-| 21 | Anthropic: Context Engineering | https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents |
-| 22 | Faros AI: Context Engineering for Developers | https://www.faros.ai/blog/context-engineering-for-developers |
-| 23 | Thoughtworks: Context Engineering for Coding Agents | https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html |
-| 24 | AGENTS.md 标准汇总 | https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6 |
-| 25 | Packmind: Context Engineering Best Practices | https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices |
-| 26 | HumanLayer: Writing a Good Claude.md | https://www.humanlayer.dev/blog/writing-a-good-claude-md |
-| 27 | DDD Bounded Contexts for LLMs | https://understandingdata.com/posts/ddd-bounded-contexts-for-llms |
-| 28 | Domain-Driven Agent Design | https://engineeringagents.substack.com/p/domain-driven-agent-design |
-| 29 | DDD + Multi-Agent AI | https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems |
+
+| 编号  | 来源                                                  | URL                                                                                                                                                                                                                                                    |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Confluence + Rovo                                   | [https://www.atlassian.com/software/confluence](https://www.atlassian.com/software/confluence)                                                                                                                                                         |
+| 2   | Notion AI                                           | [https://www.notion.com/pricing](https://www.notion.com/pricing)                                                                                                                                                                                       |
+| 3   | Glean                                               | [https://www.glean.com](https://www.glean.com)                                                                                                                                                                                                         |
+| 4   | Guru                                                | [https://www.getguru.com/pricing](https://www.getguru.com/pricing)                                                                                                                                                                                     |
+| 5   | GitBook                                             | [https://www.gitbook.com](https://www.gitbook.com)                                                                                                                                                                                                     |
+| 6   | Mintlify                                            | [https://www.mintlify.com/pricing](https://www.mintlify.com/pricing)                                                                                                                                                                                   |
+| 7   | Slab                                                | [https://slab.com/pricing](https://slab.com/pricing)                                                                                                                                                                                                   |
+| 8   | Sourcegraph Cody                                    | [https://sourcegraph.com/docs/cody](https://sourcegraph.com/docs/cody)                                                                                                                                                                                 |
+| 9   | Bloop                                               | [https://github.com/bloopAI/bloop](https://github.com/bloopAI/bloop)                                                                                                                                                                                   |
+| 10  | GitHub Copilot 语义索引                                 | [https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot](https://github.blog/changelog/2025-03-12-instant-semantic-code-search-indexing-now-generally-available-for-github-copilot) |
+| 11  | Cursor                                              | [https://cursor.com](https://cursor.com)                                                                                                                                                                                                               |
+| 12  | Devin                                               | [https://docs.devin.ai/get-started/devin-intro](https://docs.devin.ai/get-started/devin-intro)                                                                                                                                                         |
+| 13  | Sweep.dev                                           | [https://sweep.dev](https://sweep.dev)                                                                                                                                                                                                                 |
+| 14  | Composio                                            | [https://composio.dev](https://composio.dev)                                                                                                                                                                                                           |
+| 15  | Martin Fowler: Bounded Context                      | [https://martinfowler.com/bliki/BoundedContext.html](https://martinfowler.com/bliki/BoundedContext.html)                                                                                                                                               |
+| 16  | Martin Fowler: Ubiquitous Language                  | [https://martinfowler.com/bliki/UbiquitousLanguage.html](https://martinfowler.com/bliki/UbiquitousLanguage.html)                                                                                                                                       |
+| 17  | DDD Crew: Context Mapping                           | [https://github.com/ddd-crew/context-mapping](https://github.com/ddd-crew/context-mapping)                                                                                                                                                             |
+| 18  | DDD Crew: Bounded Context Canvas                    | [https://github.com/ddd-crew/bounded-context-canvas](https://github.com/ddd-crew/bounded-context-canvas)                                                                                                                                               |
+| 19  | Context Mapper                                      | [https://contextmapper.org/docs/bounded-context](https://contextmapper.org/docs/bounded-context)                                                                                                                                                       |
+| 20  | InfoQ: DDD Context Mapping                          | [https://www.infoq.com/articles/ddd-contextmapping](https://www.infoq.com/articles/ddd-contextmapping)                                                                                                                                                 |
+| 21  | Anthropic: Context Engineering                      | [https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)                                                                                 |
+| 22  | Faros AI: Context Engineering for Developers        | [https://www.faros.ai/blog/context-engineering-for-developers](https://www.faros.ai/blog/context-engineering-for-developers)                                                                                                                           |
+| 23  | Thoughtworks: Context Engineering for Coding Agents | [https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html](https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html)                                                                 |
+| 24  | AGENTS.md 标准汇总                                      | [https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6](https://gist.github.com/0xdevalias/f40bc5a6f84c4c5ad862e314894b2fa6)                                                                                                             |
+| 25  | Packmind: Context Engineering Best Practices        | [https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices](https://packmind.com/context-engineering-ai-coding/context-engineering-best-practices)                                                                         |
+| 26  | HumanLayer: Writing a Good Claude.md                | [https://www.humanlayer.dev/blog/writing-a-good-claude-md](https://www.humanlayer.dev/blog/writing-a-good-claude-md)                                                                                                                                   |
+| 27  | DDD Bounded Contexts for LLMs                       | [https://understandingdata.com/posts/ddd-bounded-contexts-for-llms](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms)                                                                                                                 |
+| 28  | Domain-Driven Agent Design                          | [https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design)                                                                                                             |
+| 29  | DDD + Multi-Agent AI                                | [https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems](https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems)                                                     |
 </pre></div><div class="panel" id="02-analysis-md"><pre class="md-source"># 方案论证：产品知识平台（KL Management）
 
 ## 问题陈述
@@ -548,96 +584,112 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 在现有 Git + 文档系统之上，构建 biz_kl/sys_kl 双库结构化的知识管理平台，提供知识包导出/API 供 Agent 消费。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | biz_kl/sys_kl 分离 + 知识包导出是独特定位，市面无直接竞品 |
-| MVP 成本 | 中：需开发核心数据模型、协作流程、API 导出，约 2-4 周 |
-| 控制权 | 完全自主，可按 DDD 语义定制 |
-| 风险 | 需要领域专家持续投入标注；知识冷启动是最大挑战 |
-| 长期价值 | 形成企业级知识资产，可复用到多个 BC/产品线 |
+
+| 维度     | 评估                                    |
+| ------ | ------------------------------------- |
+| 差异化    | biz_kl/sys_kl 分离 + 知识包导出是独特定位，市面无直接竞品 |
+| MVP 成本 | 中：需开发核心数据模型、协作流程、API 导出，约 2-4 周       |
+| 控制权    | 完全自主，可按 DDD 语义定制                      |
+| 风险     | 需要领域专家持续投入标注；知识冷启动是最大挑战               |
+| 长期价值   | 形成企业级知识资产，可复用到多个 BC/产品线               |
+
 
 ### **B.** 基于现有 KM 平台扩展（Confluence/Notion + AI）
 
 使用 Confluence Rovo 或 Notion AI 等成熟平台，通过标签/空间区分 biz_kl/sys_kl，利用其 AI 能力做知识检索。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 低：通用 KM 平台，无 biz_kl/sys_kl 语义分离概念 |
-| MVP 成本 | 低：配置现有平台，1-2 周即可启动 |
-| 控制权 | 受限于平台能力，无法自定义知识包结构 |
-| 风险 | 无法保证 biz_kl/sys_kl 严格分离；Agent 消费接口不可控 |
-| 长期价值 | 平台锁定，难以沉淀差异化知识资产 |
+
+| 维度     | 评估                                    |
+| ------ | ------------------------------------- |
+| 差异化    | 低：通用 KM 平台，无 biz_kl/sys_kl 语义分离概念     |
+| MVP 成本 | 低：配置现有平台，1-2 周即可启动                    |
+| 控制权    | 受限于平台能力，无法自定义知识包结构                    |
+| 风险     | 无法保证 biz_kl/sys_kl 严格分离；Agent 消费接口不可控 |
+| 长期价值   | 平台锁定，难以沉淀差异化知识资产                      |
+
 
 ### **C.** 开源框架二次开发（Doccano + LangChain + Tree-sitter）
 
 使用开源标注工具 + RAG 框架 + 代码分析工具拼装，快速搭建 MVP。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 中：可定制但需大量集成工作 |
-| MVP 成本 | 中高：集成多个组件，调试成本高，约 3-5 周 |
-| 控制权 | 开源可修改，但组件兼容性风险大 |
-| 风险 | 多组件集成复杂度高；LangChain 生态迭代快，维护成本不确定 |
-| 长期价值 | 技术栈开放，但集成债务可能累积 |
+
+| 维度     | 评估                                |
+| ------ | --------------------------------- |
+| 差异化    | 中：可定制但需大量集成工作                     |
+| MVP 成本 | 中高：集成多个组件，调试成本高，约 3-5 周           |
+| 控制权    | 开源可修改，但组件兼容性风险大                   |
+| 风险     | 多组件集成复杂度高；LangChain 生态迭代快，维护成本不确定 |
+| 长期价值   | 技术栈开放，但集成债务可能累积                   |
+
 
 ### **D.** 纯文档即代码（Docs-as-Code）+ MCP Server
 
 用 Markdown 文件管理知识，通过 Git 版本控制，提供 MCP Server 让 Agent 直接 discover 知识。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 中高：类似 GitBook/Mintlify 的 MCP 方案，但缺少 biz_kl/sys_kl 语义层 |
-| MVP 成本 | 低中：Markdown + Git + MCP Server，约 1-2 周 |
-| 控制权 | 高：文件即数据，完全可控 |
-| 风险 | 缺乏结构化协作流程（审核、权限、血缘）；纯文本难以表达复杂关系 |
-| 长期价值 | 轻量灵活，但随规模增长可能遇到管理瓶颈 |
+
+| 维度     | 评估                                                    |
+| ------ | ----------------------------------------------------- |
+| 差异化    | 中高：类似 GitBook/Mintlify 的 MCP 方案，但缺少 biz_kl/sys_kl 语义层 |
+| MVP 成本 | 低中：Markdown + Git + MCP Server，约 1-2 周                |
+| 控制权    | 高：文件即数据，完全可控                                          |
+| 风险     | 缺乏结构化协作流程（审核、权限、血缘）；纯文本难以表达复杂关系                       |
+| 长期价值   | 轻量灵活，但随规模增长可能遇到管理瓶颈                                   |
+
 
 ### **E.** 采购企业知识管理平台（Glean/Guru）
 
 直接采购 Glean 或 Guru 等企业级知识管理平台，利用其 AI Agent 知识交付能力。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 低：通用企业搜索，无 biz_kl/sys_kl 概念 |
-| MVP 成本 | 低：采购 + 配置，但价格高（企业级定制报价） |
-| 控制权 | 低：SaaS 黑盒，无法自定义数据模型 |
-| 风险 | 采购周期长；数据出境/合规风险；无法适配 DDD 分层需求 |
-| 长期价值 | 平台能力强但不可控，难以形成企业专属知识资产 |
+
+| 维度     | 评估                            |
+| ------ | ----------------------------- |
+| 差异化    | 低：通用企业搜索，无 biz_kl/sys_kl 概念   |
+| MVP 成本 | 低：采购 + 配置，但价格高（企业级定制报价）       |
+| 控制权    | 低：SaaS 黑盒，无法自定义数据模型           |
+| 风险     | 采购周期长；数据出境/合规风险；无法适配 DDD 分层需求 |
+| 长期价值   | 平台能力强但不可控，难以形成企业专属知识资产        |
+
 
 ### **F.** AI 编程助手内置知识（Cursor/Copilot + Context Files）
 
 利用 Cursor rules、Copilot context 等 AI 编程工具内置的知识管理能力，直接在工作流中维护上下文。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 低：开发工具附带的轻量能力，非独立知识平台 |
-| MVP 成本 | 极低：配置现有工具，数天即可 |
-| 控制权 | 低：受限于编辑器生态 |
-| 风险 | 知识无法跨工具共享；无协作/审核/版本治理能力；规模受限 |
-| 长期价值 | 适合个人场景，不适合团队级知识资产沉淀 |
+
+| 维度     | 评估                           |
+| ------ | ---------------------------- |
+| 差异化    | 低：开发工具附带的轻量能力，非独立知识平台        |
+| MVP 成本 | 极低：配置现有工具，数天即可               |
+| 控制权    | 低：受限于编辑器生态                   |
+| 风险     | 知识无法跨工具共享；无协作/审核/版本治理能力；规模受限 |
+| 长期价值   | 适合个人场景，不适合团队级知识资产沉淀          |
+
 
 ### **G.** LLM 原生知识图谱（Graph RAG + 自动抽取）
 
 用 LLM 自动从文档和代码中抽取实体/关系，构建知识图谱，提供图谱查询 API。
 
-| 维度 | 评估 |
-|------|------|
-| 差异化 | 高：技术前沿，自动抽取能力强 |
-| MVP 成本 | 高：需要图谱存储、抽取 pipeline、质量校验，约 4-6 周 |
-| 控制权 | 中：技术栈开放，但 LLM 抽取质量不可控 |
-| 风险 | 自动抽取准确率低（尤其百万行代码）；幻觉问题；与简报「不追求全自动」矛盾 |
-| 长期价值 | 技术方向正确，但 MVP 阶段过重 |
+
+| 维度     | 评估                                   |
+| ------ | ------------------------------------ |
+| 差异化    | 高：技术前沿，自动抽取能力强                       |
+| MVP 成本 | 高：需要图谱存储、抽取 pipeline、质量校验，约 4-6 周    |
+| 控制权    | 中：技术栈开放，但 LLM 抽取质量不可控                |
+| 风险     | 自动抽取准确率低（尤其百万行代码）；幻觉问题；与简报「不追求全自动」矛盾 |
+| 长期价值   | 技术方向正确，但 MVP 阶段过重                    |
+
 
 ## 方案对比矩阵
 
-| 维度 | A 自研轻量 | B 现有KM扩展 | C 开源拼装 | D Docs-as-Code | E 企业采购 | F 编程助手内置 | G LLM图谱 |
-|------|-----------|-------------|-----------|---------------|-----------|---------------|-----------|
-| 差异化 | ★★★★★ | ★★ | ★★★ | ★★★ | ★★ | ★ | ★★★★ |
-| MVP成本 | 中 | 低 | 中高 | 低中 | 低(采购快) | 极低 | 高 |
-| 控制权 | 完全 | 受限 | 高 | 高 | 低 | 低 | 中 |
-| 协作能力 | 内建 | 成熟 | 需开发 | 弱(Git) | 成熟 | 无 | 需开发 |
-| 符合简报 | 完全 | 部分 | 部分 | 部分 | 否 | 否 | 部分 |
-| 长期价值 | 高 | 中 | 中高 | 中 | 中 | 低 | 高 |
+
+| 维度    | A 自研轻量 | B 现有KM扩展 | C 开源拼装 | D Docs-as-Code | E 企业采购 | F 编程助手内置 | G LLM图谱 |
+| ----- | ------ | -------- | ------ | -------------- | ------ | -------- | ------- |
+| 差异化   | ★★★★★  | ★★       | ★★★    | ★★★            | ★★     | ★        | ★★★★    |
+| MVP成本 | 中      | 低        | 中高     | 低中             | 低(采购快) | 极低       | 高       |
+| 控制权   | 完全     | 受限       | 高      | 高              | 低      | 低        | 中       |
+| 协作能力  | 内建     | 成熟       | 需开发    | 弱(Git)         | 成熟     | 无        | 需开发     |
+| 符合简报  | 完全     | 部分       | 部分     | 部分             | 否      | 否        | 部分      |
+| 长期价值  | 高      | 中        | 中高     | 中              | 中      | 低        | 高       |
+
 
 ## 推荐方案：A（自研轻量知识平台）
 
@@ -650,31 +702,37 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### SWOT 分析
 
-| | 内部 | 外部 |
-|---|---|---|
-| **优势 (S)** | 完全自主控制数据模型与 API；DDD 语义天然匹配 biz_kl/sys_kl 分离；知识包导出直接对接 Agent 消费场景 | biz_kl/sys_kl 分离是市场空白，无直接竞品 |
-| **劣势 (W)** | 需要从零开发核心功能；冷启动依赖专家标注投入；团队无现成知识平台开发经验 | 竞品（GitBook/Mintlify）的 MCP 方案已验证 LLM discoverability 需求 |
-| **机会 (O)** | 可复用到多条产品线；积累标注数据后反哺自动化引擎；形成企业知识壁垒 | AI 编程场景爆发，结构化知识需求增长 |
-| **威胁 (T)** | 领域专家时间投入不足导致知识质量差；Agent 消费端未就绪导致验收失败 | 大厂可能推出类似产品（如 Notion 增加 DDD 语义层） |
+
+|            | 内部                                                               | 外部                                                     |
+| ---------- | ---------------------------------------------------------------- | ------------------------------------------------------ |
+| **优势 (S)** | 完全自主控制数据模型与 API；DDD 语义天然匹配 biz_kl/sys_kl 分离；知识包导出直接对接 Agent 消费场景 | biz_kl/sys_kl 分离是市场空白，无直接竞品                            |
+| **劣势 (W)** | 需要从零开发核心功能；冷启动依赖专家标注投入；团队无现成知识平台开发经验                             | 竞品（GitBook/Mintlify）的 MCP 方案已验证 LLM discoverability 需求 |
+| **机会 (O)** | 可复用到多条产品线；积累标注数据后反哺自动化引擎；形成企业知识壁垒                                | AI 编程场景爆发，结构化知识需求增长                                    |
+| **威胁 (T)** | 领域专家时间投入不足导致知识质量差；Agent 消费端未就绪导致验收失败                             | 大厂可能推出类似产品（如 Notion 增加 DDD 语义层）                        |
+
 
 ## 风险与缓解
 
-| 风险 | 概率 | 影响 | 缓解措施 |
-|------|------|------|---------|
-| 领域专家标注投入不足 | 高 | 高 | MVP 限定单个 BC、20+ 条目；提供模板降低标注成本；设定期望：半自动即可 |
-| Agent 消费端未就绪 | 中 | 高 | 验收方案 B：人工模拟消费知识包，验证结构化程度而非端到端自动化 |
-| biz_kl/sys_kl 互链一致性 | 中 | 中 | MVP 阶段互链数量可控（≤50 条）；建立基础校验脚本 |
-| 技术选型偏差 | 低 | 中 | 采用轻量技术栈（SQLite/JSON + FastAPI + 静态前端），降低迁移成本 |
-| 知识冷启动 | 高 | 高 | 从已有 PRD/设计文档批量导入种子数据，减少手工录入 |
+
+| 风险                  | 概率  | 影响  | 缓解措施                                         |
+| ------------------- | --- | --- | -------------------------------------------- |
+| 领域专家标注投入不足          | 高   | 高   | MVP 限定单个 BC、20+ 条目；提供模板降低标注成本；设定期望：半自动即可     |
+| Agent 消费端未就绪        | 中   | 高   | 验收方案 B：人工模拟消费知识包，验证结构化程度而非端到端自动化             |
+| biz_kl/sys_kl 互链一致性 | 中   | 中   | MVP 阶段互链数量可控（≤50 条）；建立基础校验脚本                 |
+| 技术选型偏差              | 低   | 中   | 采用轻量技术栈（SQLite/JSON + FastAPI + 静态前端），降低迁移成本 |
+| 知识冷启动               | 高   | 高   | 从已有 PRD/设计文档批量导入种子数据，减少手工录入                  |
+
 
 ## 可验证假设
 
-| # | 假设 | 验证方式 | 成功标准 |
-|---|------|---------|---------|
-| H1 | 领域专家可在 2 周内贡献 ≥20 条 biz_kl 条目 | MVP 周期内跟踪条目创建数量 | ≥20 条已发布 biz_kl 条目 |
-| H2 | Agent 消费知识包后可完成方案草稿 | 给定真实变更场景，Agent 仅使用知识包输出方案 | 人工验收通过率 ≥70% |
-| H3 | biz_kl/sys_kl 互链可支撑变更影响分析 | 选取 3 个业务概念，验证是否能追溯到对应代码模块 | 3/3 可追溯 |
-| H4 | 半自动 sys_kl 标注成本可接受 | 记录标注单个模块的平均时间 | ≤30 分钟/模块 |
+
+| #   | 假设                            | 验证方式                      | 成功标准               |
+| --- | ----------------------------- | ------------------------- | ------------------ |
+| H1  | 领域专家可在 2 周内贡献 ≥20 条 biz_kl 条目 | MVP 周期内跟踪条目创建数量           | ≥20 条已发布 biz_kl 条目 |
+| H2  | Agent 消费知识包后可完成方案草稿           | 给定真实变更场景，Agent 仅使用知识包输出方案 | 人工验收通过率 ≥70%       |
+| H3  | biz_kl/sys_kl 互链可支撑变更影响分析     | 选取 3 个业务概念，验证是否能追溯到对应代码模块 | 3/3 可追溯            |
+| H4  | 半自动 sys_kl 标注成本可接受            | 记录标注单个模块的平均时间             | ≤30 分钟/模块          |
+
 
 ## 架构决策记录（ADR）
 
@@ -737,6 +795,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
 - ⚠️ JSON Schema 需要版本管理，向后兼容
+
 </pre></div><div class="panel" id="03-prd-md"><pre class="md-source"># 产品需求文档（PRD）：产品知识平台（KL Management）MVP
 
 ## 产品愿景
@@ -745,11 +804,13 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ## 目标用户与角色
 
-| 角色 | 职责 | 核心场景 |
-|------|------|---------|
-| 领域专家 / 老产品 | 贡献与审核 biz_kl 条目 | 将口述经验转化为结构化业务概念、流程、规则 |
+
+| 角色             | 职责                 | 核心场景                           |
+| -------------- | ------------------ | ------------------------------ |
+| 领域专家 / 老产品     | 贡献与审核 biz_kl 条目    | 将口述经验转化为结构化业务概念、流程、规则          |
 | 开发者 / AI 编程使用者 | 创建 sys_kl 条目、消费知识包 | 按 DDD 分层挂载代码模块，导出知识包供 Agent 使用 |
-| 平台管理员 | 权限管理、版本治理、质量审核 | 管理用户角色、查看审计日志、处理过期/冲突条目 |
+| 平台管理员          | 权限管理、版本治理、质量审核     | 管理用户角色、查看审计日志、处理过期/冲突条目        |
+
 
 ## 用户故事
 
@@ -760,6 +821,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 **以便于** 将我的业务经验转化为团队可检索的结构化知识  
 
 **验收标准：**
+
 - AC-1.1：条目包含名称、描述（Markdown）、关联业务流程/规则标签、状态（草稿/审核中/已发布/已废弃）
 - AC-1.2：支持从已有文档（Markdown 文件）批量导入为草稿
 - AC-1.3：提交审核后，状态变为「审核中」，只有审核者角色可操作发布或驳回
@@ -773,6 +835,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 **以便于** 让业务概念与代码模块建立可追溯的映射关系  
 
 **验收标准：**
+
 - AC-2.1：条目包含模块路径、DDD 层级分类、模块职责描述、关联的 biz_kl 条目（≥0 条）
 - AC-2.2：支持按 DDD 三层筛选浏览 sys_kl 条目
 - AC-2.3：关联 biz_kl 条目时提供搜索选择器，支持双向跳转（biz_kl → sys_kl, sys_kl → biz_kl）
@@ -786,6 +849,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 **以便于** 将结构化知识注入 AI 编程工具的上下文中  
 
 **验收标准：**
+
 - AC-3.1：支持按 biz_kl 条目选择（单选/多选）生成知识包
 - AC-3.2：JSON 格式包含：选中的 biz_kl 条目、关联的 sys_kl 条目、互链关系、血缘信息，符合预定义 JSON Schema
 - AC-3.3：Markdown 格式按业务概念分组，人类可读，包含概念描述、关联代码模块、变更历史
@@ -799,6 +863,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 **以便于** 快速找到我需要的业务知识或系统信息  
 
 **验收标准：**
+
 - AC-4.1：全局搜索框支持按名称/描述/标签关键词搜索，结果按 biz_kl / sys_kl 分类展示
 - AC-4.2：条目详情页展示完整信息、关联条目链接、版本历史
 - AC-4.3：列表页支持按状态（草稿/审核中/已发布）、DDD 层级、标签筛选
@@ -811,6 +876,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 **以便于** 保障知识平台的运行秩序与合规  
 
 **验收标准：**
+
 - AC-5.1：审计日志页面展示条目 ID、操作类型（创建/修改/发布/驳回）、操作人、时间戳
 - AC-5.2：支持按条目、操作人、时间范围筛选审计日志
 - AC-5.3：管理员可为用户分配角色（领域专家/开发者/管理员）
@@ -820,15 +886,17 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### MVP 包含（P0/P1）
 
-| 优先级 | 能力 | 对应用户故事 |
-|--------|------|-------------|
-| P0 | biz_kl 条目 CRUD + 审核流程 | US-1 |
-| P0 | sys_kl 条目 CRUD + DDD 分层 + biz_kl 互链 | US-2 |
-| P0 | 知识包导出（JSON + Markdown） | US-3 |
-| P0 | 知识搜索与浏览 | US-4 |
-| P1 | 审计日志 | US-5 |
-| P1 | 角色权限管理 | US-5 |
-| P1 | 批量导入（Markdown 模板） | US-1, US-2 |
+
+| 优先级 | 能力                                  | 对应用户故事     |
+| --- | ----------------------------------- | ---------- |
+| P0  | biz_kl 条目 CRUD + 审核流程               | US-1       |
+| P0  | sys_kl 条目 CRUD + DDD 分层 + biz_kl 互链 | US-2       |
+| P0  | 知识包导出（JSON + Markdown）              | US-3       |
+| P0  | 知识搜索与浏览                             | US-4       |
+| P1  | 审计日志                                | US-5       |
+| P1  | 角色权限管理                              | US-5       |
+| P1  | 批量导入（Markdown 模板）                   | US-1, US-2 |
+
 
 ### MVP 不包含
 
@@ -841,12 +909,14 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ## 成功指标
 
-| 指标 | 目标 | 对应假设 |
-|------|------|---------|
-| MVP 周期内 ≥20 条已发布 biz_kl 条目 | 验证领域专家参与度 | H1 |
-| Agent 消费知识包后方案人工验收通过率 ≥70% | 验证知识包有效性 | H2 |
-| 3/3 业务概念可追溯到对应代码模块 | 验证互链能力 | H3 |
-| 标注单个 sys_kl 模块平均时间 ≤30 分钟 | 验证半自动成本可接受 | H4 |
+
+| 指标                         | 目标         | 对应假设 |
+| -------------------------- | ---------- | ---- |
+| MVP 周期内 ≥20 条已发布 biz_kl 条目 | 验证领域专家参与度  | H1   |
+| Agent 消费知识包后方案人工验收通过率 ≥70% | 验证知识包有效性   | H2   |
+| 3/3 业务概念可追溯到对应代码模块         | 验证互链能力     | H3   |
+| 标注单个 sys_kl 模块平均时间 ≤30 分钟  | 验证半自动成本可接受 | H4   |
+
 
 ## 技术约束
 
@@ -855,8 +925,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - 前端：静态 HTML + HTMX
 - 知识包：JSON Schema + Markdown 双格式
 - 部署：单机 Python 进程
-- 界面文案使用简体中文
-</pre></div><div class="panel" id="05-retro-md"><p><em>Not generated yet.</em></p></div>
+- 界面文案使用简体中文</pre></div><div class="panel" id="05-retro-md"><p><em>Not generated yet.</em></p></div>
   <div class="panel" id="openspec-panel"><h3>openspec/proposal.md</h3><pre class="md-source"># Proposal: 产品知识平台 MVP — biz_kl/sys_kl 双库知识管理
 
 ## Why
@@ -893,11 +962,13 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 用户影响
 
-| 角色 | 变化 |
-|------|------|
+
+| 角色   | 变化                            |
+| ---- | ----------------------------- |
 | 领域专家 | 从口述/散落文档 → 结构化 biz_kl 条目贡献与审核 |
-| 开发者 | 从人工查找文档/代码 → API/导出获取结构化知识包 |
-| 管理员 | 从手动协调 → 权限、版本、质量的平台化治理 |
+| 开发者  | 从人工查找文档/代码 → API/导出获取结构化知识包   |
+| 管理员  | 从手动协调 → 权限、版本、质量的平台化治理        |
+
 
 ### 技术影响
 
@@ -914,13 +985,15 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ## Acceptance scenarios
 
-| # | 场景 | 验收标准 |
-|---|------|---------|
-| AC1 | 领域专家创建并发布一条 biz_kl 条目（业务概念） | 条目包含名称、描述、关联流程/规则、审核状态 |
-| AC2 | 开发者创建并发布一条 sys_kl 条目（代码模块） | 条目包含模块路径、DDD 层级、关联 biz_kl 条目 |
-| AC3 | 导出知识包 | JSON 格式包含完整条目 + 互链关系；Markdown 格式人类可读 |
-| AC4 | Agent 消费知识包完成方案草稿 | 给定真实变更场景，Agent 仅使用知识包输出方案，人工验收通过率 ≥70% |
-| AC5 | 管理员查看审计日志 | 可查看条目创建/修改/发布记录 |
+
+| #   | 场景                          | 验收标准                                   |
+| --- | --------------------------- | -------------------------------------- |
+| AC1 | 领域专家创建并发布一条 biz_kl 条目（业务概念） | 条目包含名称、描述、关联流程/规则、审核状态                 |
+| AC2 | 开发者创建并发布一条 sys_kl 条目（代码模块）  | 条目包含模块路径、DDD 层级、关联 biz_kl 条目           |
+| AC3 | 导出知识包                       | JSON 格式包含完整条目 + 互链关系；Markdown 格式人类可读   |
+| AC4 | Agent 消费知识包完成方案草稿           | 给定真实变更场景，Agent 仅使用知识包输出方案，人工验收通过率 ≥70% |
+| AC5 | 管理员查看审计日志                   | 可查看条目创建/修改/发布记录                        |
+
 
 ## 技术决策摘要
 
@@ -935,8 +1008,7 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - 半自动代码分析（AST 解析、调用链提取）
 - 知识质量评分与过期预警
 - 多 BC 扩展
-- IDE 插件/编辑器集成
-</pre>
+- IDE 插件/编辑器集成</pre>
 <h3>openspec/design.md</h3><pre class="md-source"># 设计文档：产品知识平台 MVP
 
 ## 架构概览
@@ -972,111 +1044,131 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### biz_kl_items
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | TEXT (UUID) | 主键 |
-| name | TEXT | 条目名称 |
-| description | TEXT (Markdown) | 条目描述 |
-| type | TEXT | 概念/流程/规则 |
-| tags | TEXT (JSON) | 标签数组 |
-| status | TEXT | draft / reviewing / published / archived |
-| version | INTEGER | 版本号（每次修改 +1） |
-| created_by | TEXT | 创建者用户 ID |
-| created_at | DATETIME | 创建时间 |
-| updated_at | DATETIME | 最后更新时间 |
+
+| 字段          | 类型              | 说明                                       |
+| ----------- | --------------- | ---------------------------------------- |
+| id          | TEXT (UUID)     | 主键                                       |
+| name        | TEXT            | 条目名称                                     |
+| description | TEXT (Markdown) | 条目描述                                     |
+| type        | TEXT            | 概念/流程/规则                                 |
+| tags        | TEXT (JSON)     | 标签数组                                     |
+| status      | TEXT            | draft / reviewing / published / archived |
+| version     | INTEGER         | 版本号（每次修改 +1）                             |
+| created_by  | TEXT            | 创建者用户 ID                                 |
+| created_at  | DATETIME        | 创建时间                                     |
+| updated_at  | DATETIME        | 最后更新时间                                   |
+
 
 ### sys_kl_items
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | TEXT (UUID) | 主键 |
-| name | TEXT | 条目名称 |
-| description | TEXT (Markdown) | 模块职责描述 |
-| layer | TEXT | domain / application / infrastructure |
-| file_path | TEXT | 代码路径 |
-| status | TEXT | draft / published / archived |
-| created_by | TEXT | 创建者用户 ID |
-| created_at | DATETIME | 创建时间 |
-| updated_at | DATETIME | 最后更新时间 |
+
+| 字段          | 类型              | 说明                                    |
+| ----------- | --------------- | ------------------------------------- |
+| id          | TEXT (UUID)     | 主键                                    |
+| name        | TEXT            | 条目名称                                  |
+| description | TEXT (Markdown) | 模块职责描述                                |
+| layer       | TEXT            | domain / application / infrastructure |
+| file_path   | TEXT            | 代码路径                                  |
+| status      | TEXT            | draft / published / archived          |
+| created_by  | TEXT            | 创建者用户 ID                              |
+| created_at  | DATETIME        | 创建时间                                  |
+| updated_at  | DATETIME        | 最后更新时间                                |
+
 
 ### kl_links（互链关系）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | TEXT (UUID) | 主键 |
-| biz_id | TEXT | 关联 biz_kl 条目 ID |
-| sys_id | TEXT | 关联 sys_kl 条目 ID |
-| created_at | DATETIME | 创建时间 |
+
+| 字段         | 类型          | 说明              |
+| ---------- | ----------- | --------------- |
+| id         | TEXT (UUID) | 主键              |
+| biz_id     | TEXT        | 关联 biz_kl 条目 ID |
+| sys_id     | TEXT        | 关联 sys_kl 条目 ID |
+| created_at | DATETIME    | 创建时间            |
+
 
 ### audit_logs
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | TEXT (UUID) | 主键 |
-| item_type | TEXT | biz_kl / sys_kl |
-| item_id | TEXT | 条目 ID |
-| action | TEXT | create / update / publish / reject |
-| actor_id | TEXT | 操作人用户 ID |
-| details | TEXT (JSON) | 操作详情（变更前后） |
-| created_at | DATETIME | 操作时间 |
+
+| 字段         | 类型          | 说明                                 |
+| ---------- | ----------- | ---------------------------------- |
+| id         | TEXT (UUID) | 主键                                 |
+| item_type  | TEXT        | biz_kl / sys_kl                    |
+| item_id    | TEXT        | 条目 ID                              |
+| action     | TEXT        | create / update / publish / reject |
+| actor_id   | TEXT        | 操作人用户 ID                           |
+| details    | TEXT (JSON) | 操作详情（变更前后）                         |
+| created_at | DATETIME    | 操作时间                               |
+
 
 ### users（MVP 阶段简化）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | TEXT (UUID) | 主键 |
-| name | TEXT | 用户名 |
-| role | TEXT | expert / developer / admin |
-| created_at | DATETIME | 创建时间 |
+
+| 字段         | 类型          | 说明                         |
+| ---------- | ----------- | -------------------------- |
+| id         | TEXT (UUID) | 主键                         |
+| name       | TEXT        | 用户名                        |
+| role       | TEXT        | expert / developer / admin |
+| created_at | DATETIME    | 创建时间                       |
+
 
 ## API 端点
 
 ### 业务知识 (biz_kl)
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | /api/biz | 列表（支持搜索、状态筛选） |
-| GET | /api/biz/{id} | 详情（含关联 sys_kl、版本历史） |
-| POST | /api/biz | 创建条目 |
-| PUT | /api/biz/{id} | 更新条目 |
-| POST | /api/biz/{id}/submit | 提交审核 |
-| POST | /api/biz/{id}/publish | 发布（审核者权限） |
+
+| 方法   | 路径                    | 说明                  |
+| ---- | --------------------- | ------------------- |
+| GET  | /api/biz              | 列表（支持搜索、状态筛选）       |
+| GET  | /api/biz/{id}         | 详情（含关联 sys_kl、版本历史） |
+| POST | /api/biz              | 创建条目                |
+| PUT  | /api/biz/{id}         | 更新条目                |
+| POST | /api/biz/{id}/submit  | 提交审核                |
+| POST | /api/biz/{id}/publish | 发布（审核者权限）           |
+
 
 ### 系统知识 (sys_kl)
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | /api/sys | 列表（支持搜索、层级筛选） |
-| GET | /api/sys/{id} | 详情（含关联 biz_kl） |
-| POST | /api/sys | 创建条目 |
-| PUT | /api/sys/{id} | 更新条目 |
-| POST | /api/sys/{id}/link | 添加 biz_kl 关联 |
-| DELETE | /api/sys/{id}/link/{link_id} | 删除关联 |
+
+| 方法     | 路径                           | 说明             |
+| ------ | ---------------------------- | -------------- |
+| GET    | /api/sys                     | 列表（支持搜索、层级筛选）  |
+| GET    | /api/sys/{id}                | 详情（含关联 biz_kl） |
+| POST   | /api/sys                     | 创建条目           |
+| PUT    | /api/sys/{id}                | 更新条目           |
+| POST   | /api/sys/{id}/link           | 添加 biz_kl 关联   |
+| DELETE | /api/sys/{id}/link/{link_id} | 删除关联           |
+
 
 ### 知识包
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | /api/packages?biz_ids=... | 按 biz_kl 条目生成知识包（JSON） |
-| GET | /api/packages/{biz_ids}.md | Markdown 格式导出 |
+
+| 方法  | 路径                         | 说明                     |
+| --- | -------------------------- | ---------------------- |
+| GET | /api/packages?biz_ids=...  | 按 biz_kl 条目生成知识包（JSON） |
+| GET | /api/packages/{biz_ids}.md | Markdown 格式导出          |
+
 
 ### 审计日志
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
+
+| 方法  | 路径         | 说明                |
+| --- | ---------- | ----------------- |
 | GET | /api/audit | 列表（支持条目/操作人/时间筛选） |
+
 
 ## 前端页面（HTMX 服务端渲染）
 
-| 路径 | 说明 |
-|------|------|
-| / | 知识列表首页（biz_kl / sys_kl tab 切换） |
-| /biz | 业务知识列表 |
-| /biz/{id} | 业务条目详情 |
-| /sys | 系统知识列表 |
-| /sys/{id} | 系统条目详情 |
-| /export | 知识包导出页 |
-| /audit | 审计日志页 |
+
+| 路径        | 说明                             |
+| --------- | ------------------------------ |
+| /         | 知识列表首页（biz_kl / sys_kl tab 切换） |
+| /biz      | 业务知识列表                         |
+| /biz/{id} | 业务条目详情                         |
+| /sys      | 系统知识列表                         |
+| /sys/{id} | 系统条目详情                         |
+| /export   | 知识包导出页                         |
+| /audit    | 审计日志页                          |
+
 
 ## 知识包 JSON Schema
 
@@ -1157,13 +1249,16 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 
 ## 决策
 
-| 决策 | 理由 |
-|------|------|
+
+| 决策                   | 理由                     |
+| -------------------- | ---------------------- |
 | SQLite 而非 PostgreSQL | MVP 阶段 ≤10 用户，单文件数据库足够 |
-| UUID 文本主键 | 避免暴露递增 ID，便于后续分布式迁移 |
-| 版本号为简单整数 | MVP 不做完整 Git-like 版本树 |
-| 互链为独立表 | 支持多对多，便于审计和查询 |
-| HTMX 而非 SPA | 避免前端构建工具链，降低 MVP 复杂度 |
+| UUID 文本主键            | 避免暴露递增 ID，便于后续分布式迁移    |
+| 版本号为简单整数             | MVP 不做完整 Git-like 版本树  |
+| 互链为独立表               | 支持多对多，便于审计和查询          |
+| HTMX 而非 SPA          | 避免前端构建工具链，降低 MVP 复杂度   |
+
+
 </pre>
 <h3>openspec/tasks.md</h3><pre class="md-source"># Tasks: 产品知识平台 MVP
 
@@ -1379,8 +1474,7 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
   2. run.sh：一键启动脚本（安装依赖 → 初始化数据库 → 插入种子数据 → 启动服务）
   3. 验证在新环境中 `bash run.sh` 可完整启动
 - **验证**: 新目录中 `bash run.sh` 成功启动，浏览器访问 `/` 正常
-- **完成标准**: README 清晰，一键启动脚本工作正常
-</pre>
+- **完成标准**: README 清晰，一键启动脚本工作正常</pre>
 <h3>openspec/specs/audit-and-permissions.md</h3><pre class="md-source"># Spec: 审计日志与权限管理
 
 ## ADDED
@@ -1420,8 +1514,7 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
   - 创建/编辑 biz_kl：expert
   - 创建/编辑 sys_kl：developer
   - 导出知识包：developer / admin
-  - 查看审计日志：admin
-</pre>
+  - 查看审计日志：admin</pre>
 <h3>openspec/specs/biz-kl-management.md</h3><pre class="md-source"># Spec: biz_kl 知识库管理
 
 ## ADDED
@@ -1462,8 +1555,7 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 - `/biz`：业务知识列表页，支持状态筛选和搜索
 - `/biz/{id}`：条目详情页，展示完整信息、关联 sys_kl、版本历史
 - 列表页支持「创建业务知识条目」按钮，打开创建表单
-- 详情页支持「编辑」和「提交审核」操作
-</pre>
+- 详情页支持「编辑」和「提交审核」操作</pre>
 <h3>openspec/specs/knowledge-package-export.md</h3><pre class="md-source"># Spec: 知识包导出
 
 ## ADDED
@@ -1474,7 +1566,6 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
   - 自动查询这些条目关联的所有 sys_kl 条目
   - 返回符合 JSON Schema 的完整知识包（biz_kl + sys_kl + links + lineage）
   - 响应头 `Content-Type: application/json`
-
 - `GET /api/packages/{biz_ids}.md`：同上，但返回 Markdown 格式
   - 按业务概念分组
   - 每条包含概念描述、关联代码模块、变更历史
@@ -1498,8 +1589,7 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 1. 选中的 biz_kl 条目直接包含
 2. 通过 `kl_links` 表查询所有关联的 sys_kl 条目
 3. 计算 lineage：从 biz_kl 和 sys_kl 的 created_by / created_at 字段组装
-4. 仅包含 status 为 `published` 的条目
-</pre>
+4. 仅包含 status 为 `published` 的条目</pre>
 <h3>openspec/specs/sys-kl-management.md</h3><pre class="md-source"># Spec: sys_kl 知识库管理
 
 ## ADDED
@@ -1535,8 +1625,7 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 - `/sys`：系统知识列表页，支持 DDD 层级筛选和搜索
 - `/sys/{id}`：条目详情页，展示完整信息和关联 biz_kl
 - 列表页支持「创建系统知识条目」按钮
-- 详情页支持「添加关联」操作，提供 biz_kl 搜索选择器
-</pre></div>
+- 详情页支持「添加关联」操作，提供 biz_kl 搜索选择器</pre></div>
   <div class="panel" id="mvp-panel"><p><em>MVP not built yet.</em></p></div>
   <div class="panel" id="proto-panel"><iframe class="proto-frame" src="prototype/index.html" title="prototype"></iframe></div>
 

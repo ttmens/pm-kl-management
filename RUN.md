@@ -17,14 +17,16 @@ T1 (ready)   pm-aligner    → Stage 0+1: 对齐想法 & 产出 CONTEXT.md
 
 ## 任务 ID
 
-| 阶段 | 任务 ID | 状态 | 负责人 |
-|------|---------|------|--------|
-| 0+1 Align | `t_cbef8b9e` | ready | pm-aligner |
-| 2 Research | `t_8180aedb` | todo | pm-researcher |
-| 3 Analysis | `t_99248123` | todo | pm-analyst |
-| 4 Spec | `t_a523399c` | todo | pm-planner |
-| 5 MVP | `t_62c97069` | todo | pm-builder |
-| 6 Retro | `t_a79213fd` | todo | pm-builder |
+
+| 阶段         | 任务 ID        | 状态    | 负责人           |
+| ---------- | ------------ | ----- | ------------- |
+| 0+1 Align  | `t_cbef8b9e` | ready | pm-aligner    |
+| 2 Research | `t_8180aedb` | todo  | pm-researcher |
+| 3 Analysis | `t_99248123` | todo  | pm-analyst    |
+| 4 Spec     | `t_a523399c` | todo  | pm-planner    |
+| 5 MVP      | `t_62c97069` | todo  | pm-builder    |
+| 6 Retro    | `t_a79213fd` | todo  | pm-builder    |
+
 
 ## 人工检查点
 
@@ -61,5 +63,6 @@ hermes kanban tail <task_id>
 
 ## GitHub Pages（完成后发布）
 
-- Pages: https://ttmens.github.io/pm-kl-management/
-- GitHub: https://github.com/ttmens/pm-kl-management
+- Pages: [https://ttmens.github.io/pm-kl-management/](https://ttmens.github.io/pm-kl-management/)
+- GitHub: [https://github.com/ttmens/pm-kl-management](https://github.com/ttmens/pm-kl-management)
+

@@ -8,7 +8,6 @@
   - 自动查询这些条目关联的所有 sys_kl 条目
   - 返回符合 JSON Schema 的完整知识包（biz_kl + sys_kl + links + lineage）
   - 响应头 `Content-Type: application/json`
-
 - `GET /api/packages/{biz_ids}.md`：同上，但返回 Markdown 格式
   - 按业务概念分组
   - 每条包含概念描述、关联代码模块、变更历史
