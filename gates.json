@@ -2,14 +2,13 @@
   "run": "pm-kl-management",
   "path": "D:\\workspace\\projects\\pm-kl-management",
   "pipeline_version": "3.0.0",
-  "validated_at": "2026-06-07T10:25:44.709283+00:00",
+  "validated_at": "2026-06-07T10:26:17.792504+00:00",
   "stages": {
-    "mvp": {
+    "retro": {
       "pass": true,
       "checks": [
-        "mvp_dir",
-        "readme",
-        "design_md=True"
+        "retro_exists",
+        "evolution_section"
       ],
       "notes": ""
     }
