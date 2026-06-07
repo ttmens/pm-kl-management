@@ -66,6 +66,7 @@
 | description | TEXT (Markdown) | 模块职责描述                                |
 | layer       | TEXT            | domain / application / infrastructure |
 | file_path   | TEXT            | 代码路径                                  |
+| **bounded_context** | **TEXT**  | **所属 Bounded Context（ADR-008）**       |
 | status      | TEXT            | draft / published / archived          |
 | created_by  | TEXT            | 创建者用户 ID                              |
 | created_at  | DATETIME        | 创建时间                                  |
@@ -80,6 +81,7 @@
 | id         | TEXT (UUID) | 主键              |
 | biz_id     | TEXT        | 关联 biz_kl 条目 ID |
 | sys_id     | TEXT        | 关联 sys_kl 条目 ID |
+| **link_type** | **TEXT**  | **关系类型（ADR-008）：implements / dependsOn / governs / acl / published_language / open_host_service** |
 | created_at | DATETIME    | 创建时间            |
 
 
@@ -108,6 +110,18 @@
 | created_at | DATETIME    | 创建时间                       |
 
 
+### biz_kl_versions（ADR-009）
+
+| 字段        | 类型            | 说明                              |
+| ----------- | --------------- | --------------------------------- |
+| id          | TEXT (UUID)     | 主键                              |
+| item_id     | TEXT            | 外键 → biz_kl_items.id            |
+| version     | INTEGER         | 版本号（与 biz_kl_items.version 一致） |
+| snapshot    | TEXT (JSON)     | 条目完整内容快照                     |
+| actor_id    | TEXT            | 操作人用户 ID                      |
+| created_at  | DATETIME        | 快照创建时间                        |
+
+
 ## API 端点
 
 ### 业务知识 (biz_kl)
@@ -121,6 +135,10 @@
 | PUT  | /api/biz/{id}         | 更新条目                |
 | POST | /api/biz/{id}/submit  | 提交审核                |
 | POST | /api/biz/{id}/publish | 发布（审核者权限）           |
+| POST | /api/biz/{id}/reject  | 驳回（审核者权限，需 rejection_reason） |
+| POST | /api/biz/{id}/withdraw | 撤回（作者权限，回滚到最近 published 版本） |
+| GET  | /api/biz/{id}/history | 版本历史列表（ADR-009）    |
+| GET  | /api/biz/{id}/history/{v1}/{v2} | 版本 diff（ADR-009） |
 
 
 ### 系统知识 (sys_kl)
@@ -153,6 +171,14 @@
 | GET | /api/audit | 列表（支持条目/操作人/时间筛选） |
 
 
+### 审批队列（ADR-006）
+
+
+| 方法  | 路径         | 说明                |
+| --- | ---------- | ----------------- |
+| GET | /api/review | 列出所有 reviewing 状态条目（管理员视角） |
+
+
 ## 前端页面（HTMX 服务端渲染）
 
 
@@ -165,6 +191,7 @@
 | /sys/{id} | 系统条目详情                         |
 | /export   | 知识包导出页                         |
 | /audit    | 审计日志页                          |
+| **/review** | **审批者队列页（ADR-006，仅管理员可见）** |
 
 
 ## 知识包 JSON Schema
@@ -245,14 +272,20 @@ MVP 阶段权限为简化模型：
 MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证（内部工具）。权限校验在服务层完成。
 
 ## 决策
+## 决策
 
-
-| 决策                   | 理由                     |
-| -------------------- | ---------------------- |
+| 决策 | 理由 |
+|------|------|
 | SQLite 而非 PostgreSQL | MVP 阶段 ≤10 用户，单文件数据库足够 |
-| UUID 文本主键            | 避免暴露递增 ID，便于后续分布式迁移    |
-| 版本号为简单整数             | MVP 不做完整 Git-like 版本树  |
-| 互链为独立表               | 支持多对多，便于审计和查询          |
-| HTMX 而非 SPA          | 避免前端构建工具链，降低 MVP 复杂度   |
+| UUID 文本主键 | 避免暴露递增 ID，便于后续分布式迁移 |
+| 版本号为简单整数 | MVP 不做完整 Git-like 版本树 |
+| 互链为独立表 | 支持多对多，便于审计和查询 |
+| HTMX 而非 SPA | 避免前端构建工具链，降低 MVP 复杂度 |
+| biz_kl_versions 快照表（ADR-009） | 支持回滚、版本对比、完整审计 |
+| bounded_context 字段（ADR-008） | sys_kl 按 BC 分组，知识包按 BC 组织 |
+| link_type 字段（ADR-008） | 关系语义化（implements/dependsOn/governs 等） |
+| 知识包状态过滤（ADR-007） | 仅导出 published 条目，保证 Agent 消费质量 |
+| 权限感知导出（ADR-007） | 按请求者角色过滤可见范围 |
+| 撤回 + 回滚机制（ADR-006） | 审核流闭环，支持知识生命周期管理 |
 
 

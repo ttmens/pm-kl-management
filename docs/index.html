@@ -33,9 +33,9 @@
   <div class="meta">
     Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
     Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
-    Commit: 344baa2 · Built: 2026-06-07 11:17 UTC
+    Commit: ac5ffd3 · Built: 2026-06-07 11:23 UTC
   </div>
-  <div class="badges"><span class="badge pass">benchmark</span> <span class="badge overall pass">overall: pass</span></div>
+  <div class="badges"><span class="badge pass">architecture</span> <span class="badge overall pass">overall: pass</span></div>
 
   <div class="tabs" id="tabs">
     <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="01b-benchmark-md">Benchmark</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03b-user-journey-md">UserJourney</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button><button class="tab" data-tab="06-refine-retro-md">RefineRetro</button>
@@ -363,7 +363,155 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
-- ⚠️ JSON Schema 需要版本管理，向后兼容</pre></div><div class="panel" id="01-research-md"><pre class="md-source"># 调研报告：产品知识平台（KL Management）
+- ⚠️ JSON Schema 需要版本管理，向后兼容
+
+---
+
+## ADR-006: 审核流完善——撤回 + 回滚机制
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 2：Confluence 审批工作流）发现当前审核流仅支持 submit → publish / reject，缺少撤回（withdraw）和回滚到最近已审批版本的能力。reject 后仅状态变 draft，不记录驳回理由，用户无法区分&quot;被驳回的草稿&quot;与&quot;从未提交的草稿&quot;。
+
+### 决策
+
+- 增加 `POST /api/biz/{id}/withdraw` 端点，允许作者在 `reviewing` 或 `rejected` 态撤回
+- 撤回时自动回滚到最近 `published` 版本的内容（如存在）
+- `reject_biz` API 路由补全（函数已存在但无路由/UI）
+- `audit_logs` 增加 `rejection_reason` 字段记录驳回理由
+- 审核中页面展示策略：`reviewing` 态条目同时展示已发布版本 + 审核中标记 + 变更 diff
+
+### 理由
+
+- Confluence 完整状态机（editing → waiting → accepted/rejected + withdraw）是业界成熟模式
+- 无回滚能力时，驳回后的知识丢失风险高
+- 驳回理由持久化是审计合规的基本要求
+
+### 后果
+
+- ✅ 审核流闭环，支持知识生命周期管理
+- ✅ 驳回理由可追溯，便于作者修改
+- ⚠️ 需增加版本快照机制（见 ADR-009）支撑回滚
+- ⚠️ 审核中内容展示策略增加 UI 复杂度
+
+**影响的 C4 容器**: API Server、Audit Service、Web UI
+
+---
+
+## ADR-007: 知识包导出——状态过滤 + 权限感知
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark 发现两个 P0 差距：
+1. GitBook MCP 仅暴露已发布版本，当前知识包可能包含 draft/reviewing 条目
+2. Glean 按权限过滤内容，当前知识包对所有条目一视同仁，无角色感知
+
+### 决策
+
+- 知识包导出时仅包含 `status = published` 的条目
+- 导出 API 接受请求者身份（`X-User-Id`），按角色过滤可见范围：
+  - `expert`：仅包含其创建/审核通过的 biz_kl 条目
+  - `developer`：包含全部 published 条目
+  - `admin`：包含全部 published 条目 + 审计元数据
+- 知识包 JSON 增加 `access_control` 字段，记录导出时的角色过滤规则
+
+### 理由
+
+- Agent 消费的知识包必须保证内容质量，draft/reviewing 条目不应泄露
+- 权限感知是企业级知识平台的标配（Glean 93% 采纳率验证）
+- 角色过滤在导出时完成，不影响存储层设计
+
+### 后果
+
+- ✅ 知识包内容质量可控
+- ✅ 符合企业安全合规要求
+- ⚠️ 导出逻辑复杂度增加
+- ⚠️ 需确保 `X-User-Id` 在导出请求中可靠传递
+
+**影响的 C4 容器**: Export Service、API Server
+
+---
+
+## ADR-008: Bounded Context 建模——sys_kl 增加 BC 归属
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl 无 Bounded Context 概念，仅按 DDD 层（domain/application/infrastructure）分类。这导致：
+- 知识包无法按 BC 组织
+- 无法表达上下文映射模式（ACL / Published Language / Open-Host Service）
+- 无法指导专家按 BC 贡献知识
+
+### 决策
+
+- `sys_kl_items` 增加 `bounded_context` 字段（TEXT，可为空以兼容 MVP 数据）
+- `kl_links` 增加 `link_type` 字段，枚举：`implements`、`dependsOn`、`governs`、`acl`、`published_language`、`open_host_service`
+- 知识包导出按 `bounded_context` 分组，每个 BC 作为一个知识子包
+- MVP 阶段仅试点单个 BC（如&quot;订单管理&quot;），`bounded_context` 设默认值
+
+### 理由
+
+- BC 是 DDD 战略模式的核心，知识包天然以 BC 为消费单元
+- 类型化关系（Backstage relations 模式）比单纯 biz↔sys 关联更具语义
+- 空值兼容确保 MVP 数据无需迁移
+
+### 后果
+
+- ✅ 知识包可按 BC 独立消费，符合 Agent 使用场景
+- ✅ 关系语义化，支持更精确的影响分析
+- ⚠️ 数据迁移需处理存量数据的 `bounded_context` 默认值
+- ⚠️ UI 需增加 BC 选择器
+
+**影响的 C4 容器**: API Server、SQLite DB、Export Service
+
+---
+
+## ADR-009: 版本历史——biz_kl_versions 快照表
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自增，无历史快照，无法支持：
+- 版本对比（diff 展示）
+- 回滚到指定版本（ADR-006 撤回回滚依赖此）
+- 变更审计追溯
+
+### 决策
+
+- 新增 `biz_kl_versions` 表，每次 `update` 或 `publish` 时插入快照
+- 快照字段：`id`（UUID）、`item_id`（外键）、`version`（整数）、`snapshot`（JSON，条目完整内容）、`actor_id`、`created_at`
+- `GET /api/biz/{id}/history` 返回版本列表
+- `GET /api/biz/{id}/history/{v1}/{v2}` 返回两个版本的 diff
+- MVP 阶段不实现版本对比 UI，仅提供 API
+
+### 理由
+
+- 快照表是版本管理的标准模式，比增量 diff 更易实现和恢复
+- JSON 快照保留完整内容，不依赖当前表结构
+- MVP 先有 API，UI 可在后续阶段补充
+
+### 后果
+
+- ✅ 支持回滚、版本对比、完整审计
+- ✅ JSON 快照解耦版本存储与当前表结构
+- ⚠️ 存储成本增加（每次更新复制整条记录）
+- ⚠️ 单 BC 试点（≤1000 条目）下存储可控
+
+**影响的 C4 容器**: SQLite DB、API Server</pre></div><div class="panel" id="01-research-md"><pre class="md-source"># 调研报告：产品知识平台（KL Management）
 
 &gt; 调研日期：2026-06-07
 &gt; 调研范围：企业知识管理平台竞品、代码知识库工具、DDD 知识建模、AI 编程上下文注入
@@ -1661,6 +1809,7 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | description | TEXT (Markdown) | 模块职责描述                                |
 | layer       | TEXT            | domain / application / infrastructure |
 | file_path   | TEXT            | 代码路径                                  |
+| **bounded_context** | **TEXT**  | **所属 Bounded Context（ADR-008）**       |
 | status      | TEXT            | draft / published / archived          |
 | created_by  | TEXT            | 创建者用户 ID                              |
 | created_at  | DATETIME        | 创建时间                                  |
@@ -1675,6 +1824,7 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | id         | TEXT (UUID) | 主键              |
 | biz_id     | TEXT        | 关联 biz_kl 条目 ID |
 | sys_id     | TEXT        | 关联 sys_kl 条目 ID |
+| **link_type** | **TEXT**  | **关系类型（ADR-008）：implements / dependsOn / governs / acl / published_language / open_host_service** |
 | created_at | DATETIME    | 创建时间            |
 
 
@@ -1703,6 +1853,18 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | created_at | DATETIME    | 创建时间                       |
 
 
+### biz_kl_versions（ADR-009）
+
+| 字段        | 类型            | 说明                              |
+| ----------- | --------------- | --------------------------------- |
+| id          | TEXT (UUID)     | 主键                              |
+| item_id     | TEXT            | 外键 → biz_kl_items.id            |
+| version     | INTEGER         | 版本号（与 biz_kl_items.version 一致） |
+| snapshot    | TEXT (JSON)     | 条目完整内容快照                     |
+| actor_id    | TEXT            | 操作人用户 ID                      |
+| created_at  | DATETIME        | 快照创建时间                        |
+
+
 ## API 端点
 
 ### 业务知识 (biz_kl)
@@ -1716,6 +1878,10 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | PUT  | /api/biz/{id}         | 更新条目                |
 | POST | /api/biz/{id}/submit  | 提交审核                |
 | POST | /api/biz/{id}/publish | 发布（审核者权限）           |
+| POST | /api/biz/{id}/reject  | 驳回（审核者权限，需 rejection_reason） |
+| POST | /api/biz/{id}/withdraw | 撤回（作者权限，回滚到最近 published 版本） |
+| GET  | /api/biz/{id}/history | 版本历史列表（ADR-009）    |
+| GET  | /api/biz/{id}/history/{v1}/{v2} | 版本 diff（ADR-009） |
 
 
 ### 系统知识 (sys_kl)
@@ -1748,6 +1914,14 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | GET | /api/audit | 列表（支持条目/操作人/时间筛选） |
 
 
+### 审批队列（ADR-006）
+
+
+| 方法  | 路径         | 说明                |
+| --- | ---------- | ----------------- |
+| GET | /api/review | 列出所有 reviewing 状态条目（管理员视角） |
+
+
 ## 前端页面（HTMX 服务端渲染）
 
 
@@ -1760,6 +1934,7 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 | /sys/{id} | 系统条目详情                         |
 | /export   | 知识包导出页                         |
 | /audit    | 审计日志页                          |
+| **/review** | **审批者队列页（ADR-006，仅管理员可见）** |
 
 
 ## 知识包 JSON Schema
@@ -1840,15 +2015,21 @@ MVP 阶段权限为简化模型：
 MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证（内部工具）。权限校验在服务层完成。
 
 ## 决策
+## 决策
 
-
-| 决策                   | 理由                     |
-| -------------------- | ---------------------- |
+| 决策 | 理由 |
+|------|------|
 | SQLite 而非 PostgreSQL | MVP 阶段 ≤10 用户，单文件数据库足够 |
-| UUID 文本主键            | 避免暴露递增 ID，便于后续分布式迁移    |
-| 版本号为简单整数             | MVP 不做完整 Git-like 版本树  |
-| 互链为独立表               | 支持多对多，便于审计和查询          |
-| HTMX 而非 SPA          | 避免前端构建工具链，降低 MVP 复杂度   |
+| UUID 文本主键 | 避免暴露递增 ID，便于后续分布式迁移 |
+| 版本号为简单整数 | MVP 不做完整 Git-like 版本树 |
+| 互链为独立表 | 支持多对多，便于审计和查询 |
+| HTMX 而非 SPA | 避免前端构建工具链，降低 MVP 复杂度 |
+| biz_kl_versions 快照表（ADR-009） | 支持回滚、版本对比、完整审计 |
+| bounded_context 字段（ADR-008） | sys_kl 按 BC 分组，知识包按 BC 组织 |
+| link_type 字段（ADR-008） | 关系语义化（implements/dependsOn/governs 等） |
+| 知识包状态过滤（ADR-007） | 仅导出 published 条目，保证 Agent 消费质量 |
+| 权限感知导出（ADR-007） | 按请求者角色过滤可见范围 |
+| 撤回 + 回滚机制（ADR-006） | 审核流闭环，支持知识生命周期管理 |
 
 
 </pre>
@@ -2222,35 +2403,43 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 
 ## 系统
 
-**产品知识平台（pm-kl-management）** — 在企业 AI 编程场景下，管理业务知识（biz_kl）与系统知识（sys_kl），并导出供 Agent/IDE 消费的知识包。
+**产品知识平台（pm-kl-management）** — 在企业 AI 编程场景下，管理业务知识（biz_kl）与系统知识（sys_kl），按 Bounded Context 组织，导出供 Agent/IDE 消费的结构化知识包。
 
 ## 外部角色
 
 | 角色 | 说明 |
 |------|------|
-| 领域专家 | 创建/维护 biz_kl 业务知识条目 |
-| 开发者 | 维护 sys_kl、关联 biz_kl、导出知识包 |
-| 管理员 | 审核发布、驳回、查看审计日志 |
-| Agent/IDE | 消费导出的 JSON/Markdown 知识包（只读） |
-| Git 仓库 | sys_kl 可选引用代码路径（未来 AST 同步） |
+| 领域专家 | 创建/维护 biz_kl 业务知识条目，按 BC 贡献知识 |
+| 开发者 | 维护 sys_kl、关联 biz_kl、按 BC 导出知识包 |
+| 管理员 | 审核发布、驳回、撤回审批、查看审计日志 |
+| Agent/IDE | 消费导出的 JSON/Markdown 知识包（仅 published 条目，按角色过滤） |
+| Git 仓库 | sys_kl 引用代码路径 + commit hash，检测代码变更触发知识更新提醒 |
 
 ## 上下文图
 
 ```mermaid
 C4Context
-  title 产品知识平台 — 系统上下文
-  Person(expert, &quot;领域专家&quot;, &quot;编写业务知识&quot;)
-  Person(dev, &quot;开发者&quot;, &quot;维护系统知识并关联&quot;)
-  Person(admin, &quot;管理员&quot;, &quot;审核与审计&quot;)
-  System(kl, &quot;产品知识平台&quot;, &quot;biz/sys 知识管理与导出&quot;)
-  System_Ext(agent, &quot;Agent/IDE&quot;, &quot;注入编程上下文&quot;)
-  System_Ext(git, &quot;Git 仓库&quot;, &quot;代码与路径引用&quot;)
-  Rel(expert, kl, &quot;创建/提交审核&quot;)
-  Rel(dev, kl, &quot;关联/导出&quot;)
+  title 产品知识平台 — 系统上下文（Refine-2）
+  Person(expert, &quot;领域专家&quot;, &quot;按 BC 编写业务知识&quot;)
+  Person(dev, &quot;开发者&quot;, &quot;维护系统知识并按 BC 关联&quot;)
+  Person(admin, &quot;管理员&quot;, &quot;审核/驳回/撤回/审计&quot;)
+  System(kl, &quot;产品知识平台&quot;, &quot;biz/sys 知识管理 + BC 组织 + 权限感知导出&quot;)
+  System_Ext(agent, &quot;Agent/IDE&quot;, &quot;注入编程上下文（仅 published 知识包）&quot;)
+  System_Ext(git, &quot;Git 仓库&quot;, &quot;代码路径 + commit hash 引用&quot;)
+  Rel(expert, kl, &quot;创建/提交审核/撤回&quot;)
+  Rel(dev, kl, &quot;关联/按BC导出&quot;)
   Rel(admin, kl, &quot;发布/驳回/审计&quot;)
-  Rel(kl, agent, &quot;知识包 JSON/MD&quot;)
-  Rel(kl, git, &quot;file_path 引用&quot;)
+  Rel(kl, agent, &quot;知识包 JSON/MD（权限过滤）&quot;)
+  Rel(kl, git, &quot;file_path + commit_hash 引用&quot;)
+  Rel_U(git, kl, &quot;代码变更通知&quot;)
 ```
+
+## Refine-2 变更说明
+
+相比 MVP 基线，本版本上下文图新增：
+- Git 仓库的**双向关系**（平台引用代码路径，代码变更可通知平台更新知识）
+- Agent/IDE 明确标注**仅消费 published 条目**（ADR-007 状态过滤）
+- 领域专家增加**撤回**操作（ADR-006）
 </pre>
 <h3>C4 Container</h3><pre class="md-source"># C4 Level 2 — 容器
 
@@ -2258,11 +2447,12 @@ C4Context
 
 | 容器 | 技术 | 职责 |
 |------|------|------|
-| Web UI | HTML + HTMX + Jinja2 | 列表、详情、审核操作、导入、审计（管理员） |
-| API Server | FastAPI | REST API、页面路由、权限校验 |
-| Export Service | Python（API 内模块） | 组装知识包 JSON/Markdown |
-| SQLite DB | SQLite | biz_kl、sys_kl、链接、审计、用户 |
-| Audit Service | Python（API 内模块） | 不可变审计日志 |
+| Web UI | HTML + HTMX + Jinja2 | 列表、详情、审核操作、导入、审计、审批者队列（/review） |
+| API Server | FastAPI | REST API、页面路由、权限校验、BC 分组、版本历史 |
+| Export Service | Python（API 内模块） | 组装知识包 JSON/Markdown + SKILL.md + llms.txt，状态过滤 + 权限感知 |
+| Version Service | Python（API 内模块） | biz_kl_versions 快照管理、版本 diff、回滚逻辑 |
+| SQLite DB | SQLite | biz_kl_items、sys_kl_items（含 bounded_context）、kl_links（含 link_type）、biz_kl_versions、audit_logs、users |
+| Audit Service | Python（API 内模块） | 不可变审计日志、驳回理由持久化 |
 
 ## 容器图
 
@@ -2274,23 +2464,28 @@ flowchart TB
     A[管理员]
   end
   subgraph platform [产品知识平台]
-    UI[Web UI]
-    API[FastAPI API Server]
-    EXP[Export Service]
-    AUD[Audit Service]
-    DB[(SQLite)]
+    UI[Web UI\n+ 审批者队列 /review]
+    API[FastAPI API Server\n+ BC 分组 + 版本 API]
+    EXP[Export Service\n+ 状态过滤 + 权限感知\n+ SKILL.md + llms.txt]
+    VER[Version Service\n快照 + diff + 回滚]
+    AUD[Audit Service\n+ 驳回理由]
+    DB[(SQLite\n+ biz_kl_versions\n+ bounded_context\n+ link_type)]
   end
-  AG[Agent/IDE]
+  AG[Agent/IDE\n仅 published]
+  GIT[Git 仓库\n代码变更通知]
   E --&gt; UI
   D --&gt; UI
   A --&gt; UI
   UI --&gt; API
   API --&gt; EXP
+  API --&gt; VER
   API --&gt; AUD
   API --&gt; DB
   EXP --&gt; DB
+  VER --&gt; DB
   AUD --&gt; DB
   EXP --&gt; AG
+  GIT -. 变更通知 .-&gt; API
 ```
 
 ## ADR 映射
@@ -2300,48 +2495,100 @@ flowchart TB
 | ADR-001 biz/sys 分离 | API、DB schema |
 | ADR-004 FastAPI+SQLite+HTMX | API、UI、DB |
 | ADR-005 JSON+Markdown 双格式 | Export Service |
-| ADR-006（Refine）审核驳回 | API、UI、Audit Service |
+| ADR-006 审核流完善（撤回+回滚） | API Server、Audit Service、Web UI、Version Service |
+| ADR-007 知识包状态过滤+权限感知 | Export Service、API Server |
+| ADR-008 BC 建模（bounded_context + link_type） | API Server、SQLite DB、Export Service |
+| ADR-009 版本历史快照表 | Version Service、SQLite DB、API Server |
+
+## Refine-2 变更说明
+
+相比 MVP 基线新增容器：
+- **Version Service**：biz_kl_versions 快照管理（ADR-009）
+- DB 新增表：`biz_kl_versions`（版本快照）、`sys_kl_items.bounded_context`（BC 归属）、`kl_links.link_type`（关系类型化）
 </pre>
-<h3>C4 Component</h3><pre class="md-source"># C4 Level 3 — 组件（FastAPI API Server）
+<h3>C4 Component</h3><pre class="md-source"># C4 Level 3 — 组件（FastAPI API Server + Version Service）
 
 ## 组件分解
 
-| 组件 | 职责 |
-|------|------|
-| BizKlRouter | biz_kl CRUD、submit、publish、reject |
-| SysKlRouter | sys_kl CRUD、link/unlink |
-| PackageAssembler | 按 ID 组装知识包、Markdown 渲染 |
-| ImportParser | biz_kl Markdown 批量导入 |
-| AuthZ | `X-User-Id` 角色校验（admin publish/reject/audit） |
-| PageRenderer | Jinja2 页面与 HTMX 片段 |
+| 组件 | 所属容器 | 职责 |
+|------|----------|------|
+| BizKlRouter | API Server | biz_kl CRUD、submit、publish、reject、**withdraw**（ADR-006） |
+| SysKlRouter | API Server | sys_kl CRUD、link/unlink、**BC 分组查询**（ADR-008） |
+| PackageAssembler | Export Service | 按 ID 组装知识包、**状态过滤（仅 published）**、**权限感知**（ADR-007）、Markdown 渲染、SKILL.md + llms.txt 生成 |
+| ImportParser | API Server | biz_kl Markdown 批量导入 |
+| VersionManager | Version Service | 快照创建（update/publish 时）、版本列表、**diff 计算**、**回滚执行**（ADR-009） |
+| ReviewQueue | API Server | **审批者队列视图**：按状态过滤 reviewing 条目（P1 gap #7） |
+| AuthZ | API Server | `X-User-Id` 角色校验（admin publish/reject/audit，**expert 撤回**） |
+| PageRenderer | API Server | Jinja2 页面与 HTMX 片段（**含 /review 审批队列页**） |
 
 ## 组件图
 
 ```mermaid
 flowchart LR
   subgraph api [FastAPI API Server]
-    BIZ[BizKlRouter]
-    SYS[SysKlRouter]
-    PKG[PackageAssembler]
+    BIZ[BizKlRouter\n+ withdraw]
+    SYS[SysKlRouter\n+ BC 分组]
+    REV[ReviewQueue\n审批者队列]
     IMP[ImportParser]
     AUTH[AuthZ]
-    PAGE[PageRenderer]
+    PAGE[PageRenderer\n+ /review]
   end
-  DB[(SQLite)]
+  subgraph export [Export Service]
+    PKG[PackageAssembler\n状态过滤 + 权限感知\nSKILL.md + llms.txt]
+  end
+  subgraph version [Version Service]
+    VER[VersionManager\n快照 + diff + 回滚]
+  end
+  AUD[Audit Service\n+ 驳回理由]
+  DB[(SQLite\n+ versions\n+ bounded_context\n+ link_type)]
   BIZ --&gt; AUTH
+  BIZ --&gt; VER
   BIZ --&gt; DB
   SYS --&gt; DB
+  REV --&gt; DB
   PKG --&gt; DB
   IMP --&gt; DB
+  VER --&gt; DB
+  AUD --&gt; DB
   PAGE --&gt; BIZ
   PAGE --&gt; SYS
+  PAGE --&gt; REV
 ```
 
-## Refine 标注的缺口
+## Refine-2 标注的缺口与优先级
 
-- 版本历史：当前仅 `version` 整数，缺 `biz_kl_versions` 表（P1）
-- BC 边界：单 BC MVP，未建模 `bc_id`（P2）
-- 角色管理 UI：users 表存在，无管理页面（P2）
+### P0（必须在 MVP 前修复）
+
+| # | 缺口 | 对应组件 | ADR |
+|---|------|----------|-----|
+| 1 | 审核流完善：撤回 + 回滚机制 | BizKlRouter + VersionManager | ADR-006 |
+| 2 | 知识包状态过滤（仅 published） | PackageAssembler | ADR-007 |
+| 3 | 权限感知导出（按角色过滤） | PackageAssembler + AuthZ | ADR-007 |
+
+### P1（Refine 阶段建议）
+
+| # | 缺口 | 对应组件 | ADR |
+|---|------|----------|-----|
+| 4 | 关系类型化（link_type 字段） | SysKlRouter | ADR-008 |
+| 5 | Bounded Context 归属（bounded_context 字段） | SysKlRouter + PackageAssembler | ADR-008 |
+| 6 | 版本历史快照表（biz_kl_versions） | VersionManager | ADR-009 |
+| 7 | 审批者队列页面（/review） | ReviewQueue + PageRenderer | ADR-006 |
+
+### P2（后续阶段）
+
+| # | 缺口 | 说明 |
+|---|------|------|
+| 8 | 知识包 SKILL.md 指南 | PackageAssembler 导出时附带 |
+| 9 | llms.txt AI 发现层 | PackageAssembler 导出时附带 |
+| 10 | 代码变更检测联动 | sys_kl 关联 Git commit hash，外部 webhooks 触发 |
+
+### 已关闭的 MVP 缺口
+
+| 原缺口 | 状态 | 说明 |
+|--------|------|------|
+| 版本历史：仅 version 整数 | → ADR-009 | 新增 biz_kl_versions 快照表 |
+| BC 边界：无 bc_id | → ADR-008 | sys_kl_items 增加 bounded_context 字段 |
+| 角色管理 UI：无管理页面 | P2 | 暂缓，用户量 ≤10 时影响低 |
 </pre></div>
   <div class="panel" id="journey-panel"><pre class="md-source"># 用户旅程地图
 

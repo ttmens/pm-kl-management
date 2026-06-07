@@ -152,3 +152,151 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
 - ⚠️ JSON Schema 需要版本管理，向后兼容
+
+---
+
+## ADR-006: 审核流完善——撤回 + 回滚机制
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 2：Confluence 审批工作流）发现当前审核流仅支持 submit → publish / reject，缺少撤回（withdraw）和回滚到最近已审批版本的能力。reject 后仅状态变 draft，不记录驳回理由，用户无法区分"被驳回的草稿"与"从未提交的草稿"。
+
+### 决策
+
+- 增加 `POST /api/biz/{id}/withdraw` 端点，允许作者在 `reviewing` 或 `rejected` 态撤回
+- 撤回时自动回滚到最近 `published` 版本的内容（如存在）
+- `reject_biz` API 路由补全（函数已存在但无路由/UI）
+- `audit_logs` 增加 `rejection_reason` 字段记录驳回理由
+- 审核中页面展示策略：`reviewing` 态条目同时展示已发布版本 + 审核中标记 + 变更 diff
+
+### 理由
+
+- Confluence 完整状态机（editing → waiting → accepted/rejected + withdraw）是业界成熟模式
+- 无回滚能力时，驳回后的知识丢失风险高
+- 驳回理由持久化是审计合规的基本要求
+
+### 后果
+
+- ✅ 审核流闭环，支持知识生命周期管理
+- ✅ 驳回理由可追溯，便于作者修改
+- ⚠️ 需增加版本快照机制（见 ADR-009）支撑回滚
+- ⚠️ 审核中内容展示策略增加 UI 复杂度
+
+**影响的 C4 容器**: API Server、Audit Service、Web UI
+
+---
+
+## ADR-007: 知识包导出——状态过滤 + 权限感知
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark 发现两个 P0 差距：
+1. GitBook MCP 仅暴露已发布版本，当前知识包可能包含 draft/reviewing 条目
+2. Glean 按权限过滤内容，当前知识包对所有条目一视同仁，无角色感知
+
+### 决策
+
+- 知识包导出时仅包含 `status = published` 的条目
+- 导出 API 接受请求者身份（`X-User-Id`），按角色过滤可见范围：
+  - `expert`：仅包含其创建/审核通过的 biz_kl 条目
+  - `developer`：包含全部 published 条目
+  - `admin`：包含全部 published 条目 + 审计元数据
+- 知识包 JSON 增加 `access_control` 字段，记录导出时的角色过滤规则
+
+### 理由
+
+- Agent 消费的知识包必须保证内容质量，draft/reviewing 条目不应泄露
+- 权限感知是企业级知识平台的标配（Glean 93% 采纳率验证）
+- 角色过滤在导出时完成，不影响存储层设计
+
+### 后果
+
+- ✅ 知识包内容质量可控
+- ✅ 符合企业安全合规要求
+- ⚠️ 导出逻辑复杂度增加
+- ⚠️ 需确保 `X-User-Id` 在导出请求中可靠传递
+
+**影响的 C4 容器**: Export Service、API Server
+
+---
+
+## ADR-008: Bounded Context 建模——sys_kl 增加 BC 归属
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl 无 Bounded Context 概念，仅按 DDD 层（domain/application/infrastructure）分类。这导致：
+- 知识包无法按 BC 组织
+- 无法表达上下文映射模式（ACL / Published Language / Open-Host Service）
+- 无法指导专家按 BC 贡献知识
+
+### 决策
+
+- `sys_kl_items` 增加 `bounded_context` 字段（TEXT，可为空以兼容 MVP 数据）
+- `kl_links` 增加 `link_type` 字段，枚举：`implements`、`dependsOn`、`governs`、`acl`、`published_language`、`open_host_service`
+- 知识包导出按 `bounded_context` 分组，每个 BC 作为一个知识子包
+- MVP 阶段仅试点单个 BC（如"订单管理"），`bounded_context` 设默认值
+
+### 理由
+
+- BC 是 DDD 战略模式的核心，知识包天然以 BC 为消费单元
+- 类型化关系（Backstage relations 模式）比单纯 biz↔sys 关联更具语义
+- 空值兼容确保 MVP 数据无需迁移
+
+### 后果
+
+- ✅ 知识包可按 BC 独立消费，符合 Agent 使用场景
+- ✅ 关系语义化，支持更精确的影响分析
+- ⚠️ 数据迁移需处理存量数据的 `bounded_context` 默认值
+- ⚠️ UI 需增加 BC 选择器
+
+**影响的 C4 容器**: API Server、SQLite DB、Export Service
+
+---
+
+## ADR-009: 版本历史——biz_kl_versions 快照表
+
+**状态**: Proposed
+**决策日期**: 2026-06-07
+**决策者**: pm-analyst（Refine-2）
+
+### 背景
+
+Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自增，无历史快照，无法支持：
+- 版本对比（diff 展示）
+- 回滚到指定版本（ADR-006 撤回回滚依赖此）
+- 变更审计追溯
+
+### 决策
+
+- 新增 `biz_kl_versions` 表，每次 `update` 或 `publish` 时插入快照
+- 快照字段：`id`（UUID）、`item_id`（外键）、`version`（整数）、`snapshot`（JSON，条目完整内容）、`actor_id`、`created_at`
+- `GET /api/biz/{id}/history` 返回版本列表
+- `GET /api/biz/{id}/history/{v1}/{v2}` 返回两个版本的 diff
+- MVP 阶段不实现版本对比 UI，仅提供 API
+
+### 理由
+
+- 快照表是版本管理的标准模式，比增量 diff 更易实现和恢复
+- JSON 快照保留完整内容，不依赖当前表结构
+- MVP 先有 API，UI 可在后续阶段补充
+
+### 后果
+
+- ✅ 支持回滚、版本对比、完整审计
+- ✅ JSON 快照解耦版本存储与当前表结构
+- ⚠️ 存储成本增加（每次更新复制整条记录）
+- ⚠️ 单 BC 试点（≤1000 条目）下存储可控
+
+**影响的 C4 容器**: SQLite DB、API Server
