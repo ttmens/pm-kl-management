@@ -2,13 +2,13 @@
   "run": "pm-kl-management",
   "path": "D:\\workspace\\projects\\pm-kl-management",
   "pipeline_version": "3.0.0",
-  "validated_at": "2026-06-07T09:30:23.361935+00:00",
+  "validated_at": "2026-06-07T09:35:34.627687+00:00",
   "stages": {
-    "prototype": {
+    "research": {
       "pass": true,
       "checks": [
-        "index_html",
-        "design_md"
+        "sources>=76",
+        "competitor_rows>=56"
       ],
       "notes": ""
     }
