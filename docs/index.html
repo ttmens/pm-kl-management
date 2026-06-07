@@ -33,9 +33,9 @@
   <div class="meta">
     Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
     Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
-    Commit: d9d4fc6 · Built: 2026-06-07 09:22 UTC
+    Commit: 6ba9a36 · Built: 2026-06-07 09:30 UTC
   </div>
-  <div class="badges"><span class="badge pass">analysis</span> <span class="badge overall pass">overall: pass</span></div>
+  <div class="badges"><span class="badge pass">prototype</span> <span class="badge overall pass">overall: pass</span></div>
 
   <div class="tabs" id="tabs">
     <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button>
@@ -645,7 +645,126 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
 - ⚠️ JSON Schema 需要版本管理，向后兼容
-</pre></div><div class="panel" id="03-prd-md"><p><em>Not generated yet.</em></p></div><div class="panel" id="05-retro-md"><p><em>Not generated yet.</em></p></div>
+</pre></div><div class="panel" id="03-prd-md"><pre class="md-source"># 产品需求文档（PRD）：产品知识平台（KL Management）MVP
+
+## 产品愿景
+
+为供应链 IT 团队提供一个结构化的「懂业务 + 懂系统」知识管理平台，让领域专家的业务知识与开发者的系统逻辑知识通过 biz_kl / sys_kl 双库分离又互链的方式沉淀为可复用的知识资产，最终供 AI Agent 消费以生成高质量方案草稿。
+
+## 目标用户与角色
+
+| 角色 | 职责 | 核心场景 |
+|------|------|---------|
+| 领域专家 / 老产品 | 贡献与审核 biz_kl 条目 | 将口述经验转化为结构化业务概念、流程、规则 |
+| 开发者 / AI 编程使用者 | 创建 sys_kl 条目、消费知识包 | 按 DDD 分层挂载代码模块，导出知识包供 Agent 使用 |
+| 平台管理员 | 权限管理、版本治理、质量审核 | 管理用户角色、查看审计日志、处理过期/冲突条目 |
+
+## 用户故事
+
+### US-1: 领域专家创建并发布 biz_kl 条目
+
+**作为** 领域专家  
+**我希望** 能够创建、编辑、提交审核并发布一条业务知识条目  
+**以便于** 将我的业务经验转化为团队可检索的结构化知识  
+
+**验收标准：**
+- AC-1.1：条目包含名称、描述（Markdown）、关联业务流程/规则标签、状态（草稿/审核中/已发布/已废弃）
+- AC-1.2：支持从已有文档（Markdown 文件）批量导入为草稿
+- AC-1.3：提交审核后，状态变为「审核中」，只有审核者角色可操作发布或驳回
+- AC-1.4：发布后的条目可在知识列表中搜索和浏览
+- AC-1.5：每次修改生成新版本，保留变更历史（谁在什么时间改了什么）
+
+### US-2: 开发者创建并发布 sys_kl 条目
+
+**作为** 开发者  
+**我希望** 能够按 DDD 分层（领域层/应用层/基础设施层）创建系统知识条目，并关联到 biz_kl 条目  
+**以便于** 让业务概念与代码模块建立可追溯的映射关系  
+
+**验收标准：**
+- AC-2.1：条目包含模块路径、DDD 层级分类、模块职责描述、关联的 biz_kl 条目（≥0 条）
+- AC-2.2：支持按 DDD 三层筛选浏览 sys_kl 条目
+- AC-2.3：关联 biz_kl 条目时提供搜索选择器，支持双向跳转（biz_kl → sys_kl, sys_kl → biz_kl）
+- AC-2.4：支持手动添加和通过模板批量导入 sys_kl 条目
+- AC-2.5：发布后的条目可在知识列表中搜索和浏览
+
+### US-3: 导出知识包供 Agent 消费
+
+**作为** 开发者或 Agent 使用者  
+**我希望** 能够按业务概念筛选并导出知识包（JSON + Markdown 双格式）  
+**以便于** 将结构化知识注入 AI 编程工具的上下文中  
+
+**验收标准：**
+- AC-3.1：支持按 biz_kl 条目选择（单选/多选）生成知识包
+- AC-3.2：JSON 格式包含：选中的 biz_kl 条目、关联的 sys_kl 条目、互链关系、血缘信息，符合预定义 JSON Schema
+- AC-3.3：Markdown 格式按业务概念分组，人类可读，包含概念描述、关联代码模块、变更历史
+- AC-3.4：支持通过 REST API（GET /api/packages?biz_ids=...）拉取知识包
+- AC-3.5：支持通过界面按钮下载知识包文件
+
+### US-4: 知识检索与浏览
+
+**作为** 所有用户  
+**我希望** 能够在平台上搜索和浏览 biz_kl / sys_kl 知识条目  
+**以便于** 快速找到我需要的业务知识或系统信息  
+
+**验收标准：**
+- AC-4.1：全局搜索框支持按名称/描述/标签关键词搜索，结果按 biz_kl / sys_kl 分类展示
+- AC-4.2：条目详情页展示完整信息、关联条目链接、版本历史
+- AC-4.3：列表页支持按状态（草稿/审核中/已发布）、DDD 层级、标签筛选
+- AC-4.4：搜索响应时间 &lt; 1 秒（MVP 阶段 ≤1000 条目）
+
+### US-5: 管理员查看审计日志与管理权限
+
+**作为** 平台管理员  
+**我希望** 能够查看条目的创建/修改/发布记录，并管理用户角色权限  
+**以便于** 保障知识平台的运行秩序与合规  
+
+**验收标准：**
+- AC-5.1：审计日志页面展示条目 ID、操作类型（创建/修改/发布/驳回）、操作人、时间戳
+- AC-5.2：支持按条目、操作人、时间范围筛选审计日志
+- AC-5.3：管理员可为用户分配角色（领域专家/开发者/管理员）
+- AC-5.4：角色变更操作记录在审计日志中
+
+## 范围界定
+
+### MVP 包含（P0/P1）
+
+| 优先级 | 能力 | 对应用户故事 |
+|--------|------|-------------|
+| P0 | biz_kl 条目 CRUD + 审核流程 | US-1 |
+| P0 | sys_kl 条目 CRUD + DDD 分层 + biz_kl 互链 | US-2 |
+| P0 | 知识包导出（JSON + Markdown） | US-3 |
+| P0 | 知识搜索与浏览 | US-4 |
+| P1 | 审计日志 | US-5 |
+| P1 | 角色权限管理 | US-5 |
+| P1 | 批量导入（Markdown 模板） | US-1, US-2 |
+
+### MVP 不包含
+
+- 全仓自动静态分析引擎（ADR-002）
+- IDE 插件（ADR-003）
+- 多租户 / SaaS 计费
+- 通用企业搜索 / RAG 引擎
+- 知识质量评分与过期预警（后续阶段）
+- 多 BC 扩展（后续阶段）
+
+## 成功指标
+
+| 指标 | 目标 | 对应假设 |
+|------|------|---------|
+| MVP 周期内 ≥20 条已发布 biz_kl 条目 | 验证领域专家参与度 | H1 |
+| Agent 消费知识包后方案人工验收通过率 ≥70% | 验证知识包有效性 | H2 |
+| 3/3 业务概念可追溯到对应代码模块 | 验证互链能力 | H3 |
+| 标注单个 sys_kl 模块平均时间 ≤30 分钟 | 验证半自动成本可接受 | H4 |
+
+## 技术约束
+
+- 后端：Python FastAPI
+- 存储：SQLite
+- 前端：静态 HTML + HTMX
+- 知识包：JSON Schema + Markdown 双格式
+- 部署：单机 Python 进程
+- 界面文案使用简体中文
+</pre></div><div class="panel" id="05-retro-md"><p><em>Not generated yet.</em></p></div>
   <div class="panel" id="openspec-panel"><h3>openspec/proposal.md</h3><pre class="md-source"># Proposal: 产品知识平台 MVP — biz_kl/sys_kl 双库知识管理
 
 ## Why
@@ -725,9 +844,609 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 - 知识质量评分与过期预警
 - 多 BC 扩展
 - IDE 插件/编辑器集成
+</pre>
+<h3>openspec/design.md</h3><pre class="md-source"># 设计文档：产品知识平台 MVP
+
+## 架构概览
+
+```
+┌──────────────────────────────────────────┐
+│           静态前端 (HTML + HTMX)           │
+│  知识列表 · 条目详情 · 知识包导出 · 审计日志  │
+└────────────────┬─────────────────────────┘
+                 │ HTTP (JSON)
+┌────────────────▼─────────────────────────┐
+│          FastAPI 后端 (单机进程)           │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐  │
+│  │ biz_kl   │ │ sys_kl   │ │ package  │  │
+│  │ 路由层    │ │ 路由层    │ │ 路由层    │  │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘  │
+│       │             │             │        │
+│  ┌────▼─────────────▼─────────────▼────┐  │
+│  │         业务逻辑 / 服务层            │  │
+│  │  条目 CRUD · 审核流程 · 互链管理      │  │
+│  │  知识包组装 · 审计日志 · 权限校验     │  │
+│  └────────────────┬───────────────────┘  │
+│                   │                       │
+│  ┌────────────────▼───────────────────┐  │
+│  │         SQLite 数据存储              │  │
+│  │  biz_kl_items · sys_kl_items       │  │
+│  │  kl_links · audit_logs · users     │  │
+│  └────────────────────────────────────┘  │
+└──────────────────────────────────────────┘
+```
+
+## 数据模型
+
+### biz_kl_items
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | TEXT (UUID) | 主键 |
+| name | TEXT | 条目名称 |
+| description | TEXT (Markdown) | 条目描述 |
+| type | TEXT | 概念/流程/规则 |
+| tags | TEXT (JSON) | 标签数组 |
+| status | TEXT | draft / reviewing / published / archived |
+| version | INTEGER | 版本号（每次修改 +1） |
+| created_by | TEXT | 创建者用户 ID |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 最后更新时间 |
+
+### sys_kl_items
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | TEXT (UUID) | 主键 |
+| name | TEXT | 条目名称 |
+| description | TEXT (Markdown) | 模块职责描述 |
+| layer | TEXT | domain / application / infrastructure |
+| file_path | TEXT | 代码路径 |
+| status | TEXT | draft / published / archived |
+| created_by | TEXT | 创建者用户 ID |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 最后更新时间 |
+
+### kl_links（互链关系）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | TEXT (UUID) | 主键 |
+| biz_id | TEXT | 关联 biz_kl 条目 ID |
+| sys_id | TEXT | 关联 sys_kl 条目 ID |
+| created_at | DATETIME | 创建时间 |
+
+### audit_logs
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | TEXT (UUID) | 主键 |
+| item_type | TEXT | biz_kl / sys_kl |
+| item_id | TEXT | 条目 ID |
+| action | TEXT | create / update / publish / reject |
+| actor_id | TEXT | 操作人用户 ID |
+| details | TEXT (JSON) | 操作详情（变更前后） |
+| created_at | DATETIME | 操作时间 |
+
+### users（MVP 阶段简化）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | TEXT (UUID) | 主键 |
+| name | TEXT | 用户名 |
+| role | TEXT | expert / developer / admin |
+| created_at | DATETIME | 创建时间 |
+
+## API 端点
+
+### 业务知识 (biz_kl)
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/biz | 列表（支持搜索、状态筛选） |
+| GET | /api/biz/{id} | 详情（含关联 sys_kl、版本历史） |
+| POST | /api/biz | 创建条目 |
+| PUT | /api/biz/{id} | 更新条目 |
+| POST | /api/biz/{id}/submit | 提交审核 |
+| POST | /api/biz/{id}/publish | 发布（审核者权限） |
+
+### 系统知识 (sys_kl)
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/sys | 列表（支持搜索、层级筛选） |
+| GET | /api/sys/{id} | 详情（含关联 biz_kl） |
+| POST | /api/sys | 创建条目 |
+| PUT | /api/sys/{id} | 更新条目 |
+| POST | /api/sys/{id}/link | 添加 biz_kl 关联 |
+| DELETE | /api/sys/{id}/link/{link_id} | 删除关联 |
+
+### 知识包
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/packages?biz_ids=... | 按 biz_kl 条目生成知识包（JSON） |
+| GET | /api/packages/{biz_ids}.md | Markdown 格式导出 |
+
+### 审计日志
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/audit | 列表（支持条目/操作人/时间筛选） |
+
+## 前端页面（HTMX 服务端渲染）
+
+| 路径 | 说明 |
+|------|------|
+| / | 知识列表首页（biz_kl / sys_kl tab 切换） |
+| /biz | 业务知识列表 |
+| /biz/{id} | 业务条目详情 |
+| /sys | 系统知识列表 |
+| /sys/{id} | 系统条目详情 |
+| /export | 知识包导出页 |
+| /audit | 审计日志页 |
+
+## 知识包 JSON Schema
+
+```json
+{
+  &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+  &quot;title&quot;: &quot;KnowledgePackage&quot;,
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;required&quot;: [&quot;version&quot;, &quot;generated_at&quot;, &quot;biz_kl&quot;, &quot;sys_kl&quot;, &quot;links&quot;],
+  &quot;properties&quot;: {
+    &quot;version&quot;: { &quot;type&quot;: &quot;string&quot; },
+    &quot;generated_at&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;date-time&quot; },
+    &quot;biz_kl&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [&quot;id&quot;, &quot;name&quot;, &quot;type&quot;, &quot;status&quot;],
+        &quot;properties&quot;: {
+          &quot;id&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;name&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;type&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;概念&quot;, &quot;流程&quot;, &quot;规则&quot;] },
+          &quot;description&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;tags&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot; } },
+          &quot;status&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;version&quot;: { &quot;type&quot;: &quot;integer&quot; }
+        }
+      }
+    },
+    &quot;sys_kl&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [&quot;id&quot;, &quot;name&quot;, &quot;layer&quot;],
+        &quot;properties&quot;: {
+          &quot;id&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;name&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;layer&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;domain&quot;, &quot;application&quot;, &quot;infrastructure&quot;] },
+          &quot;description&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;file_path&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;linked_biz&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot; } }
+        }
+      }
+    },
+    &quot;links&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;items&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [&quot;biz_id&quot;, &quot;sys_id&quot;],
+        &quot;properties&quot;: {
+          &quot;biz_id&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;sys_id&quot;: { &quot;type&quot;: &quot;string&quot; }
+        }
+      }
+    },
+    &quot;lineage&quot;: {
+      &quot;type&quot;: &quot;object&quot;,
+      &quot;additionalProperties&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+          &quot;created_by&quot;: { &quot;type&quot;: &quot;string&quot; },
+          &quot;created_at&quot;: { &quot;type&quot;: &quot;string&quot; }
+        }
+      }
+    }
+  }
+}
+```
+
+## 安全与权限
+
+MVP 阶段权限为简化模型：
+
+- 领域专家：创建/编辑/提交 biz_kl 条目
+- 开发者：创建/编辑 sys_kl 条目、导出知识包
+- 管理员：审核 biz_kl 条目、管理用户角色、查看审计日志
+
+MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证（内部工具）。权限校验在服务层完成。
+
+## 决策
+
+| 决策 | 理由 |
+|------|------|
+| SQLite 而非 PostgreSQL | MVP 阶段 ≤10 用户，单文件数据库足够 |
+| UUID 文本主键 | 避免暴露递增 ID，便于后续分布式迁移 |
+| 版本号为简单整数 | MVP 不做完整 Git-like 版本树 |
+| 互链为独立表 | 支持多对多，便于审计和查询 |
+| HTMX 而非 SPA | 避免前端构建工具链，降低 MVP 复杂度 |
+</pre>
+<h3>openspec/tasks.md</h3><pre class="md-source"># Tasks: 产品知识平台 MVP
+
+&gt; 参考 `03-prd.md` 用户故事，垂直切片组织。每个任务包含文件路径、验证步骤、完成标准。
+
+---
+
+## T1: 项目骨架 + SQLite 数据库初始化
+
+- **对应故事**: 基础设施
+- **文件**: `04-mvp/app.py`, `04-mvp/models.py`, `04-mvp/schema.sql`, `04-mvp/requirements.txt`
+- **步骤**:
+  1. 创建 FastAPI 项目结构（app.py 入口 + models.py 数据模型 + schema.sql）
+  2. 编写 schema.sql 定义 5 张表（biz_kl_items, sys_kl_items, kl_links, audit_logs, users）
+  3. 在 app.py 中初始化 SQLite 连接，启动时自动执行 schema.sql
+  4. 创建 requirements.txt（fastapi, uvicorn）
+- **验证**: `python 04-mvp/app.py` 启动成功，SQLite 文件已创建且包含 5 张表
+- **完成标准**: 服务启动返回 200，数据库表结构符合 `openspec/design.md`
+
+---
+
+## T2: biz_kl 条目 CRUD API
+
+- **对应故事**: US-1
+- **文件**: `04-mvp/app.py`（路由 + handler）, `04-mvp/test_biz_api.py`
+- **步骤**:
+  1. 实现 `POST /api/biz` 创建条目（draft 状态）
+  2. 实现 `GET /api/biz` 列表查询（支持 `?status=` 和 `?q=` 搜索）
+  3. 实现 `GET /api/biz/{id}` 详情查询
+  4. 实现 `PUT /api/biz/{id}` 更新（version +1）
+  5. 每次操作写入 audit_logs
+  6. 编写 6+ 测试用例
+- **验证**: `pytest 04-mvp/test_biz_api.py` 全部通过
+- **完成标准**: 创建→查询→更新→列表搜索 全链路可用，audit_logs 有记录
+
+---
+
+## T3: biz_kl 审核流程 API
+
+- **对应故事**: US-1
+- **文件**: `04-mvp/app.py`, `04-mvp/test_biz_review.py`
+- **步骤**:
+  1. 实现 `POST /api/biz/{id}/submit`（draft → reviewing）
+  2. 实现 `POST /api/biz/{id}/publish`（reviewing → published，仅 admin）
+  3. 权限校验：publish 检查 `X-User-Id` 对应角色为 admin
+  4. 编写测试：正常流程 + 权限拒绝场景
+- **验证**: `pytest 04-mvp/test_biz_review.py` 全部通过
+- **完成标准**: 草稿→提交审核→发布 全链路可用，非 admin 调用 publish 返回 403
+
+---
+
+## T4: sys_kl 条目 CRUD API
+
+- **对应故事**: US-2
+- **文件**: `04-mvp/app.py`, `04-mvp/test_sys_api.py`
+- **步骤**:
+  1. 实现 `POST /api/sys` 创建条目（draft 状态，含 DDD layer）
+  2. 实现 `GET /api/sys` 列表（支持 `?layer=` 筛选）
+  3. 实现 `GET /api/sys/{id}` 详情
+  4. 实现 `PUT /api/sys/{id}` 更新
+  5. 编写 6+ 测试用例
+- **验证**: `pytest 04-mvp/test_sys_api.py` 全部通过
+- **完成标准**: 创建→查询→更新→按层级筛选 全链路可用
+
+---
+
+## T5: biz_kl ↔ sys_kl 互链管理 API
+
+- **对应故事**: US-2
+- **文件**: `04-mvp/app.py`, `04-mvp/test_links.py`
+- **步骤**:
+  1. 实现 `POST /api/sys/{id}/link` 添加关联（验证 biz_id 存在）
+  2. 实现 `DELETE /api/sys/{id}/link/{link_id}` 删除关联
+  3. `GET /api/biz/{id}` 响应包含关联 sys_kl 列表
+  4. `GET /api/sys/{id}` 响应包含关联 biz_kl 列表
+  5. 编写测试：正常关联 + 不存在的 biz_id 返回 404 + 双向查询
+- **验证**: `pytest 04-mvp/test_links.py` 全部通过
+- **完成标准**: 关联创建后双向查询均可返回对方条目
+
+---
+
+## T6: 知识包生成 API（JSON）
+
+- **对应故事**: US-3
+- **文件**: `04-mvp/app.py`, `04-mvp/test_package.py`
+- **步骤**:
+  1. 实现 `GET /api/packages?biz_ids=id1,id2` 生成 JSON 知识包
+  2. 自动查询关联 sys_kl + 组装 links + lineage
+  3. 仅包含 published 状态的条目
+  4. 输出符合 `openspec/design.md` JSON Schema
+  5. 编写测试：单条目 + 多条目 + 空结果
+- **验证**: `pytest 04-mvp/test_package.py` 全部通过，JSON 通过 Schema 校验
+- **完成标准**: 响应 JSON 包含 biz_kl / sys_kl / links / lineage 四部分
+
+---
+
+## T7: 知识包导出 API（Markdown）
+
+- **对应故事**: US-3
+- **文件**: `04-mvp/app.py`, `04-mvp/test_package_md.py`
+- **步骤**:
+  1. 实现 `GET /api/packages/{biz_ids}.md` 生成 Markdown 格式
+  2. 按业务概念分组，含关联代码模块表格
+  3. 编写测试：验证 Markdown 内容包含预期标题和表格
+- **验证**: `pytest 04-mvp/test_package_md.py` 通过，手动检查 Markdown 可读性
+- **完成标准**: 响应为 text/markdown，内容人类可读
+
+---
+
+## T8: 审计日志 API
+
+- **对应故事**: US-5
+- **文件**: `04-mvp/app.py`, `04-mvp/test_audit.py`
+- **步骤**:
+  1. 实现 `GET /api/audit` 查询日志（支持 `?item_id=`、`?actor_id=`、`?from=`、`?to=`）
+  2. 按 `created_at` 倒序排列
+  3. 所有 T2/T3/T4 的 API 操作已自动写入 audit_logs
+  4. 编写测试：创建条目后审计日志有记录 + 筛选功能
+- **验证**: `pytest 04-mvp/test_audit.py` 通过
+- **完成标准**: 执行 CRUD 操作后 `/api/audit` 返回对应记录
+
+---
+
+## T9: 前端 — 知识列表页（biz_kl / sys_kl tab 切换）
+
+- **对应故事**: US-4
+- **文件**: `04-mvp/templates/index.html`, `04-mvp/templates/biz_list.html`, `04-mvp/templates/sys_list.html`
+- **步骤**:
+  1. 使用 HTMX 实现 `/` 页面：顶部搜索栏 + biz_kl/sys_kl tab 切换
+  2. biz_kl 列表展示：名称、类型、状态 badge、标签、关联数
+  3. sys_kl 列表展示：名称、DDD 层级、路径、关联 biz_kl
+  4. 样式遵循 `04-mvp/DESIGN.md` 设计系统
+  5. 搜索框通过 HTMX 触发后端搜索
+- **验证**: 启动服务后浏览器访问 `/` 可正常展示列表和 tab 切换
+- **完成标准**: 列表页可展示已发布的 biz_kl 和 sys_kl 条目，搜索有结果
+
+---
+
+## T10: 前端 — 条目详情页
+
+- **对应故事**: US-4
+- **文件**: `04-mvp/templates/biz_detail.html`, `04-mvp/templates/sys_detail.html`
+- **步骤**:
+  1. biz 详情页：展示完整信息、关联 sys_kl 卡片列表、版本历史
+  2. sys 详情页：展示完整信息、关联 biz_kl 卡片列表
+  3. 详情页支持「编辑」和「提交审核」操作（HTMX 局部更新）
+  4. 关联条目可点击跳转到对方详情页
+- **验证**: 点击列表项进入详情页，关联条目可互相跳转
+- **完成标准**: 详情页展示完整信息，双向链接可点击
+
+---
+
+## T11: 前端 — 知识包导出页
+
+- **对应故事**: US-3
+- **文件**: `04-mvp/templates/export.html`
+- **步骤**:
+  1. 实现 `/export` 页面：多选 biz_kl 条目（checkbox）
+  2. JSON/Markdown 格式切换按钮
+  3. 实时预览区展示生成的内容
+  4. 「下载知识包」按钮触发文件下载
+- **验证**: 选择条目后预览区显示对应 JSON/Markdown，下载按钮可下载文件
+- **完成标准**: 导出页可生成并下载知识包
+
+---
+
+## T12: 前端 — 审计日志页
+
+- **对应故事**: US-5
+- **文件**: `04-mvp/templates/audit.html`
+- **步骤**:
+  1. 实现 `/audit` 页面：表格展示操作记录
+  2. 支持按条目 ID、操作人、时间范围筛选
+  3. 仅 admin 角色可见（通过 HTMX 条件渲染）
+- **验证**: admin 用户访问 `/audit` 可看到日志表格和筛选器
+- **完成标准**: 审计日志页面功能完整
+
+---
+
+## T13: 种子数据 + 冒烟测试脚本
+
+- **对应故事**: 全部
+- **文件**: `04-mvp/seed_data.py`, `04-mvp/smoke_test.py`
+- **步骤**:
+  1. seed_data.py：插入 5 条 biz_kl + 5 条 sys_kl + 互链 + 模拟用户
+  2. smoke_test.py：验证所有 API 端点返回 2xx
+  3. 包含知识包导出 + 审计日志查询验证
+- **验证**: `python 04-mvp/seed_data.py` 成功后 `python 04-mvp/smoke_test.py` 全部通过
+- **完成标准**: 冒烟测试覆盖所有 API 端点，无 4xx/5xx
+
+---
+
+## T14: 批量导入（Markdown 模板）
+
+- **对应故事**: US-1, US-2
+- **文件**: `04-mvp/app.py`, `04-mvp/test_import.py`, `04-mvp/templates/import.html`
+- **步骤**:
+  1. 实现 `POST /api/import/biz` 从 Markdown 文件批量导入 biz_kl 草稿
+  2. Markdown 格式：`# 名称\n\n描述\n\n类型: 流程\n标签: tag1, tag2`
+  3. 实现前端 `/import` 页面：上传 Markdown 文件，预览导入结果
+  4. 编写测试：有效文件 + 格式错误文件
+- **验证**: `pytest 04-mvp/test_import.py` 通过
+- **完成标准**: 上传符合格式的 Markdown 文件后，批量创建草稿条目
+
+---
+
+## T15: README + 部署说明
+
+- **对应故事**: 基础设施
+- **文件**: `04-mvp/README.md`, `04-mvp/run.sh`
+- **步骤**:
+  1. README.md 包含：产品简介、技术栈、安装步骤、启动命令、API 文档链接
+  2. run.sh：一键启动脚本（安装依赖 → 初始化数据库 → 插入种子数据 → 启动服务）
+  3. 验证在新环境中 `bash run.sh` 可完整启动
+- **验证**: 新目录中 `bash run.sh` 成功启动，浏览器访问 `/` 正常
+- **完成标准**: README 清晰，一键启动脚本工作正常
+</pre>
+<h3>openspec/specs/audit-and-permissions.md</h3><pre class="md-source"># Spec: 审计日志与权限管理
+
+## ADDED
+
+### 审计日志数据模型
+
+系统 SHALL 记录所有条目操作的审计日志，包含：
+
+- `id`：UUID 主键
+- `item_type`：biz_kl / sys_kl
+- `item_id`：关联条目 ID
+- `action`：create / update / submit / publish / reject
+- `actor_id`：操作人用户 ID
+- `details`：JSON 格式操作详情（变更前后值）
+- `created_at`：操作时间戳
+
+### 审计日志 API
+
+- `GET /api/audit`：查询审计日志
+  - 支持 `?item_id=`、`?actor_id=`、`?from=`、`?to=` 筛选
+  - 按 `created_at` 倒序排列
+
+### 审计日志页面
+
+- `/audit`：审计日志页面（仅 admin 角色可见）
+  - 表格展示：条目 ID、操作类型、操作人、时间
+  - 支持按条目、操作人、时间范围筛选
+
+### 用户管理（MVP 简化）
+
+- `users` 表存储用户基本信息（id, name, role）
+- 角色：expert（领域专家）/ developer（开发者）/ admin（管理员）
+- MVP 阶段通过请求头 `X-User-Id` 传递用户标识，不做认证
+- 管理员可修改用户角色（记录在审计日志中）
+- 权限校验在服务层完成：
+  - `publish` biz_kl：仅 admin
+  - 创建/编辑 biz_kl：expert
+  - 创建/编辑 sys_kl：developer
+  - 导出知识包：developer / admin
+  - 查看审计日志：admin
+</pre>
+<h3>openspec/specs/biz-kl-management.md</h3><pre class="md-source"># Spec: biz_kl 知识库管理
+
+## ADDED
+
+### 业务条目数据模型
+
+系统 SHALL 存储 biz_kl 条目，包含以下字段：
+
+- `id`：UUID 文本主键
+- `name`：条目名称（必填）
+- `description`：Markdown 格式描述
+- `type`：枚举 — 概念 / 流程 / 规则
+- `tags`：JSON 字符串数组
+- `status`：枚举 — draft / reviewing / published / archived
+- `version`：整数，每次修改 +1
+- `created_by` / `created_at` / `updated_at`：审计字段
+
+### 条目 CRUD API
+
+- `POST /api/biz`：创建条目，初始状态为 `draft`，记录审计日志
+- `GET /api/biz`：列表查询，支持 `?status=` 筛选、`?q=` 关键词搜索（name + description + tags）
+- `GET /api/biz/{id}`：返回条目详情、关联 sys_kl 列表、版本历史
+- `PUT /api/biz/{id}`：更新条目，版本号 +1，记录审计日志
+
+### 审核流程
+
+- `POST /api/biz/{id}/submit`：将状态从 `draft` 改为 `reviewing`，记录审计日志
+- `POST /api/biz/{id}/publish`：仅 admin 角色可操作，将状态从 `reviewing` 改为 `published`
+- 发布后的条目不可直接编辑，需通过创建新版本的方式
+
+### 版本历史
+
+每次 `PUT /api/biz/{id}` 更新操作 SHALL 在 audit_logs 中记录变更详情（旧值与新值对比）。
+`GET /api/biz/{id}` 的响应 SHALL 包含该条目的版本历史列表。
+
+### 前端页面
+
+- `/biz`：业务知识列表页，支持状态筛选和搜索
+- `/biz/{id}`：条目详情页，展示完整信息、关联 sys_kl、版本历史
+- 列表页支持「创建业务知识条目」按钮，打开创建表单
+- 详情页支持「编辑」和「提交审核」操作
+</pre>
+<h3>openspec/specs/knowledge-package-export.md</h3><pre class="md-source"># Spec: 知识包导出
+
+## ADDED
+
+### 知识包生成 API
+
+- `GET /api/packages?biz_ids=id1,id2,...`：按选中的 biz_kl 条目 ID 生成知识包
+  - 自动查询这些条目关联的所有 sys_kl 条目
+  - 返回符合 JSON Schema 的完整知识包（biz_kl + sys_kl + links + lineage）
+  - 响应头 `Content-Type: application/json`
+
+- `GET /api/packages/{biz_ids}.md`：同上，但返回 Markdown 格式
+  - 按业务概念分组
+  - 每条包含概念描述、关联代码模块、变更历史
+  - 响应头 `Content-Type: text/markdown`
+
+### JSON Schema 验证
+
+知识包 JSON 输出 SHALL 符合 `openspec/design.md` 中定义的 `KnowledgePackage` JSON Schema。
+
+### 前端导出页
+
+- `/export`：知识包导出页
+  - 展示已发布的 biz_kl 条目列表，支持多选
+  - 格式切换：JSON（Agent 消费）/ Markdown（人工审阅）
+  - 实时预览生成的内容
+  - 「下载知识包」按钮触发文件下载
+  - 「复制到剪贴板」按钮
+
+### 知识包内容组装规则
+
+1. 选中的 biz_kl 条目直接包含
+2. 通过 `kl_links` 表查询所有关联的 sys_kl 条目
+3. 计算 lineage：从 biz_kl 和 sys_kl 的 created_by / created_at 字段组装
+4. 仅包含 status 为 `published` 的条目
+</pre>
+<h3>openspec/specs/sys-kl-management.md</h3><pre class="md-source"># Spec: sys_kl 知识库管理
+
+## ADDED
+
+### 系统条目数据模型
+
+系统 SHALL 存储 sys_kl 条目，包含以下字段：
+
+- `id`：UUID 文本主键
+- `name`：条目名称（必填）
+- `description`：Markdown 格式模块职责描述
+- `layer`：枚举 — domain / application / infrastructure（DDD 分层）
+- `file_path`：代码路径字符串
+- `status`：枚举 — draft / published / archived
+- `created_by` / `created_at` / `updated_at`：审计字段
+
+### 条目 CRUD API
+
+- `POST /api/sys`：创建条目，初始状态为 `draft`
+- `GET /api/sys`：列表查询，支持 `?layer=` 筛选、`?q=` 关键词搜索
+- `GET /api/sys/{id}`：返回条目详情、关联 biz_kl 列表
+- `PUT /api/sys/{id}`：更新条目，记录审计日志
+
+### 互链管理
+
+- `POST /api/sys/{id}/link`：添加 biz_kl 关联，请求体 `{&quot;biz_id&quot;: &quot;...&quot;}`，在 `kl_links` 表中创建记录
+- `DELETE /api/sys/{id}/link/{link_id}`：删除关联
+- 添加关联时 SHALL 验证 biz_id 对应的条目存在
+- `GET /api/sys/{id}` 响应 SHALL 包含关联 biz_kl 条目列表
+
+### 前端页面
+
+- `/sys`：系统知识列表页，支持 DDD 层级筛选和搜索
+- `/sys/{id}`：条目详情页，展示完整信息和关联 biz_kl
+- 列表页支持「创建系统知识条目」按钮
+- 详情页支持「添加关联」操作，提供 biz_kl 搜索选择器
 </pre></div>
   <div class="panel" id="mvp-panel"><p><em>MVP not built yet.</em></p></div>
-  <div class="panel" id="proto-panel"><p><em>No static prototype (02b-prototype/index.html) yet.</em></p></div>
+  <div class="panel" id="proto-panel"><iframe class="proto-frame" src="prototype/index.html" title="prototype"></iframe></div>
 
   <script>
     const tabs = document.querySelectorAll('.tab');

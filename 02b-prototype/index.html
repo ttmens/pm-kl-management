@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品知识平台 — KL Management</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-hover: #1e40af;
+    --surface: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-secondary: #64748b;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --biz-accent: #7c3aed;
+    --sys-accent: #0891b2;
+    --radius: 4px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--text); line-height: 1.5; font-size: 14px; }
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Layout */
+  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  .topbar .logo { font-weight: 700; font-size: 16px; white-space: nowrap; }
+  .topbar .logo span.biz { color: var(--biz-accent); }
+  .topbar .logo span.sys { color: var(--sys-accent); }
+  .search-box { flex: 1; max-width: 480px; position: relative; }
+  .search-box input { width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: var(--surface); }
+  .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+  .topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); text-decoration: none; }
+  .btn-secondary { background: var(--card); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { background: var(--surface); text-decoration: none; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+  /* Screens */
+  .screen { display: none; padding: 16px; max-width: 960px; margin: 0 auto; }
+  .screen.active { display: block; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .tab { padding: 10px 20px; cursor: pointer; font-weight: 500; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--primary); }
+  .tab.active.biz-tab { border-bottom-color: var(--biz-accent); color: var(--biz-accent); }
+  .tab.active.sys-tab { border-bottom-color: var(--sys-accent); color: var(--sys-accent); }
+
+  /* Cards / List */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin-bottom: 12px; }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .card-title { font-weight: 600; font-size: 15px; }
+  .card-desc { color: var(--text-secondary); font-size: 13px; margin-bottom: 8px; }
+  .card-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .badge-published { background: #d1fae5; color: var(--success); }
+  .badge-review { background: #fef3c7; color: var(--warning); }
+  .badge-draft { background: #f1f5f9; color: var(--text-secondary); }
+  .badge-biz { background: #ede9fe; color: var(--biz-accent); }
+  .badge-sys { background: #cffafe; color: var(--sys-accent); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .dot-green { background: var(--success); }
+  .dot-yellow { background: var(--warning); }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; color: var(--text-secondary); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--border); font-weight: 600; color: var(--text-secondary); font-size: 12px; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #f0f7ff; }
+
+  /* Link indicator */
+  .link-chain { color: var(--primary); font-size: 12px; }
+
+  /* Export panel */
+  .export-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .export-panel h3 { margin-bottom: 12px; }
+  .format-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+  .format-btn { padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); cursor: pointer; font-size: 13px; }
+  .format-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .export-preview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; overflow-x: auto; white-space: pre; max-height: 400px; }
+
+  /* Detail view */
+  .detail-section { margin-bottom: 16px; }
+  .detail-section h4 { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .detail-links { display: flex; flex-direction: column; gap: 8px; }
+  .detail-link-card { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+  .detail-link-card:hover { border-color: var(--primary); }
+
+  /* Version history */
+  .version-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .version-time { color: var(--text-secondary); min-width: 140px; }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .topbar { flex-wrap: wrap; }
+    .search-box { order: 3; max-width: 100%; flex-basis: 100%; }
+    .topbar-actions { margin-left: 0; }
+    .tabs { overflow-x: auto; }
+    .tab { white-space: nowrap; padding: 10px 14px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 6px; }
+    .card-meta { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="logo"><span class="biz">biz</span>_<span class="sys">kl</span> 知识平台</div>
+  <div class="search-box"><input type="text" placeholder="搜索业务知识、系统模块…" id="searchInput"></div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-export')">📦 导出知识包</button>
+  </div>
+</div>
+
+<!-- Screen 1: Knowledge List (default) -->
+<div class="screen active" id="screen-list">
+  <div class="tabs">
+    <div class="tab active biz-tab" onclick="switchTab(this, 'biz')">📋 业务知识 (biz_kl)</div>
+    <div class="tab" onclick="switchTab(this, 'sys')">⚙️ 系统知识 (sys_kl)</div>
+  </div>
+
+  <!-- Biz KL list -->
+  <div id="list-biz">
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-biz">biz_kl</span>
+        <span class="card-title">订单履约流程 — 正向履约</span>
+        <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
+      </div>
+      <div class="card-desc">描述从客户下单到仓库发货的完整正向履约流程，包含订单创建、库存预占、波次生成、拣货、包装、出库六个阶段。</div>
+      <div class="card-meta">
+        <span class="tag">📌 流程</span>
+        <span class="tag">📌 履约</span>
+        <span>关联 3 个系统模块</span>
+        <span>v2 · 2026-06-05 由 张工 更新</span>
+      </div>
+      <div style="margin-top:8px"><a href="#" onclick="showScreen('screen-detail');return false" class="btn btn-secondary btn-sm">查看详情 →</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-biz">biz_kl</span>
+        <span class="card-title">供应商结算规则 — 月度对账</span>
+        <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
+      </div>
+      <div class="card-desc">每月 5 号自动生成对账单，包含采购入库金额、退货扣款、返利计算、账期调整四项核心规则。</div>
+      <div class="card-meta">
+        <span class="tag">📌 规则</span>
+        <span class="tag">📌 结算</span>
+        <span>关联 2 个系统模块</span>
+        <span>v1 · 2026-06-03 由 李产品 创建</span>
+      </div>
+      <div style="margin-top:8px"><a href="#" onclick="showScreen('screen-detail');return false" class="btn btn-secondary btn-sm">查看详情 →</a></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-biz">biz_kl</span>
+        <span class="card-title">库存预警阈值策略</span>
+        <span class="badge badge-review"><span class="dot dot-yellow"></span> 审核中</span>
+      </div>
+      <div class="card-desc">定义安全库存、最低库存、最高库存三级预警阈值，以及触发预警后的自动补货建议逻辑。</div>
+      <div class="card-meta">
+        <span class="tag">📌 规则</span>
+        <span class="tag">📌 库存</span>
+        <span>待审核 · 2026-06-07 由 王工 提交</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <button class="btn btn-primary" onclick="alert('原型：点击后打开创建 biz_kl 条目表单')">＋ 创建业务知识条目</button>
+    </div>
+  </div>
+
+  <!-- Sys KL list -->
+  <div id="list-sys" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-sys">sys_kl</span>
+        <span class="card-title">order_service.py — OrderManager 类</span>
+        <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
+      </div>
+      <div class="card-desc">领域层核心类，负责订单创建、状态流转、库存预占协调。包含 12 个公共方法，被 3 个应用层服务调用。</div>
+      <div class="card-meta">
+        <span class="tag">🏗️ 领域层</span>
+        <span><span class="link-chain">🔗 关联: 订单履约流程 — 正向履约</span></span>
+        <span>路径: supply/order/order_service.py</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-sys">sys_kl</span>
+        <span class="card-title">settlement_cron.py — 月度对账定时任务</span>
+        <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
+      </div>
+      <div class="card-desc">每月 5 号 02:00 执行的定时任务，调用对账服务生成账单，异常时发送飞书告警。</div>
+      <div class="card-meta">
+        <span class="tag">🏗️ 应用层</span>
+        <span><span class="link-chain">🔗 关联: 供应商结算规则 — 月度对账</span></span>
+        <span>路径: supply/settlement/settlement_cron.py</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="badge badge-sys">sys_kl</span>
+        <span class="card-title">redis_cache.py — 库存缓存模块</span>
+        <span class="badge badge-draft"><span class="dot" style="background:var(--text-secondary)"></span> 草稿</span>
+      </div>
+      <div class="card-desc">基于 Redis 的库存读写缓存，支持 TTL 过期、缓存击穿防护、双写一致性。</div>
+      <div class="card-meta">
+        <span class="tag">🏗️ 基础设施层</span>
+        <span>路径: supply/common/redis_cache.py</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <button class="btn btn-primary" onclick="alert('原型：点击后打开创建 sys_kl 条目表单')">＋ 创建系统知识条目</button>
+    </div>
+  </div>
+</div>
+
+<!-- Screen 2: Detail View -->
+<div class="screen" id="screen-detail">
+  <div style="margin-bottom:12px">
+    <a href="#" onclick="showScreen('screen-list');return false">← 返回列表</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-biz">biz_kl</span>
+      <span class="card-title">订单履约流程 — 正向履约</span>
+      <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
+    </div>
+    <div class="card-desc" style="font-size:14px; color:var(--text)">
+      描述从客户下单到仓库发货的完整正向履约流程。<br><br>
+      <strong>六个阶段：</strong><br>
+      1. <strong>订单创建</strong> — 接收客户订单，校验商品可用性<br>
+      2. <strong>库存预占</strong> — 锁定对应仓库 SKU 库存<br>
+      3. <strong>波次生成</strong> — 按仓库/时效合并订单生成波次<br>
+      4. <strong>拣货</strong> — 生成拣货单，仓库人员按路径拣货<br>
+      5. <strong>包装</strong> — 校验商品与订单一致性，打包装箱<br>
+      6. <strong>出库</strong> — 交接物流公司，更新物流单号
+    </div>
+    <div class="card-meta" style="margin-bottom:16px">
+      <span class="tag">📌 流程</span>
+      <span class="tag">📌 履约</span>
+      <span>v2 · 2026-06-05 由 张工 更新</span>
+    </div>
+
+    <div class="detail-section">
+      <h4>🔗 关联系统模块 (sys_kl)</h4>
+      <div class="detail-links">
+        <div class="detail-link-card">
+          <span class="badge badge-sys">sys_kl</span>
+          <div>
+            <div style="font-weight:600;font-size:13px">order_service.py — OrderManager 类</div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 领域层 · supply/order/order_service.py</div>
+          </div>
+        </div>
+        <div class="detail-link-card">
+          <span class="badge badge-sys">sys_kl</span>
+          <div>
+            <div style="font-weight:600;font-size:13px">wave_generator.py — 波次生成服务</div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 应用层 · supply/wave/wave_generator.py</div>
+          </div>
+        </div>
+        <div class="detail-link-card">
+          <span class="badge badge-sys">sys_kl</span>
+          <div>
+            <div style="font-weight:600;font-size:13px">outbound_api.py — 出库回调接口</div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 基础设施层 · supply/outbound/outbound_api.py</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h4>📜 版本历史</h4>
+      <div class="version-item">
+        <span class="version-time">2026-06-05 14:30</span>
+        <span><strong>张工</strong> 更新了阶段 4 拣货逻辑</span>
+      </div>
+      <div class="version-item">
+        <span class="version-time">2026-06-01 09:15</span>
+        <span><strong>张工</strong> 创建条目并发布 v1</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px; display:flex; gap:8px">
+    <button class="btn btn-primary btn-sm" onclick="showScreen('screen-export')">📦 加入知识包导出</button>
+    <button class="btn btn-secondary btn-sm">✏️ 编辑</button>
+  </div>
+</div>
+
+<!-- Screen 3: Export Knowledge Package -->
+<div class="screen" id="screen-export">
+  <div style="margin-bottom:12px">
+    <a href="#" onclick="showScreen('screen-list');return false">← 返回列表</a>
+  </div>
+
+  <div class="export-panel">
+    <h3>📦 导出知识包</h3>
+    <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">选择已发布的 biz_kl 条目，系统将自动关联其 sys_kl 条目和互链关系，生成可给 Agent 使用的知识包。</p>
+
+    <div style="margin-bottom:16px">
+      <strong>选择业务知识条目：</strong>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface);border-radius:var(--radius);cursor:pointer">
+          <input type="checkbox" checked> <span class="badge badge-biz">biz_kl</span> 订单履约流程 — 正向履约（关联 3 个模块）
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface);border-radius:var(--radius);cursor:pointer">
+          <input type="checkbox"> <span class="badge badge-biz">biz_kl</span> 供应商结算规则 — 月度对账（关联 2 个模块）
+        </label>
+      </div>
+    </div>
+
+    <div class="format-toggle">
+      <button class="format-btn active" onclick="switchFormat(this,'json')">JSON（Agent 消费）</button>
+      <button class="format-btn" onclick="switchFormat(this,'md')">Markdown（人工审阅）</button>
+    </div>
+
+    <div class="export-preview" id="exportPreview">{
+  "version": "1.0",
+  "generated_at": "2026-06-07T10:30:00Z",
+  "biz_kl": [
+    {
+      "id": "biz-001",
+      "name": "订单履约流程 — 正向履约",
+      "type": "流程",
+      "description": "从客户下单到仓库发货的完整...",
+      "status": "published",
+      "version": 2
+    }
+  ],
+  "sys_kl": [
+    {
+      "id": "sys-001",
+      "name": "order_service.py — OrderManager",
+      "layer": "domain",
+      "path": "supply/order/order_service.py",
+      "linked_biz": ["biz-001"]
+    },
+    {
+      "id": "sys-004",
+      "name": "wave_generator.py",
+      "layer": "application",
+      "path": "supply/wave/wave_generator.py",
+      "linked_biz": ["biz-001"]
+    },
+    {
+      "id": "sys-007",
+      "name": "outbound_api.py",
+      "layer": "infrastructure",
+      "path": "supply/outbound/outbound_api.py",
+      "linked_biz": ["biz-001"]
+    }
+  ],
+  "links": [
+    {"biz_id": "biz-001", "sys_id": "sys-001"},
+    {"biz_id": "biz-001", "sys_id": "sys-004"},
+    {"biz_id": "biz-001", "sys_id": "sys-007"}
+  ],
+  "lineage": {
+    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" },
+    "sys-001": { "created_by": "赵开发", "created_at": "2026-06-02" }
+  }
+}</div>
+
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="alert('原型：下载知识包文件')">⬇️ 下载知识包</button>
+      <button class="btn btn-secondary" onclick="alert('原型：复制 JSON 到剪贴板')">📋 复制到剪贴板</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function switchTab(el, type) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active','biz-tab','sys-tab'));
+  el.classList.add('active');
+  if (type === 'biz') { el.classList.add('biz-tab'); } else { el.classList.add('sys-tab'); }
+  document.getElementById('list-biz').style.display = type === 'biz' ? 'block' : 'none';
+  document.getElementById('list-sys').style.display = type === 'sys' ? 'block' : 'none';
+}
+
+function switchFormat(el, fmt) {
+  document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const preview = document.getElementById('exportPreview');
+  if (fmt === 'md') {
+    preview.textContent = `# 知识包 — 产品知识平台
+
+> 生成时间: 2026-06-07T10:30:00Z
+
+## 业务概念：订单履约流程 — 正向履约
+
+**类型**: 流程 | **版本**: v2 | **状态**: 已发布
+
+### 描述
+从客户下单到仓库发货的完整正向履约流程，包含六个阶段。
+
+### 关联系统模块
+
+| 模块 | DDD 层级 | 路径 |
+|------|---------|------|
+| order_service.py — OrderManager | 领域层 | supply/order/order_service.py |
+| wave_generator.py — 波次生成服务 | 应用层 | supply/wave/wave_generator.py |
+| outbound_api.py — 出库回调接口 | 基础设施层 | supply/outbound/outbound_api.py |
+
+### 变更历史
+- 2026-06-05 张工：更新阶段 4 拣货逻辑
+- 2026-06-01 张工：创建并发布 v1`;
+  } else {
+    preview.textContent = `{
+  "version": "1.0",
+  "generated_at": "2026-06-07T10:30:00Z",
+  "biz_kl": [
+    {
+      "id": "biz-001",
+      "name": "订单履约流程 — 正向履约",
+      "type": "流程",
+      "description": "从客户下单到仓库发货的完整...",
+      "status": "published",
+      "version": 2
+    }
+  ],
+  "sys_kl": [
+    {
+      "id": "sys-001",
+      "name": "order_service.py — OrderManager",
+      "layer": "domain",
+      "path": "supply/order/order_service.py",
+      "linked_biz": ["biz-001"]
+    },
+    {
+      "id": "sys-004",
+      "name": "wave_generator.py",
+      "layer": "application",
+      "path": "supply/wave/wave_generator.py",
+      "linked_biz": ["biz-001"]
+    },
+    {
+      "id": "sys-007",
+      "name": "outbound_api.py",
+      "layer": "infrastructure",
+      "path": "supply/outbound/outbound_api.py",
+      "linked_biz": ["biz-001"]
+    }
+  ],
+  "links": [
+    {"biz_id": "biz-001", "sys_id": "sys-001"},
+    {"biz_id": "biz-001", "sys_id": "sys-004"},
+    {"biz_id": "biz-001", "sys_id": "sys-007"}
+  ],
+  "lineage": {
+    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" },
+    "sys-001": { "created_by": "赵开发", "created_at": "2026-06-02" }
+  }
+}`;
+  }
+}
+</script>
+</body>
+</html>
