@@ -2,15 +2,13 @@
   "run": "pm-kl-management",
   "path": "D:\\workspace\\projects\\pm-kl-management",
   "pipeline_version": "4.0.0",
-  "validated_at": "2026-06-07T11:23:43.387043+00:00",
+  "validated_at": "2026-06-07T11:33:31.984284+00:00",
   "stages": {
-    "architecture": {
+    "journey": {
       "pass": true,
       "checks": [
-        "c4_context",
-        "c4_container",
-        "c4_component",
-        "design_links_c4"
+        "personas>=49",
+        "screen_map"
       ],
       "notes": ""
     }

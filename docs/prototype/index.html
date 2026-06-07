@@ -3,38 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>产品知识平台 — KL Management</title>
+<title>产品知识平台 — KL Management (Refine)</title>
 <style>
   :root {
-    --primary: #1a56db;
-    --primary-hover: #1e40af;
-    --surface: #f8fafc;
-    --card: #ffffff;
-    --border: #e2e8f0;
-    --text: #0f172a;
-    --text-secondary: #64748b;
-    --success: #059669;
-    --warning: #d97706;
-    --danger: #dc2626;
-    --biz-accent: #7c3aed;
-    --sys-accent: #0891b2;
-    --radius: 4px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --primary: #1a56db; --primary-hover: #1e40af;
+    --surface: #f8fafc; --card: #ffffff; --border: #e2e8f0;
+    --text: #0f172a; --text-secondary: #64748b;
+    --success: #059669; --warning: #d97706; --danger: #dc2626;
+    --biz-accent: #7c3aed; --sys-accent: #0891b2;
+    --radius: 4px; --shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--text); line-height: 1.5; font-size: 14px; }
-  a { color: var(--primary); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a { color: var(--primary); text-decoration: none; } a:hover { text-decoration: underline; }
 
   /* Layout */
-  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
-  .topbar .logo { font-weight: 700; font-size: 16px; white-space: nowrap; }
-  .topbar .logo span.biz { color: var(--biz-accent); }
-  .topbar .logo span.sys { color: var(--sys-accent); }
-  .search-box { flex: 1; max-width: 480px; position: relative; }
-  .search-box input { width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: var(--surface); }
-  .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; }
-  .topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
+  .topbar .logo { font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .topbar .logo span.biz { color: var(--biz-accent); } .topbar .logo span.sys { color: var(--sys-accent); }
+  .search-box { flex: 1; max-width: 420px; position: relative; }
+  .search-box input { width: 100%; padding: 7px 12px 7px 34px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; background: var(--surface); }
+  .search-box::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; }
+  .topbar-actions { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+  .role-switcher { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+  .role-switcher select { padding: 4px 6px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; }
+
+  /* Nav pills */
+  .nav-pills { display: flex; gap: 4px; padding: 8px 16px; background: var(--card); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .nav-pill { padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-secondary); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; }
+  .nav-pill:hover { background: #e8ecf4; }
+  .nav-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .nav-pill.has-badge { position: relative; }
+  .nav-pill .badge-count { position: absolute; top: -4px; right: -4px; background: var(--danger); color: #fff; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
   /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
@@ -42,7 +42,13 @@
   .btn-primary:hover { background: var(--primary-hover); text-decoration: none; }
   .btn-secondary { background: var(--card); color: var(--text); border-color: var(--border); }
   .btn-secondary:hover { background: var(--surface); text-decoration: none; }
+  .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-warning { background: var(--warning); color: #fff; border-color: var(--warning); }
+  .btn-success { background: var(--success); color: #fff; border-color: var(--success); }
   .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-ghost { background: transparent; border: none; color: var(--text-secondary); padding: 4px 8px; }
+  .btn-ghost:hover { color: var(--text); background: var(--surface); }
 
   /* Screens */
   .screen { display: none; padding: 16px; max-width: 960px; margin: 0 auto; }
@@ -68,11 +74,11 @@
   .badge-published { background: #d1fae5; color: var(--success); }
   .badge-review { background: #fef3c7; color: var(--warning); }
   .badge-draft { background: #f1f5f9; color: var(--text-secondary); }
+  .badge-rejected { background: #fee2e2; color: var(--danger); }
   .badge-biz { background: #ede9fe; color: var(--biz-accent); }
   .badge-sys { background: #cffafe; color: var(--sys-accent); }
   .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-  .dot-green { background: var(--success); }
-  .dot-yellow { background: var(--warning); }
+  .dot-green { background: var(--success); } .dot-yellow { background: var(--warning); }
 
   /* Tags */
   .tag { display: inline-block; padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; color: var(--text-secondary); }
@@ -98,18 +104,38 @@
   .detail-section { margin-bottom: 16px; }
   .detail-section h4 { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
   .detail-links { display: flex; flex-direction: column; gap: 8px; }
-  .detail-link-card { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+  .detail-link-card { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; }
   .detail-link-card:hover { border-color: var(--primary); }
+  .link-type-label { font-size: 10px; padding: 1px 6px; border-radius: 100px; background: #dbeafe; color: var(--primary); font-weight: 600; }
 
   /* Version history */
-  .version-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .version-time { color: var(--text-secondary); min-width: 140px; }
+  .version-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; align-items: baseline; }
+  .version-time { color: var(--text-secondary); min-width: 140px; font-size: 12px; }
+  .version-badge { font-size: 11px; padding: 1px 6px; border-radius: 100px; background: #dbeafe; color: var(--primary); font-weight: 600; }
+
+  /* Review queue */
+  .review-card { border-left: 3px solid var(--warning); }
+  .review-diff { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-top: 8px; font-size: 12px; }
+  .diff-add { color: var(--success); } .diff-remove { color: var(--danger); text-decoration: line-through; }
+  .reject-reason { margin-top: 8px; }
+  .reject-reason textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; resize: vertical; min-height: 60px; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--card); border-radius: 8px; padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  .modal h3 { margin-bottom: 12px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+
+  /* BC tag */
+  .bc-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 500; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
 
   /* Mobile */
   @media (max-width: 640px) {
     .topbar { flex-wrap: wrap; }
     .search-box { order: 3; max-width: 100%; flex-basis: 100%; }
     .topbar-actions { margin-left: 0; }
+    .nav-pills { padding: 6px 12px; }
     .tabs { overflow-x: auto; }
     .tab { white-space: nowrap; padding: 10px 14px; }
     table { font-size: 12px; }
@@ -125,8 +151,26 @@
   <div class="logo"><span class="biz">biz</span>_<span class="sys">kl</span> 知识平台</div>
   <div class="search-box"><input type="text" placeholder="搜索业务知识、系统模块…" id="searchInput"></div>
   <div class="topbar-actions">
-    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-export')">📦 导出知识包</button>
+    <div class="role-switcher">
+      <label>角色:</label>
+      <select id="roleSelect" onchange="updateNav()">
+        <option value="expert">领域专家</option>
+        <option value="developer">开发者</option>
+        <option value="admin" selected>管理员</option>
+      </select>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-export')">📦 导出</button>
   </div>
+</div>
+
+<!-- Nav pills -->
+<div class="nav-pills">
+  <div class="nav-pill active" onclick="showScreen('screen-list');setNavPill(this)">📋 知识列表</div>
+  <div class="nav-pill has-badge" onclick="showScreen('screen-review');setNavPill(this)" id="nav-review">
+    ✅ 审批队列
+    <span class="badge-count">2</span>
+  </div>
+  <div class="nav-pill" onclick="showScreen('screen-audit');setNavPill(this)">📝 审计日志</div>
 </div>
 
 <!-- Screen 1: Knowledge List (default) -->
@@ -146,28 +190,11 @@
       </div>
       <div class="card-desc">描述从客户下单到仓库发货的完整正向履约流程，包含订单创建、库存预占、波次生成、拣货、包装、出库六个阶段。</div>
       <div class="card-meta">
-        <span class="tag">📌 流程</span>
-        <span class="tag">📌 履约</span>
+        <span class="tag">📌 流程</span><span class="tag">📌 履约</span>
         <span>关联 3 个系统模块</span>
         <span>v2 · 2026-06-05 由 张工 更新</span>
       </div>
-      <div style="margin-top:8px"><a href="#" onclick="showScreen('screen-detail');return false" class="btn btn-secondary btn-sm">查看详情 →</a></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="badge badge-biz">biz_kl</span>
-        <span class="card-title">供应商结算规则 — 月度对账</span>
-        <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
-      </div>
-      <div class="card-desc">每月 5 号自动生成对账单，包含采购入库金额、退货扣款、返利计算、账期调整四项核心规则。</div>
-      <div class="card-meta">
-        <span class="tag">📌 规则</span>
-        <span class="tag">📌 结算</span>
-        <span>关联 2 个系统模块</span>
-        <span>v1 · 2026-06-03 由 李产品 创建</span>
-      </div>
-      <div style="margin-top:8px"><a href="#" onclick="showScreen('screen-detail');return false" class="btn btn-secondary btn-sm">查看详情 →</a></div>
+      <div style="margin-top:8px"><button class="btn btn-secondary btn-sm" onclick="showScreen('screen-detail')">查看详情 →</button></div>
     </div>
 
     <div class="card">
@@ -178,70 +205,58 @@
       </div>
       <div class="card-desc">定义安全库存、最低库存、最高库存三级预警阈值，以及触发预警后的自动补货建议逻辑。</div>
       <div class="card-meta">
-        <span class="tag">📌 规则</span>
-        <span class="tag">📌 库存</span>
+        <span class="tag">📌 规则</span><span class="tag">📌 库存</span>
         <span>待审核 · 2026-06-07 由 王工 提交</span>
       </div>
     </div>
 
     <div style="margin-top:16px">
-      <button class="btn btn-primary" onclick="alert('原型：点击后打开创建 biz_kl 条目表单')">＋ 创建业务知识条目</button>
+      <button class="btn btn-primary" onclick="alert('原型：打开创建 biz_kl 表单')">＋ 创建业务知识条目</button>
     </div>
   </div>
 
-  <!-- Sys KL list -->
+  <!-- Sys KL list (with BC tags) -->
   <div id="list-sys" style="display:none">
     <div class="card">
       <div class="card-header">
         <span class="badge badge-sys">sys_kl</span>
-        <span class="card-title">order_service.py — OrderManager 类</span>
+        <span class="card-title">order_service.py — OrderManager</span>
         <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
       </div>
-      <div class="card-desc">领域层核心类，负责订单创建、状态流转、库存预占协调。包含 12 个公共方法，被 3 个应用层服务调用。</div>
+      <div class="card-desc">领域层核心类，负责订单创建、状态流转、库存预占协调。</div>
       <div class="card-meta">
         <span class="tag">🏗️ 领域层</span>
-        <span><span class="link-chain">🔗 关联: 订单履约流程 — 正向履约</span></span>
-        <span>路径: supply/order/order_service.py</span>
+        <span class="bc-tag">BC: 订单管理</span>
+        <span><span class="link-chain">🔗 implements → 订单履约流程</span></span>
+        <span>supply/order/order_service.py</span>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
         <span class="badge badge-sys">sys_kl</span>
-        <span class="card-title">settlement_cron.py — 月度对账定时任务</span>
+        <span class="card-title">settlement_cron.py — 月度对账</span>
         <span class="badge badge-published"><span class="dot dot-green"></span> 已发布</span>
       </div>
-      <div class="card-desc">每月 5 号 02:00 执行的定时任务，调用对账服务生成账单，异常时发送飞书告警。</div>
+      <div class="card-desc">每月 5 号 02:00 执行的定时任务，调用对账服务生成账单。</div>
       <div class="card-meta">
         <span class="tag">🏗️ 应用层</span>
-        <span><span class="link-chain">🔗 关联: 供应商结算规则 — 月度对账</span></span>
-        <span>路径: supply/settlement/settlement_cron.py</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="badge badge-sys">sys_kl</span>
-        <span class="card-title">redis_cache.py — 库存缓存模块</span>
-        <span class="badge badge-draft"><span class="dot" style="background:var(--text-secondary)"></span> 草稿</span>
-      </div>
-      <div class="card-desc">基于 Redis 的库存读写缓存，支持 TTL 过期、缓存击穿防护、双写一致性。</div>
-      <div class="card-meta">
-        <span class="tag">🏗️ 基础设施层</span>
-        <span>路径: supply/common/redis_cache.py</span>
+        <span class="bc-tag">BC: 供应商结算</span>
+        <span><span class="link-chain">🔗 implements → 供应商结算规则</span></span>
+        <span>supply/settlement/settlement_cron.py</span>
       </div>
     </div>
 
     <div style="margin-top:16px">
-      <button class="btn btn-primary" onclick="alert('原型：点击后打开创建 sys_kl 条目表单')">＋ 创建系统知识条目</button>
+      <button class="btn btn-primary" onclick="alert('原型：打开创建 sys_kl 表单（含 BC 选择器）')">＋ 创建系统知识条目</button>
     </div>
   </div>
 </div>
 
-<!-- Screen 2: Detail View -->
+<!-- Screen 2: Detail View (with withdraw + version history) -->
 <div class="screen" id="screen-detail">
   <div style="margin-bottom:12px">
-    <a href="#" onclick="showScreen('screen-list');return false">← 返回列表</a>
+    <button class="btn btn-ghost" onclick="showScreen('screen-list')">← 返回列表</button>
   </div>
 
   <div class="card">
@@ -261,8 +276,7 @@
       6. <strong>出库</strong> — 交接物流公司，更新物流单号
     </div>
     <div class="card-meta" style="margin-bottom:16px">
-      <span class="tag">📌 流程</span>
-      <span class="tag">📌 履约</span>
+      <span class="tag">📌 流程</span><span class="tag">📌 履约</span>
       <span>v2 · 2026-06-05 由 张工 更新</span>
     </div>
 
@@ -271,65 +285,96 @@
       <div class="detail-links">
         <div class="detail-link-card">
           <span class="badge badge-sys">sys_kl</span>
-          <div>
-            <div style="font-weight:600;font-size:13px">order_service.py — OrderManager 类</div>
-            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 领域层 · supply/order/order_service.py</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px">order_service.py — OrderManager <span class="link-type-label">implements</span></div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 领域层 · BC: 订单管理 · supply/order/order_service.py</div>
           </div>
         </div>
         <div class="detail-link-card">
           <span class="badge badge-sys">sys_kl</span>
-          <div>
-            <div style="font-weight:600;font-size:13px">wave_generator.py — 波次生成服务</div>
-            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 应用层 · supply/wave/wave_generator.py</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px">wave_generator.py — 波次生成 <span class="link-type-label">implements</span></div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 应用层 · BC: 订单管理 · supply/wave/wave_generator.py</div>
           </div>
         </div>
         <div class="detail-link-card">
           <span class="badge badge-sys">sys_kl</span>
-          <div>
-            <div style="font-weight:600;font-size:13px">outbound_api.py — 出库回调接口</div>
-            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 基础设施层 · supply/outbound/outbound_api.py</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px">outbound_api.py — 出库回调 <span class="link-type-label">open_host_service</span></div>
+            <div style="font-size:12px;color:var(--text-secondary)">🏗️ 基础设施层 · BC: 仓储物流 · supply/outbound/outbound_api.py</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="detail-section">
-      <h4>📜 版本历史</h4>
+      <h4>📜 版本历史 <span style="font-weight:400;text-transform:none;letter-spacing:0">(ADR-009)</span></h4>
       <div class="version-item">
         <span class="version-time">2026-06-05 14:30</span>
+        <span class="version-badge">v2</span>
         <span><strong>张工</strong> 更新了阶段 4 拣货逻辑</span>
+        <button class="btn btn-ghost btn-sm" onclick="showScreen('screen-version')" style="margin-left:auto">对比</button>
       </div>
       <div class="version-item">
         <span class="version-time">2026-06-01 09:15</span>
-        <span><strong>张工</strong> 创建条目并发布 v1</span>
+        <span class="version-badge">v1</span>
+        <span><strong>张工</strong> 创建并发布</span>
       </div>
     </div>
   </div>
 
-  <div style="margin-top:12px; display:flex; gap:8px">
+  <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
     <button class="btn btn-primary btn-sm" onclick="showScreen('screen-export')">📦 加入知识包导出</button>
-    <button class="btn btn-secondary btn-sm">✏️ 编辑</button>
+    <button class="btn btn-secondary btn-sm" onclick="alert('原型：打开编辑表单')">✏️ 编辑</button>
+    <button class="btn btn-warning btn-sm" onclick="openModal('modal-withdraw')">↩ 撤回</button>
+  </div>
+</div>
+
+<!-- Screen 2b: Version Comparison (ADR-009) -->
+<div class="screen" id="screen-version">
+  <div style="margin-bottom:12px">
+    <button class="btn btn-ghost" onclick="showScreen('screen-detail')">← 返回详情</button>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">版本对比: v1 → v2</span>
+      <span class="badge badge-biz">biz_kl</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+      2026-06-01 09:15 (v1) → 2026-06-05 14:30 (v2) · 操作人: 张工
+    </div>
+    <div class="review-diff">
+      <div><span class="diff-remove">4. ~~拣货~~ — 生成拣货单，仓库人员按<strong>固定路径</strong>拣货</span></div>
+      <div><span class="diff-add">4. 拣货 — 生成拣货单，仓库人员按<strong>最优路径</strong>拣货（新增路径优化算法）</span></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text-secondary)">
+      变更摘要: 1 处修改，0 处新增，0 处删除
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-detail')">回滚到 v1</button>
+    </div>
   </div>
 </div>
 
 <!-- Screen 3: Export Knowledge Package -->
 <div class="screen" id="screen-export">
   <div style="margin-bottom:12px">
-    <a href="#" onclick="showScreen('screen-list');return false">← 返回列表</a>
+    <button class="btn btn-ghost" onclick="showScreen('screen-list')">← 返回列表</button>
   </div>
-
   <div class="export-panel">
-    <h3>📦 导出知识包</h3>
-    <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">选择已发布的 biz_kl 条目，系统将自动关联其 sys_kl 条目和互链关系，生成可给 Agent 使用的知识包。</p>
+    <h3>📦 导出知识包 <span style="font-weight:400;font-size:13px;color:var(--text-secondary)">(仅 published · 权限感知 ADR-007)</span></h3>
+    <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px">选择已发布的 biz_kl 条目，系统自动关联其 sys_kl 条目和互链关系，按 BC 分组生成知识包。</p>
 
     <div style="margin-bottom:16px">
       <strong>选择业务知识条目：</strong>
       <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
         <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface);border-radius:var(--radius);cursor:pointer">
-          <input type="checkbox" checked> <span class="badge badge-biz">biz_kl</span> 订单履约流程 — 正向履约（关联 3 个模块）
+          <input type="checkbox" checked> <span class="badge badge-biz">biz_kl</span> 订单履约流程 — 正向履约
+          <span class="bc-tag" style="margin-left:auto">BC: 订单管理</span>
         </label>
         <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface);border-radius:var(--radius);cursor:pointer">
-          <input type="checkbox"> <span class="badge badge-biz">biz_kl</span> 供应商结算规则 — 月度对账（关联 2 个模块）
+          <input type="checkbox"> <span class="badge badge-biz">biz_kl</span> 供应商结算规则 — 月度对账
+          <span class="bc-tag" style="margin-left:auto">BC: 供应商结算</span>
         </label>
       </div>
     </div>
@@ -342,53 +387,141 @@
     <div class="export-preview" id="exportPreview">{
   "version": "1.0",
   "generated_at": "2026-06-07T10:30:00Z",
+  "bounded_context": "订单管理",
+  "access_control": { "role": "developer", "filter": "all_published" },
   "biz_kl": [
     {
-      "id": "biz-001",
-      "name": "订单履约流程 — 正向履约",
-      "type": "流程",
-      "description": "从客户下单到仓库发货的完整...",
-      "status": "published",
-      "version": 2
+      "id": "biz-001", "name": "订单履约流程 — 正向履约",
+      "type": "流程", "status": "published", "version": 2
     }
   ],
   "sys_kl": [
     {
-      "id": "sys-001",
-      "name": "order_service.py — OrderManager",
-      "layer": "domain",
+      "id": "sys-001", "name": "order_service.py — OrderManager",
+      "layer": "domain", "bounded_context": "订单管理",
       "path": "supply/order/order_service.py",
-      "linked_biz": ["biz-001"]
-    },
-    {
-      "id": "sys-004",
-      "name": "wave_generator.py",
-      "layer": "application",
-      "path": "supply/wave/wave_generator.py",
-      "linked_biz": ["biz-001"]
-    },
-    {
-      "id": "sys-007",
-      "name": "outbound_api.py",
-      "layer": "infrastructure",
-      "path": "supply/outbound/outbound_api.py",
-      "linked_biz": ["biz-001"]
+      "links": [{"biz_id": "biz-001", "type": "implements"}]
     }
   ],
-  "links": [
-    {"biz_id": "biz-001", "sys_id": "sys-001"},
-    {"biz_id": "biz-001", "sys_id": "sys-004"},
-    {"biz_id": "biz-001", "sys_id": "sys-007"}
-  ],
   "lineage": {
-    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" },
-    "sys-001": { "created_by": "赵开发", "created_at": "2026-06-02" }
+    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" }
   }
 }</div>
 
     <div style="margin-top:16px;display:flex;gap:8px">
-      <button class="btn btn-primary" onclick="alert('原型：下载知识包文件')">⬇️ 下载知识包</button>
-      <button class="btn btn-secondary" onclick="alert('原型：复制 JSON 到剪贴板')">📋 复制到剪贴板</button>
+      <button class="btn btn-primary" onclick="alert('原型：下载知识包文件')">⬇️ 下载</button>
+      <button class="btn btn-secondary" onclick="alert('原型：复制 JSON')">📋 复制</button>
+    </div>
+  </div>
+</div>
+
+<!-- Screen 4: Review Queue (ADR-006) -->
+<div class="screen" id="screen-review">
+  <div class="card" style="border-left:3px solid var(--primary);margin-bottom:16px">
+    <h3 style="margin-bottom:4px">✅ 审批者队列</h3>
+    <p style="color:var(--text-secondary);font-size:13px">以下条目等待审核。点击条目展开 diff 对比，选择发布或驳回。</p>
+  </div>
+
+  <div class="card review-card">
+    <div class="card-header">
+      <span class="badge badge-biz">biz_kl</span>
+      <span class="card-title">库存预警阈值策略</span>
+      <span class="badge badge-review"><span class="dot dot-yellow"></span> 审核中</span>
+    </div>
+    <div class="card-desc">定义安全库存、最低库存、最高库存三级预警阈值，以及触发预警后的自动补货建议逻辑。</div>
+    <div class="card-meta">
+      <span class="tag">📌 规则</span><span class="tag">📌 库存</span>
+      <span>2026-06-07 由 王工 提交</span>
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="toggleDiff(this)">📊 查看变更 diff</button>
+    </div>
+    <div class="review-diff" style="display:none">
+      <div><strong>新增内容:</strong></div>
+      <div class="diff-add">+ 安全库存 = 日均销量 × 7 天</div>
+      <div class="diff-add">+ 最低库存 = 安全库存 × 0.8</div>
+      <div class="diff-add">+ 最高库存 = 安全库存 × 2.0</div>
+      <div class="diff-add">+ 触发补货建议时，优先从最近仓库调拨</div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:flex-start">
+      <button class="btn btn-success btn-sm" onclick="alert('原型：发布成功')">✓ 发布</button>
+      <button class="btn btn-danger btn-sm" onclick="toggleReject(this)">✗ 驳回</button>
+    </div>
+    <div class="reject-reason" style="display:none">
+      <textarea placeholder="请输入驳回理由（将记录在审计日志中）…"></textarea>
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button class="btn btn-danger btn-sm" onclick="alert('原型：已驳回，理由已记录')">确认驳回</button>
+        <button class="btn btn-secondary btn-sm" onclick="this.closest('.reject-reason').style.display='none'">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card review-card">
+    <div class="card-header">
+      <span class="badge badge-biz">biz_kl</span>
+      <span class="card-title">退货逆向流程 — 质检标准</span>
+      <span class="badge badge-review"><span class="dot dot-yellow"></span> 审核中</span>
+    </div>
+    <div class="card-desc">定义退货商品的质检标准：外观完好、包装完整、配件齐全三项核心指标。</div>
+    <div class="card-meta">
+      <span class="tag">📌 流程</span><span class="tag">📌 售后</span>
+      <span>2026-06-06 由 李产品 提交</span>
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn btn-success btn-sm" onclick="alert('原型：发布成功')">✓ 发布</button>
+      <button class="btn btn-danger btn-sm" onclick="toggleReject(this)">✗ 驳回</button>
+    </div>
+    <div class="reject-reason" style="display:none">
+      <textarea placeholder="请输入驳回理由…"></textarea>
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button class="btn btn-danger btn-sm" onclick="alert('原型：已驳回')">确认驳回</button>
+        <button class="btn btn-secondary btn-sm" onclick="this.closest('.reject-reason').style.display='none'">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Screen 5: Audit Log -->
+<div class="screen" id="screen-audit">
+  <div class="card">
+    <h3 style="margin-bottom:12px">📝 审计日志</h3>
+
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <input type="text" placeholder="条目 ID" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;width:120px">
+      <input type="text" placeholder="操作人" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;width:100px">
+      <input type="date" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px">
+      <button class="btn btn-secondary btn-sm">筛选</button>
+    </div>
+
+    <table>
+      <thead><tr><th>时间</th><th>条目</th><th>操作</th><th>操作人</th><th>详情</th></tr></thead>
+      <tbody>
+        <tr><td>06-07 14:30</td><td><span class="badge badge-biz" style="font-size:10px">biz</span> 库存预警阈值</td><td><span class="badge badge-review" style="font-size:10px">提交审核</span></td><td>王工</td><td>—</td></tr>
+        <tr><td>06-07 10:15</td><td><span class="badge badge-biz" style="font-size:10px">biz</span> 订单履约流程</td><td><span class="badge badge-published" style="font-size:10px">更新</span></td><td>张工</td><td>更新拣货逻辑</td></tr>
+        <tr><td>06-06 16:00</td><td><span class="badge badge-biz" style="font-size:10px">biz</span> 退货逆向流程</td><td><span class="badge badge-rejected" style="font-size:10px">驳回</span></td><td>管理员</td><td>缺少异常处理描述</td></tr>
+        <tr><td>06-06 15:45</td><td><span class="badge badge-biz" style="font-size:10px">biz</span> 退货逆向流程</td><td><span class="badge badge-review" style="font-size:10px">提交审核</span></td><td>李产品</td><td>—</td></tr>
+        <tr><td>06-05 14:30</td><td><span class="badge badge-biz" style="font-size:10px">biz</span> 订单履约流程</td><td><span class="badge badge-published" style="font-size:10px">发布</span></td><td>张工</td><td>v2 发布</td></tr>
+        <tr><td>06-05 10:00</td><td><span class="badge badge-sys" style="font-size:10px">sys</span> order_service</td><td><span class="badge badge-published" style="font-size:10px">关联</span></td><td>赵开发</td><td>link_type: implements</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal-overlay" id="modal-withdraw">
+  <div class="modal">
+    <h3>↩ 撤回并回滚</h3>
+    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">撤回将把条目状态回滚到最近已发布版本（v1）。当前审核中的变更将保留为草稿副本，不会丢失。</p>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px">
+      <strong>回滚目标:</strong> v1 (2026-06-01)<br>
+      <strong>当前版本:</strong> v2 (审核中)
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-withdraw')">取消</button>
+      <button class="btn btn-warning btn-sm" onclick="closeModal('modal-withdraw');alert('原型：已撤回，回滚到 v1')">确认撤回</button>
     </div>
   </div>
 </div>
@@ -408,81 +541,88 @@ function switchTab(el, type) {
   document.getElementById('list-sys').style.display = type === 'sys' ? 'block' : 'none';
 }
 
+function setNavPill(el) {
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
 function switchFormat(el, fmt) {
   document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   const preview = document.getElementById('exportPreview');
   if (fmt === 'md') {
-    preview.textContent = `# 知识包 — 产品知识平台
+    preview.textContent = `# 知识包 — 产品知识平台 (BC: 订单管理)
 
 > 生成时间: 2026-06-07T10:30:00Z
+> 权限: developer | 过滤: 仅 published
 
 ## 业务概念：订单履约流程 — 正向履约
 
-**类型**: 流程 | **版本**: v2 | **状态**: 已发布
+**类型**: 流程 | **版本**: v2 | **状态**: 已发布 | **BC**: 订单管理
 
 ### 描述
 从客户下单到仓库发货的完整正向履约流程，包含六个阶段。
 
 ### 关联系统模块
 
-| 模块 | DDD 层级 | 路径 |
-|------|---------|------|
-| order_service.py — OrderManager | 领域层 | supply/order/order_service.py |
-| wave_generator.py — 波次生成服务 | 应用层 | supply/wave/wave_generator.py |
-| outbound_api.py — 出库回调接口 | 基础设施层 | supply/outbound/outbound_api.py |
+| 模块 | DDD 层级 | BC | 关系类型 | 路径 |
+|------|---------|-----|---------|------|
+| order_service.py — OrderManager | 领域层 | 订单管理 | implements | supply/order/order_service.py |
+| wave_generator.py — 波次生成 | 应用层 | 订单管理 | implements | supply/wave/wave_generator.py |
+| outbound_api.py — 出库回调 | 基础设施层 | 仓储物流 | open_host_service | supply/outbound/outbound_api.py |
 
 ### 变更历史
-- 2026-06-05 张工：更新阶段 4 拣货逻辑
+- 2026-06-05 张工：更新阶段 4 拣货逻辑（v2）
 - 2026-06-01 张工：创建并发布 v1`;
   } else {
     preview.textContent = `{
   "version": "1.0",
   "generated_at": "2026-06-07T10:30:00Z",
+  "bounded_context": "订单管理",
+  "access_control": { "role": "developer", "filter": "all_published" },
   "biz_kl": [
     {
-      "id": "biz-001",
-      "name": "订单履约流程 — 正向履约",
-      "type": "流程",
-      "description": "从客户下单到仓库发货的完整...",
-      "status": "published",
-      "version": 2
+      "id": "biz-001", "name": "订单履约流程 — 正向履约",
+      "type": "流程", "status": "published", "version": 2
     }
   ],
   "sys_kl": [
     {
-      "id": "sys-001",
-      "name": "order_service.py — OrderManager",
-      "layer": "domain",
+      "id": "sys-001", "name": "order_service.py — OrderManager",
+      "layer": "domain", "bounded_context": "订单管理",
       "path": "supply/order/order_service.py",
-      "linked_biz": ["biz-001"]
-    },
-    {
-      "id": "sys-004",
-      "name": "wave_generator.py",
-      "layer": "application",
-      "path": "supply/wave/wave_generator.py",
-      "linked_biz": ["biz-001"]
-    },
-    {
-      "id": "sys-007",
-      "name": "outbound_api.py",
-      "layer": "infrastructure",
-      "path": "supply/outbound/outbound_api.py",
-      "linked_biz": ["biz-001"]
+      "links": [{"biz_id": "biz-001", "type": "implements"}]
     }
   ],
-  "links": [
-    {"biz_id": "biz-001", "sys_id": "sys-001"},
-    {"biz_id": "biz-001", "sys_id": "sys-004"},
-    {"biz_id": "biz-001", "sys_id": "sys-007"}
-  ],
   "lineage": {
-    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" },
-    "sys-001": { "created_by": "赵开发", "created_at": "2026-06-02" }
+    "biz-001": { "created_by": "张工", "created_at": "2026-06-01" }
   }
 }`;
   }
+}
+
+function toggleDiff(btn) {
+  const diff = btn.parentElement.nextElementSibling;
+  diff.style.display = diff.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleReject(btn) {
+  const reject = btn.closest('.card').querySelector('.reject-reason');
+  reject.style.display = reject.style.display === 'none' ? 'block' : 'none';
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+});
+
+function updateNav() {
+  const role = document.getElementById('roleSelect').value;
+  const reviewNav = document.getElementById('nav-review');
+  reviewNav.style.display = role === 'admin' ? '' : 'none';
 }
 </script>
 </body>
