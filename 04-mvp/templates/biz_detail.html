@@ -3,6 +3,7 @@
 <div class="header">
     <div class="container">
         <h1><a href="/" style="text-decoration:none;color:inherit">📚</a> / <a href="/biz" style="text-decoration:none;color:var(--biz-accent)">业务知识</a> / {{ item.name }}</h1>
+        <div class="nav-user" id="userBar"></div>
     </div>
 </div>
 <div class="container">
@@ -15,6 +16,16 @@
         <div style="margin-bottom:12px">{{ item.description }}</div>
         <div style="font-size:12px;color:var(--text-secondary)">
             版本: v{{ item.version }} | 创建者: {{ item.created_by }} | 创建时间: {{ item.created_at[:19] if item.created_at else '' }} | 更新: {{ item.updated_at[:19] if item.updated_at else '' }}
+        </div>
+        <div id="actionMsg" style="margin-top:12px;font-size:13px;color:var(--success)"></div>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap" id="actionBar">
+            {% if item.status == 'draft' %}
+            <button class="btn btn-small" onclick="bizAction('submit')">提交审核</button>
+            {% endif %}
+            {% if item.status == 'reviewing' %}
+            <button class="btn btn-small" onclick="bizAction('publish')">发布</button>
+            <button class="btn btn-secondary btn-small" onclick="bizAction('reject')">驳回</button>
+            {% endif %}
         </div>
     </div>
 
@@ -37,4 +48,24 @@
         <a href="/biz" class="btn btn-secondary">返回列表</a>
     </div>
 </div>
+<script>
+const itemId = "{{ item.id }}";
+function currentUser() { return localStorage.getItem('kl_user_id') || 'user-expert-001'; }
+function bizAction(action) {
+    const uid = currentUser();
+    let url = `/api/biz/${itemId}/${action}`;
+    let opts = { method: 'POST', headers: { 'X-User-Id': uid } };
+    if (action === 'reject') {
+        const reason = prompt('驳回理由（可选）') || '';
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify({ reason });
+    }
+    fetch(url, opts).then(r => r.json().then(j => ({ ok: r.ok, j }))).then(({ ok, j }) => {
+        const el = document.getElementById('actionMsg');
+        if (ok) { el.textContent = '操作成功，刷新页面…'; location.reload(); }
+        else { el.style.color = 'var(--danger)'; el.textContent = j.detail || '操作失败'; }
+    });
+}
+if (typeof renderUserBar === 'function') renderUserBar('userBar');
+</script>
 {% endblock %}

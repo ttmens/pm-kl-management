@@ -1,6 +1,14 @@
 # 设计文档：产品知识平台 MVP
 
-## 架构概览
+## C4 架构（权威来源）
+
+本设计文档引用 C4 模型产物，不以 ASCII 图为唯一架构表达：
+
+- [系统上下文](../architecture/c4-context.md)
+- [容器图](../architecture/c4-container.md)
+- [组件图](../architecture/c4-component.md)
+
+## 架构概览（逻辑摘要）
 
 ```
 ┌──────────────────────────────────────────┐

@@ -12,7 +12,7 @@ import models
 from models import (
     get_db, init_db, BizKlItem, SysKlItem, KlLink, AuditLog, User,
     get_user, audit,
-    create_biz, get_biz, list_biz, update_biz, submit_biz, publish_biz,
+    create_biz, get_biz, list_biz, update_biz, submit_biz, publish_biz, reject_biz,
     create_sys, get_sys, list_sys, update_sys,
     create_link, delete_link, get_links_for_biz, get_links_for_sys,
     list_audit, import_biz_from_markdown,
@@ -66,6 +66,9 @@ class PackageResponse(BaseModel):
 
 class ImportRequest(BaseModel):
     content: str
+
+class RejectRequest(BaseModel):
+    reason: str = ""
 
 
 # ===== biz_kl API =====
@@ -358,7 +361,7 @@ async def page_biz_detail(request: Request, item_id: str):
             raise HTTPException(404, "Not found")
         linked_sys = get_links_for_biz(db, item_id)
         return templates.TemplateResponse("biz_detail.html", {
-            "request": request, "item": item, "linked_sys": linked_sys,
+            "request": request, "item": item, "linked_sys": linked_sys, "json": json,
         })
     finally:
         db.close()
@@ -389,9 +392,12 @@ async def page_export(request: Request):
         db.close()
 
 @app.get("/audit", response_class=HTMLResponse)
-async def page_audit(request: Request, item_id: Optional[str] = None, actor_id: Optional[str] = None, from_: Optional[str] = Query(None, alias="from"), to: Optional[str] = None):
+async def page_audit(request: Request, item_id: Optional[str] = None, actor_id: Optional[str] = None, from_: Optional[str] = Query(None, alias="from"), to: Optional[str] = None, x_user_id: str = Header(default="user-expert-001")):
     db = get_db()
     try:
+        user = get_user(db, x_user_id)
+        if not user or user.role != "admin":
+            raise HTTPException(403, "仅管理员可查看审计日志")
         logs = list_audit(db, item_id, actor_id, from_, to)
         return templates.TemplateResponse("audit.html", {
             "request": request, "logs": logs, "item_id": item_id or "", "actor_id": actor_id or "", "from_": from_ or "", "to": to or "",

@@ -198,6 +198,20 @@ def publish_biz(db, item_id: str, actor_id: str) -> Optional[BizKlItem]:
     return get_biz(db, item_id)
 
 
+def reject_biz(db, item_id: str, actor_id: str, reason: str = "") -> Optional[BizKlItem]:
+    user = get_user(db, actor_id)
+    if not user or user.role != "admin":
+        return None
+    existing = get_biz(db, item_id)
+    if not existing or existing.status != "reviewing":
+        return None
+    now = datetime.utcnow().isoformat()
+    db.execute("UPDATE biz_kl_items SET status = 'draft', updated_at = ? WHERE id = ?", (now, item_id))
+    audit(db, "biz_kl", item_id, "reject", actor_id, {"reason": reason or "rejected"})
+    db.commit()
+    return get_biz(db, item_id)
+
+
 ## sys_kl CRUD
 
 def create_sys(db, name: str, description: str, layer: str, file_path: str, created_by: str) -> SysKlItem:

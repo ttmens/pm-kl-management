@@ -64,6 +64,27 @@
     </style>
 </head>
 <body>
+<script>
+function renderUserBar(targetId) {
+    const users = [
+        { id: 'user-expert-001', label: '领域专家' },
+        { id: 'user-dev-001', label: '开发者' },
+        { id: 'user-admin-001', label: '管理员' }
+    ];
+    const cur = localStorage.getItem('kl_user_id') || 'user-expert-001';
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    el.innerHTML = '<label style="font-size:12px;color:var(--text-secondary)">当前用户 </label><select id="klUserSelect" style="padding:4px 8px;border-radius:4px;border:1px solid var(--border)"></select>';
+    const sel = document.getElementById('klUserSelect');
+    users.forEach(u => {
+        const o = document.createElement('option');
+        o.value = u.id; o.textContent = u.label + ' (' + u.id + ')';
+        if (u.id === cur) o.selected = true;
+        sel.appendChild(o);
+    });
+    sel.onchange = () => localStorage.setItem('kl_user_id', sel.value);
+}
+</script>
 {% block content %}{% endblock %}
 </body>
 </html>

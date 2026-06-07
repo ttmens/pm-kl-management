@@ -1,14 +1,14 @@
 {
   "run": "pm-kl-management",
   "path": "D:\\workspace\\projects\\pm-kl-management",
-  "pipeline_version": "3.0.0",
-  "validated_at": "2026-06-07T10:29:35.407382+00:00",
+  "pipeline_version": "4.0.0",
+  "validated_at": "2026-06-07T11:17:20.830641+00:00",
   "stages": {
-    "retro": {
+    "benchmark": {
       "pass": true,
       "checks": [
-        "retro_exists",
-        "evolution_section"
+        "benchmark_urls>=42",
+        "has_gap_section"
       ],
       "notes": ""
     }

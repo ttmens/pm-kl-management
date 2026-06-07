@@ -45,3 +45,11 @@ def test_publish_not_reviewing():
     bid = r.json()["id"]
     r2 = client.post(f"/api/biz/{bid}/publish", headers=admin_headers)
     assert r2.status_code == 400
+
+def test_reject_biz_by_admin():
+    r = client.post("/api/biz", json={"name": "Reject Test", "type": "规则"}, headers=expert_headers)
+    bid = r.json()["id"]
+    client.post(f"/api/biz/{bid}/submit", headers=expert_headers)
+    r2 = client.post(f"/api/biz/{bid}/reject", json={"reason": "内容不完整"}, headers=admin_headers)
+    assert r2.status_code == 200
+    assert r2.json()["status"] == "draft"

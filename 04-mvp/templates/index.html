@@ -4,6 +4,7 @@
 <div class="header">
     <div class="container">
         <h1>📚 产品知识平台</h1>
+        <div class="nav-user" id="userBar"></div>
         <div class="nav">
             <a href="/" class="active">首页</a>
             <a href="/export">知识包</a>
@@ -84,5 +85,6 @@ function performSearch() {
     const tab = '{{ tab }}';
     window.location.href = `/?tab=${tab}&q=${encodeURIComponent(q)}`;
 }
+renderUserBar('userBar');
 </script>
 {% endblock %}
