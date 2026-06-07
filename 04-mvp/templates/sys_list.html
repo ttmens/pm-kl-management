@@ -7,19 +7,26 @@
         <option value="application" {% if layer == 'application' %}selected{% endif %}>application</option>
         <option value="infrastructure" {% if layer == 'infrastructure' %}selected{% endif %}>infrastructure</option>
     </select>
+    <select id="bcFilter" hx-get="/hx/sys-list" hx-target="#listContent" hx-trigger="change" name="bc">
+        <option value="">全部BC</option>
+        <option value="order" {% if bc == 'order' %}selected{% endif %}>order</option>
+        <option value="payment" {% if bc == 'payment' %}selected{% endif %}>payment</option>
+        <option value="inventory" {% if bc == 'inventory' %}selected{% endif %}>inventory</option>
+    </select>
     <input type="text" placeholder="搜索..." value="{{ q }}" hx-get="/hx/sys-list" hx-target="#listContent" hx-trigger="keyup changed delay:300ms" name="q">
 </div>
 <div id="listContent">
 {% if items %}
 <table>
     <thead>
-        <tr><th>名称</th><th>DDD层级</th><th>路径</th><th>状态</th><th>更新</th><th>操作</th></tr>
+        <tr><th>名称</th><th>DDD层级</th><th>BC归属</th><th>路径</th><th>状态</th><th>更新</th><th>操作</th></tr>
     </thead>
     <tbody>
     {% for item in items %}
         <tr>
             <td><a href="/sys/{{ item.id }}" style="color:var(--sys-accent);text-decoration:none">{{ item.name }}</a></td>
             <td><span class="sys-tag">{{ item.layer }}</span></td>
+            <td>{% if item.bounded_context %}<span class="biz-tag" style="background:#dbeafe;color:#2563eb">{{ item.bounded_context }}</span>{% else %}-{% endif %}</td>
             <td style="font-family:var(--font-code);font-size:12px">{{ item.file_path or '-' }}</td>
             <td><span class="badge badge-{{ item.status }}">{{ item.status }}</span></td>
             <td style="color:var(--text-secondary);font-size:12px">{{ item.updated_at[:19] if item.updated_at else '' }}</td>

@@ -146,24 +146,27 @@
 
 ## Refine-2 差距与补充（ADR 驱动）
 
-| 差距 ID | 来源 | 描述 | 对应用户故事 | 旅程触点 | 状态 |
-|---------|------|------|-------------|----------|------|
-| GAP-001 | ADR-006 | 审核流缺少撤回（withdraw）和回滚到最近 published 版本的能力 | US-1 | TP3, TP4 | 已纳入 openspec |
+
+| 差距 ID   | 来源      | 描述                                            | 对应用户故事     | 旅程触点           | 状态           |
+| ------- | ------- | --------------------------------------------- | ---------- | -------------- | ------------ |
+| GAP-001 | ADR-006 | 审核流缺少撤回（withdraw）和回滚到最近 published 版本的能力       | US-1       | TP3, TP4       | 已纳入 openspec |
 | GAP-002 | ADR-006 | reject API 缺少 rejection_reason 持久化，用户无法区分驳回原因 | US-1, US-5 | TP3, TP4, TP12 | 已纳入 openspec |
-| GAP-003 | ADR-006 | 缺少审批者队列视图（/review），管理员无法集中处理待审条目 | US-1, US-5 | TP4 | 已纳入原型 |
-| GAP-004 | ADR-007 | 知识包导出包含 draft/reviewing 条目，Agent 消费到未审核内容 | US-3 | TP9, TP10 | 已纳入 openspec |
-| GAP-005 | ADR-007 | 导出 API 缺少权限感知，所有角色看到相同知识包 | US-3 | TP10 | 已纳入 openspec |
-| GAP-006 | ADR-008 | sys_kl 无 Bounded Context 归属，知识包无法按 BC 组织 | US-2 | TP6, TP9 | 已纳入 openspec |
-| GAP-007 | ADR-008 | kl_links 无 link_type 字段，关系语义不足（仅 biz↔sys 关联） | US-2 | TP7 | 已纳入 openspec |
-| GAP-008 | ADR-009 | biz_kl 无版本快照表，无法支持版本对比和回滚 | US-1, US-4 | TP11 | 已纳入 openspec |
-| GAP-009 | ADR-009 | 缺少版本历史 API（/api/biz/{id}/history 和 diff 端点） | US-1, US-4 | TP11 | 已纳入 openspec |
+| GAP-003 | ADR-006 | 缺少审批者队列视图（/review），管理员无法集中处理待审条目              | US-1, US-5 | TP4            | 已纳入原型        |
+| GAP-004 | ADR-007 | 知识包导出包含 draft/reviewing 条目，Agent 消费到未审核内容     | US-3       | TP9, TP10      | 已纳入 openspec |
+| GAP-005 | ADR-007 | 导出 API 缺少权限感知，所有角色看到相同知识包                     | US-3       | TP10           | 已纳入 openspec |
+| GAP-006 | ADR-008 | sys_kl 无 Bounded Context 归属，知识包无法按 BC 组织      | US-2       | TP6, TP9       | 已纳入 openspec |
+| GAP-007 | ADR-008 | kl_links 无 link_type 字段，关系语义不足（仅 biz↔sys 关联）  | US-2       | TP7            | 已纳入 openspec |
+| GAP-008 | ADR-009 | biz_kl 无版本快照表，无法支持版本对比和回滚                     | US-1, US-4 | TP11           | 已纳入 openspec |
+| GAP-009 | ADR-009 | 缺少版本历史 API（/api/biz/{id}/history 和 diff 端点）   | US-1, US-4 | TP11           | 已纳入 openspec |
+
 
 ### 优先级排序
 
-| 优先级 | 差距 ID | 理由 |
-|--------|---------|------|
-| P0 | GAP-004, GAP-005 | Agent 消费质量是核心价值验证前提 |
-| P0 | GAP-001, GAP-002 | 审核流闭环，防止知识丢失 |
-| P1 | GAP-006, GAP-007 | BC 建模支撑后续多 BC 扩展 |
-| P1 | GAP-008, GAP-009 | 版本快照支撑 ADR-006 回滚 |
-| P2 | GAP-003 | 审批者队列改善审核体验，非阻塞性 |
+
+| 优先级 | 差距 ID            | 理由                  |
+| --- | ---------------- | ------------------- |
+| P0  | GAP-004, GAP-005 | Agent 消费质量是核心价值验证前提 |
+| P0  | GAP-001, GAP-002 | 审核流闭环，防止知识丢失        |
+| P1  | GAP-006, GAP-007 | BC 建模支撑后续多 BC 扩展    |
+| P1  | GAP-008, GAP-009 | 版本快照支撑 ADR-006 回滚   |
+| P2  | GAP-003          | 审批者队列改善审核体验，非阻塞性    |

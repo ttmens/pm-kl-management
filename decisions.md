@@ -199,6 +199,7 @@ Refine-1 benchmark（案例 2：Confluence 审批工作流）发现当前审核�
 ### 背景
 
 Refine-1 benchmark 发现两个 P0 差距：
+
 1. GitBook MCP 仅暴露已发布版本，当前知识包可能包含 draft/reviewing 条目
 2. Glean 按权限过滤内容，当前知识包对所有条目一视同仁，无角色感知
 
@@ -237,6 +238,7 @@ Refine-1 benchmark 发现两个 P0 差距：
 ### 背景
 
 Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl 无 Bounded Context 概念，仅按 DDD 层（domain/application/infrastructure）分类。这导致：
+
 - 知识包无法按 BC 组织
 - 无法表达上下文映射模式（ACL / Published Language / Open-Host Service）
 - 无法指导专家按 BC 贡献知识
@@ -274,6 +276,7 @@ Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl
 ### 背景
 
 Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自增，无历史快照，无法支持：
+
 - 版本对比（diff 展示）
 - 回滚到指定版本（ADR-006 撤回回滚依赖此）
 - 变更审计追溯

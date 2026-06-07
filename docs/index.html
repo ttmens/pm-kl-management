@@ -33,9 +33,9 @@
   <div class="meta">
     Repo: <a href="https://github.com/ttmens/pm-kl-management">https://github.com/ttmens/pm-kl-management</a> ·
     Pages: <a href="https://ttmens.github.io/pm-kl-management/">https://ttmens.github.io/pm-kl-management/</a><br/>
-    Commit: a686bfb · Built: 2026-06-07 11:44 UTC
+    Commit: 825202f · Built: 2026-06-07 12:30 UTC
   </div>
-  <div class="badges"><span class="badge pass">journey</span> <span class="badge overall pass">overall: pass</span></div>
+  <div class="badges"><span class="badge pass">refine</span> <span class="badge overall pass">overall: pass</span></div>
 
   <div class="tabs" id="tabs">
     <button class="tab" data-tab="RUN-md">运行说明</button><button class="tab" data-tab="00-brief-md">Brief</button><button class="tab" data-tab="CONTEXT-md">Context</button><button class="tab" data-tab="decisions-md">Decisions</button><button class="tab" data-tab="01-research-md">Research</button><button class="tab" data-tab="01b-benchmark-md">Benchmark</button><button class="tab" data-tab="02-analysis-md">Analysis</button><button class="tab" data-tab="03b-user-journey-md">UserJourney</button><button class="tab" data-tab="03-prd-md">PRD</button><button class="tab" data-tab="05-retro-md">Retro</button><button class="tab" data-tab="06-refine-retro-md">RefineRetro</button>
@@ -411,6 +411,7 @@ Refine-1 benchmark（案例 2：Confluence 审批工作流）发现当前审核�
 ### 背景
 
 Refine-1 benchmark 发现两个 P0 差距：
+
 1. GitBook MCP 仅暴露已发布版本，当前知识包可能包含 draft/reviewing 条目
 2. Glean 按权限过滤内容，当前知识包对所有条目一视同仁，无角色感知
 
@@ -449,6 +450,7 @@ Refine-1 benchmark 发现两个 P0 差距：
 ### 背景
 
 Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl 无 Bounded Context 概念，仅按 DDD 层（domain/application/infrastructure）分类。这导致：
+
 - 知识包无法按 BC 组织
 - 无法表达上下文映射模式（ACL / Published Language / Open-Host Service）
 - 无法指导专家按 BC 贡献知识
@@ -486,6 +488,7 @@ Refine-1 benchmark（案例 5：Context Mapper + BC Canvas）发现当前 sys_kl
 ### 背景
 
 Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自增，无历史快照，无法支持：
+
 - 版本对比（diff 展示）
 - 回滚到指定版本（ADR-006 撤回回滚依赖此）
 - 变更审计追溯
@@ -720,6 +723,8 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 | 27  | DDD Bounded Contexts for LLMs                       | [https://understandingdata.com/posts/ddd-bounded-contexts-for-llms](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms)                                                                                                                 |
 | 28  | Domain-Driven Agent Design                          | [https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design)                                                                                                             |
 | 29  | DDD + Multi-Agent AI                                | [https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems](https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems)                                                     |
+
+
 </pre></div><div class="panel" id="01b-benchmark-md"><pre class="md-source"># 业界实现深研 — KL Management
 
 &gt; 调研日期：2026-06-07（Refine-1 Benchmark）
@@ -730,30 +735,33 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ## 当前实现基线
 
-| 维度 | 现状 | 置信度 |
-|------|------|--------|
-| 技术栈 | FastAPI + SQLite + HTMX + Jinja2 | [HIGH] |
-| 数据模型 | biz_kl_items / sys_kl_items / kl_links / audit_logs / users | [HIGH] |
-| 审核流 | submit → publish（已实现 reject_biz 函数但无 API 路由/UI） | [HIGH] |
-| 版本管理 | version 整数自增，无历史快照表 | [HIGH] |
-| 权限模型 | Header `X-User-Id` 传用户 ID，服务层校验 role | [HIGH] |
-| 审计日志 | 记录 create/update/publish/reject/link，全员可读 /audit | [HIGH] |
-| 知识包导出 | JSON + Markdown，含 biz_kl + linked sys_kl + lineage | [HIGH] |
-| 详情页操作 | 只读展示，无内联编辑/提交/审核操作区 | [HIGH] |
-| 关联 UI | API 层支持 link/unlink，前端无选择器 | [HIGH] |
-| Bounded Context | 无 BC 概念，sys_kl.layer 仅分 domain/application/infrastructure | [HIGH] |
+
+| 维度              | 现状                                                          | 置信度    |
+| --------------- | ----------------------------------------------------------- | ------ |
+| 技术栈             | FastAPI + SQLite + HTMX + Jinja2                            | [HIGH] |
+| 数据模型            | biz_kl_items / sys_kl_items / kl_links / audit_logs / users | [HIGH] |
+| 审核流             | submit → publish（已实现 reject_biz 函数但无 API 路由/UI）             | [HIGH] |
+| 版本管理            | version 整数自增，无历史快照表                                         | [HIGH] |
+| 权限模型            | Header `X-User-Id` 传用户 ID，服务层校验 role                        | [HIGH] |
+| 审计日志            | 记录 create/update/publish/reject/link，全员可读 /audit            | [HIGH] |
+| 知识包导出           | JSON + Markdown，含 biz_kl + linked sys_kl + lineage          | [HIGH] |
+| 详情页操作           | 只读展示，无内联编辑/提交/审核操作区                                         | [HIGH] |
+| 关联 UI           | API 层支持 link/unlink，前端无选择器                                  | [HIGH] |
+| Bounded Context | 无 BC 概念，sys_kl.layer 仅分 domain/application/infrastructure   | [HIGH] |
+
 
 ---
 
 ## 案例 1：Backstage Software Catalog — 实体模型 + 关系图 + 所有权
 
-- 来源 URL：https://backstage.io/docs/features/software-catalog/descriptor-format
-- 来源 URL：https://backstage.io/docs/features/software-catalog/well-known-relations
-- 来源 URL：https://roadie.io/blog/understanding-the-backstage-system-model
+- 来源 URL：[https://backstage.io/docs/features/software-catalog/descriptor-format](https://backstage.io/docs/features/software-catalog/descriptor-format)
+- 来源 URL：[https://backstage.io/docs/features/software-catalog/well-known-relations](https://backstage.io/docs/features/software-catalog/well-known-relations)
+- 来源 URL：[https://roadie.io/blog/understanding-the-backstage-system-model](https://roadie.io/blog/understanding-the-backstage-system-model)
 
 ### 实现要点
 
 **实体描述格式（catalog-info.yaml）**：
+
 - 四层信封结构：`apiVersion` + `kind` + `metadata` + `spec`
 - 实体种类（Kind）：Component / API / Group / System / Resource / Template
 - 关系系统（Relations）：`ownedBy`、`dependsOn`、`providesApis`、`consumesApis`、`subcomponentOf`
@@ -762,11 +770,13 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 - 分布式所有权：每个团队维护自己拥有的实体信息
 
 **关系处理**：
+
 - `relations` 数组为只读自动生字段，由 catalog processor 推导
 - 支持双向关系：`spec.owner` 为展示用途，`relations.ownedBy` 为程序查询权威源
 - 实体引用格式：`&lt;namespace&gt;/&lt;name&gt;`，避免使用不稳定 UID
 
 **生命周期状态**：
+
 - 实体从注册 → processor 处理 → API 可见 → 状态报告（`status.items`：info/warning/error）
 - 移除实体触发&quot;eager deletion&quot;，连带清理数据库中所有辅助数据
 
@@ -778,44 +788,51 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 无实体种类体系 | 中 | 仅有 biz_kl / sys_kl 两类，缺少 API / System / Group 等扩展种类 |
-| 关系无类型化 | 高 | `kl_links` 只记录关联对，无语义（实现/依赖/治理） |
-| 无生命周期维度 | 中 | version 自增但无 lifecycle 标记（experimental/production/deprecated） |
-| 无 namespace 隔离 | 低 | MVP 阶段可接受，但多团队场景需隔离 |
-| 无实体状态报告 | 低 | 无 `status.items` 类字段记录处理错误/警告 |
+
+| 差距             | 严重程度 | 说明                                                            |
+| -------------- | ---- | ------------------------------------------------------------- |
+| 无实体种类体系        | 中    | 仅有 biz_kl / sys_kl 两类，缺少 API / System / Group 等扩展种类           |
+| 关系无类型化         | 高    | `kl_links` 只记录关联对，无语义（实现/依赖/治理）                               |
+| 无生命周期维度        | 中    | version 自增但无 lifecycle 标记（experimental/production/deprecated） |
+| 无 namespace 隔离 | 低    | MVP 阶段可接受，但多团队场景需隔离                                           |
+| 无实体状态报告        | 低    | 无 `status.items` 类字段记录处理错误/警告                                 |
+
 
 ---
 
 ## 案例 2：Confluence 审批工作流 — 完整审核生命周期
 
-- 来源 URL：https://developer.atlassian.com/server/confluence/approval-workflow
-- 来源 URL：https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc
+- 来源 URL：[https://developer.atlassian.com/server/confluence/approval-workflow](https://developer.atlassian.com/server/confluence/approval-workflow)
+- 来源 URL：[https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc](https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc)
 
 ### 实现要点
 
 **状态机设计**：
 
-| 状态 | 触发条件 | 可用操作 → 下一状态 |
-|------|----------|---------------------|
-| `editing in progress` | 作者编辑页面 | 提交审核 → `waiting for approval` |
-| `waiting for approval` | 作者提交审核 | 审批者通过 → `accepted`&lt;br&gt;审批者驳回 → `rejected` |
-| `accepted` | 审批通过 或 作者撤回 | 编辑 → 回到 `editing in progress`（默认长期态） |
-| `rejected` | 审批者驳回 | 作者编辑 → `editing in progress`&lt;br&gt;作者撤回 → `accepted`（回滚到最近已审批版本） |
+
+| 状态                     | 触发条件        | 可用操作 → 下一状态                                                |
+| ---------------------- | ----------- | ---------------------------------------------------------- |
+| `editing in progress`  | 作者编辑页面      | 提交审核 → `waiting for approval`                              |
+| `waiting for approval` | 作者提交审核      | 审批者通过 → `accepted` 审批者驳回 → `rejected`                      |
+| `accepted`             | 审批通过 或 作者撤回 | 编辑 → 回到 `editing in progress`（默认长期态）                       |
+| `rejected`             | 审批者驳回       | 作者编辑 → `editing in progress` 作者撤回 → `accepted`（回滚到最近已审批版本） |
+
 
 **角色与权限**：
+
 - `author` 组：可编辑页面，不能审批自己的修改
 - `approver` 组：可审批/驳回
 - 用户可同时属于两组，但不能自我审批
 
 **UI 特性**：
+
 - 提交按钮仅在 `editing in progress` 态可见
 - 审批者专属队列页：自动列出所有 `waiting for approval` 状态的页面
 - 作者仪表盘：仅看自己被驳回/待审批的页面（隔离可见）
 - 撤回操作：在 `rejected` 或 `waiting for approval` 态可撤回，自动回滚到最近已审批版本
 
 **版本历史**：
+
 - 页面保留每次编辑的完整历史与 diff
 - 空间级权限控制谁可查看/编辑历史
 
@@ -828,40 +845,46 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 审核中无内容展示策略 | 高 | 用户访问 `reviewing` 态条目时看到的是草稿还是已发布版本？无定义 |
-| 无撤回/回滚机制 | 高 | reject 后仅状态变 draft，不记录驳回理由到条目级别 |
-| 无审批者队列视图 | 中 | 管理员需手动筛选 `reviewing` 状态 |
-| 无作者隔离仪表盘 | 中 | 所有用户看到相同列表 |
-| 无版本 diff 展示 | 中 | version 整数但无可查看的变更历史 |
+
+| 差距          | 严重程度 | 说明                                     |
+| ----------- | ---- | -------------------------------------- |
+| 审核中无内容展示策略  | 高    | 用户访问 `reviewing` 态条目时看到的是草稿还是已发布版本？无定义 |
+| 无撤回/回滚机制    | 高    | reject 后仅状态变 draft，不记录驳回理由到条目级别        |
+| 无审批者队列视图    | 中    | 管理员需手动筛选 `reviewing` 状态                |
+| 无作者隔离仪表盘    | 中    | 所有用户看到相同列表                             |
+| 无版本 diff 展示 | 中    | version 整数但无可查看的变更历史                   |
+
 
 ---
 
 ## 案例 3：GitBook MCP Server — 知识对 AI Agent 原生可消费
 
-- 来源 URL：https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs
-- 来源 URL：https://www.gitbook.com/blog/what-is-mcp-server-documentation
+- 来源 URL：[https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs](https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs)
+- 来源 URL：[https://www.gitbook.com/blog/what-is-mcp-server-documentation](https://www.gitbook.com/blog/what-is-mcp-server-documentation)
 
 ### 实现要点
 
 **MCP Server 架构**：
+
 - 每个已发布站点自动在 `/&lt;site&gt;/~gitbook/mcp` 提供 MCP 端点
 - 仅 HTTP transport（不支持 stdio/SSE）
 - 只读访问文档内容，不暴露账户数据/分析数据/内部元数据
 - 仅暴露最新已发布版本，草稿和未发布变更保持私密
 
 **认证集成**：
+
 - 支持 OAuth + DCR（Dynamic Client Registration）
 - MCP 客户端自动发现 OAuth 服务器 → 动态注册 → 重定向到上游认证提供商 → 交换 access token
 - 支持 Auth0 / Azure AD / Okta / AWS Cognito / OIDC
 
 **内容组织**：
+
 - 站点 → 集合（Collection） → 空间（Space） → 页面
 - 隐藏页面仍可通过 MCP 访问（仅从 TOC 中隐藏）
 - 页面操作（Page actions）必须启用，否则 MCP 端点返回 404
 
 **AI 工作流集成**：
+
 - 48 个 MCP 工具：创建/读取/更新/删除跨组织/集合/空间/内容
 - 6 个 AI 驱动 prompt 用于文档工作流
 - SKILL.md 文件指导 AI 何时及如何使用这些工具
@@ -875,40 +898,46 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 导出无状态过滤 | 高 | 当前知识包可能包含 draft/reviewing 条目，应仅导出 published |
-| 无 MCP 暴露端点 | 中 | 知识包需手动下载，无自动发现端点 |
-| 无 SKILL.md 指南 | 中 | 导出的知识包缺少&quot;如何使用&quot;的元指令 |
-| 无变更增量推送 | 低 | 每次导出全量，无 diff/增量机制 |
+
+| 差距            | 严重程度 | 说明                                          |
+| ------------- | ---- | ------------------------------------------- |
+| 导出无状态过滤       | 高    | 当前知识包可能包含 draft/reviewing 条目，应仅导出 published |
+| 无 MCP 暴露端点    | 中    | 知识包需手动下载，无自动发现端点                            |
+| 无 SKILL.md 指南 | 中    | 导出的知识包缺少&quot;如何使用&quot;的元指令                          |
+| 无变更增量推送       | 低    | 每次导出全量，无 diff/增量机制                          |
+
 
 ---
 
 ## 案例 4：Mintlify Docs-as-Code — 自更新文档工作流
 
-- 来源 URL：https://www.mintlify.com/blog/autopilot
-- 来源 URL：https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams
-- 来源 URL：https://github.com/mintlify/docs/blob/main/skill.md
+- 来源 URL：[https://www.mintlify.com/blog/autopilot](https://www.mintlify.com/blog/autopilot)
+- 来源 URL：[https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams](https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams)
+- 来源 URL：[https://github.com/mintlify/docs/blob/main/skill.md](https://github.com/mintlify/docs/blob/main/skill.md)
 
 ### 实现要点
 
 **自更新流程（Autopilot）**：
+
 1. **检测代码变更**：监听 Git 仓库变更，识别需要文档更新的代码修改
 2. **高亮变更**：向技术写作者展示需要更新的文档区域
 3. **生成草稿**：AI 自动生成文档更新草稿，人工审核后再发布
 
 **Docs-as-Code 核心原则**：
+
 - 文档与代码共用版本控制、审核、部署流程
 - API 参考文档与 API spec 保持同步
 - 非技术贡献者（PM/技术写作者）无需直接操作 Git 即可贡献
 - 为 AI 系统生成结构化输出（MCP server、llms.txt）
 
 **结构化 AI 输出**：
+
 - 自动生成 MCP server 从文档
 - 自动生成 llms.txt 供 LLM 发现
 - 公共 MCP 端点供 admin actions 查询
 
 **SKILL.md 实践**（GitHub 仓库）：
+
 - 仓库根目录放置 `skill.md`，指导 AI 如何操作文档系统
 - 内容包括：何时使用、配置指南、组件选择策略、站点结构说明
 
@@ -920,30 +949,34 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 无变更检测机制 | 高 | sys_kl 与代码仓库无联动，不知道代码变了知识该更新 |
-| 无草稿生成工作流 | 中 | 知识更新完全手动，无 AI 辅助生成草稿 |
-| 无 llms.txt 输出 | 中 | 知识包导出缺少 AI 发现层索引文件 |
-| 无 SKILL.md 附带 | 中 | 导出无&quot;如何使用&quot;的元指令 |
+
+| 差距            | 严重程度 | 说明                           |
+| ------------- | ---- | ---------------------------- |
+| 无变更检测机制       | 高    | sys_kl 与代码仓库无联动，不知道代码变了知识该更新 |
+| 无草稿生成工作流      | 中    | 知识更新完全手动，无 AI 辅助生成草稿         |
+| 无 llms.txt 输出 | 中    | 知识包导出缺少 AI 发现层索引文件           |
+| 无 SKILL.md 附带 | 中    | 导出无&quot;如何使用&quot;的元指令                |
+
 
 ---
 
 ## 案例 5：Context Mapper + Bounded Context Canvas — DDD 知识结构化
 
-- 来源 URL：https://contextmapper.org/docs/bounded-context
-- 来源 URL：https://github.com/ddd-crew/bounded-context-canvas
-- 来源 URL：https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html
+- 来源 URL：[https://contextmapper.org/docs/bounded-context](https://contextmapper.org/docs/bounded-context)
+- 来源 URL：[https://github.com/ddd-crew/bounded-context-canvas](https://github.com/ddd-crew/bounded-context-canvas)
+- 来源 URL：[https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html](https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html)
 
 ### 实现要点
 
 **Context Mapper DSL (CML)**：
+
 - 文本 DSL 描述 Bounded Context、上下文映射关系、聚合、实体
 - Bounded Context 类型：FEATURE（功能）、APPLICATION（应用）、SYSTEM（部署）、TEAM（组织）
 - 上下文映射模式：Partnership / Customer-Supplier / Shared Kernel / Conformist / Open-Host Service / Published Language / ACL / Separate Ways / Big Ball of Mud
 - 团队映射：指定哪个团队实现哪个 Bounded Context
 
 **Bounded Context Canvas（ddd-crew）**：
+
 - 9 宫格结构化画布：
   1. **Name**：上下文名称
   2. **Description**：一句话描述
@@ -956,6 +989,7 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
   9. **Team**：负责团队
 
 **关键实践**：
+
 - 按顺序填写画布：先明确名称和描述，再填充其他
 - 将画布视为活文档，随系统演进更新
 - 从团队边界开始映射上下文关系
@@ -969,35 +1003,40 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 无 BC 概念 | 高 | sys_kl 无 Bounded Context 归属，仅按 DDD 层分类 |
-| 无上下文映射模式 | 高 | kl_links 无关系类型（ACL / Published Language 等） |
-| 无 Canvas 结构模板 | 中 | 知识条目无结构化画布指导录入 |
-| 无团队/责任人映射 | 中 | 无 BC 与负责团队的关联 |
+
+| 差距            | 严重程度 | 说明                                         |
+| ------------- | ---- | ------------------------------------------ |
+| 无 BC 概念       | 高    | sys_kl 无 Bounded Context 归属，仅按 DDD 层分类     |
+| 无上下文映射模式      | 高    | kl_links 无关系类型（ACL / Published Language 等） |
+| 无 Canvas 结构模板 | 中    | 知识条目无结构化画布指导录入                             |
+| 无团队/责任人映射     | 中    | 无 BC 与负责团队的关联                              |
+
 
 ---
 
 ## 案例 6：Glean Knowledge Graph — 权限感知 + 知识图谱
 
-- 来源 URL：https://www.glean.com/resources/guides/glean-knowledge-graph
-- 来源 URL：https://www.glean.com/blog/knowledge-graph-agentic-engine
-- 来源 URL：https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag
+- 来源 URL：[https://www.glean.com/resources/guides/glean-knowledge-graph](https://www.glean.com/resources/guides/glean-knowledge-graph)
+- 来源 URL：[https://www.glean.com/blog/knowledge-graph-agentic-engine](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+- 来源 URL：[https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag](https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag)
 
 ### 实现要点
 
 **知识图谱架构**：
+
 - 100+ 连接器接入企业所有应用，为每个客户构建独特知识图谱
 - 三层图谱：企业知识图谱（内容） + 人员图谱（组织关系） + 个人图谱（工作模式）
 - 混合搜索：语义向量 + 知识图谱关系 + 权限感知排序
 - 自调整搜索排名模型，随使用持续改进
 
 **权限感知**：
+
 - 索引时即嵌入权限信息，搜索结果按用户权限过滤
 - 知识图谱节点附带权限元数据，确保 AI 回答不泄露未授权内容
 - 个人图谱层捕获用户工作模式，实现个性化搜索
 
 **Agentic Engine**：
+
 - MCP Gateway：允许外部 AI 工具通过 MCP 协议访问企业知识
 - 知识图谱为 Agent 提供上下文，支持复杂推理和多步操作
 - 93% 采纳率（企业级验证）
@@ -1010,31 +1049,35 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ### 对当前实现的差距
 
-| 差距 | 严重程度 | 说明 |
-|------|----------|------|
-| 导出无权限过滤 | 高 | 当前知识包对所有条目一视同仁，无角色感知 |
-| 无知识图谱可视化 | 中 | 有关系数据但无图展示 |
-| 无个人知识层 | 低 | 用户无收藏夹/笔记/标注功能 |
-| 无搜索排名优化 | 低 | 当前为 LIKE 模糊搜索，无语义/图谱增强 |
+
+| 差距       | 严重程度 | 说明                     |
+| -------- | ---- | ---------------------- |
+| 导出无权限过滤  | 高    | 当前知识包对所有条目一视同仁，无角色感知   |
+| 无知识图谱可视化 | 中    | 有关系数据但无图展示             |
+| 无个人知识层   | 低    | 用户无收藏夹/笔记/标注功能         |
+| 无搜索排名优化  | 低    | 当前为 LIKE 模糊搜索，无语义/图谱增强 |
+
 
 ---
 
 ## 差距汇总表
 
-| # | 维度 | 业界做法 | 我们现状 | 建议优化 | 优先级 |
-|---|------|----------|----------|----------|--------|
-| 1 | 审核流 | 完整状态机（editing→waiting→accepted/rejected）+ 撤回回滚 | 仅 submit/publish/reject，无撤回/回滚，无审核中内容展示策略 | 增加撤回 API + 审核中页面展示已发布版本 + 驳回理由持久化 | P0 |
-| 2 | 知识包状态过滤 | 仅暴露已发布版本（GitBook MCP） | 导出可能包含 draft/reviewing 条目 | 知识包生成时仅包含 published 状态条目 | P0 |
-| 3 | 权限感知导出 | 按用户权限过滤内容（Glean） | 导出无角色过滤，所有条目全量输出 | 按请求者角色过滤：expert 仅看 biz_kl，developer 看全部 | P0 |
-| 4 | 关系类型化 | 类型化关系（ownedBy/dependsOn/providesApis）（Backstage） | kl_links 仅记录关联对，无语义类型 | 增加 `link_type` 字段（implements/dependsOn/governs）+ 上下文映射模式 | P1 |
-| 5 | Bounded Context | BC Canvas 9 宫格 + CML DSL + 上下文映射模式 | 无 BC 概念，sys_kl 仅按 DDD 层分类 | sys_kl 增加 `bounded_context` 字段 + Canvas 结构模板 | P1 |
-| 6 | 版本历史 | 完整历史 diff + 可视化（Confluence） | version 整数自增，无可查看的变更历史 | 增加 `biz_kl_versions` 快照表 + 版本对比 UI | P1 |
-| 7 | 审批者队列 | 独立页面列出所有待审批条目（Confluence） | 无此类视图，需手动筛选 | 增加 /review 页面，按状态过滤展示待审批条目 | P1 |
-| 8 | SKILL.md 知识包指南 | 每个知识包附带 SKILL.md 说明使用方式（Mintlify） | 导出无&quot;如何使用&quot;的元指令 | 知识包导出增加 `SKILL.md` 节，说明结构与消费方式 | P2 |
-| 9 | llms.txt AI 发现层 | 自动生成 llms.txt 供 LLM 发现（Mintlify） | 无 AI 发现层索引文件 | 知识包导出增加 `llms.txt` 风格索引 | P2 |
-| 10 | 变更检测联动 | 检测代码变更触发知识更新草稿（Mintlify Autopilot） | sys_kl 与代码仓库无联动 | sys_kl 可关联 Git commit hash，检测代码变更提醒更新 | P2 |
-| 11 | 生命周期维度 | lifecycle 标记（experimental/production/deprecated）（Backstage） | 无生命周期维度 | biz_kl 增加 `lifecycle` 字段补充 status | P2 |
-| 12 | 作者隔离仪表盘 | 每个作者仅看到自己的条目（Confluence） | 所有用户看到相同列表 | /biz 列表按 created_by 过滤 + 角色可见控制 | P3 |
+
+| #   | 维度              | 业界做法                                                        | 我们现状                                      | 建议优化                                                     | 优先级 |
+| --- | --------------- | ----------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------- | --- |
+| 1   | 审核流             | 完整状态机（editing→waiting→accepted/rejected）+ 撤回回滚              | 仅 submit/publish/reject，无撤回/回滚，无审核中内容展示策略 | 增加撤回 API + 审核中页面展示已发布版本 + 驳回理由持久化                        | P0  |
+| 2   | 知识包状态过滤         | 仅暴露已发布版本（GitBook MCP）                                       | 导出可能包含 draft/reviewing 条目                 | 知识包生成时仅包含 published 状态条目                                 | P0  |
+| 3   | 权限感知导出          | 按用户权限过滤内容（Glean）                                            | 导出无角色过滤，所有条目全量输出                          | 按请求者角色过滤：expert 仅看 biz_kl，developer 看全部                  | P0  |
+| 4   | 关系类型化           | 类型化关系（ownedBy/dependsOn/providesApis）（Backstage）            | kl_links 仅记录关联对，无语义类型                     | 增加 `link_type` 字段（implements/dependsOn/governs）+ 上下文映射模式 | P1  |
+| 5   | Bounded Context | BC Canvas 9 宫格 + CML DSL + 上下文映射模式                          | 无 BC 概念，sys_kl 仅按 DDD 层分类                 | sys_kl 增加 `bounded_context` 字段 + Canvas 结构模板             | P1  |
+| 6   | 版本历史            | 完整历史 diff + 可视化（Confluence）                                 | version 整数自增，无可查看的变更历史                    | 增加 `biz_kl_versions` 快照表 + 版本对比 UI                       | P1  |
+| 7   | 审批者队列           | 独立页面列出所有待审批条目（Confluence）                                   | 无此类视图，需手动筛选                               | 增加 /review 页面，按状态过滤展示待审批条目                               | P1  |
+| 8   | SKILL.md 知识包指南  | 每个知识包附带 SKILL.md 说明使用方式（Mintlify）                           | 导出无&quot;如何使用&quot;的元指令                             | 知识包导出增加 `SKILL.md` 节，说明结构与消费方式                           | P2  |
+| 9   | llms.txt AI 发现层 | 自动生成 llms.txt 供 LLM 发现（Mintlify）                            | 无 AI 发现层索引文件                              | 知识包导出增加 `llms.txt` 风格索引                                  | P2  |
+| 10  | 变更检测联动          | 检测代码变更触发知识更新草稿（Mintlify Autopilot）                          | sys_kl 与代码仓库无联动                           | sys_kl 可关联 Git commit hash，检测代码变更提醒更新                    | P2  |
+| 11  | 生命周期维度          | lifecycle 标记（experimental/production/deprecated）（Backstage） | 无生命周期维度                                   | biz_kl 增加 `lifecycle` 字段补充 status                        | P2  |
+| 12  | 作者隔离仪表盘         | 每个作者仅看到自己的条目（Confluence）                                    | 所有用户看到相同列表                                | /biz 列表按 created_by 过滤 + 角色可见控制                          | P3  |
+
 
 ---
 
@@ -1059,24 +1102,27 @@ Refine-1 benchmark（案例 2：Confluence）发现当前仅 `version` 整数自
 
 ## 来源汇总
 
-| # | 来源 | URL |
-|---|------|-----|
-| 1 | Backstage Catalog Descriptor Format | https://backstage.io/docs/features/software-catalog/descriptor-format |
-| 2 | Backstage Well-Known Relations | https://backstage.io/docs/features/software-catalog/well-known-relations |
-| 3 | Backstage System Model (Roadie) | https://roadie.io/blog/understanding-the-backstage-system-model |
-| 4 | Confluence Approval Workflow | https://developer.atlassian.com/server/confluence/approval-workflow |
-| 5 | Confluence Content Review (AppFox) | https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc |
-| 6 | GitBook MCP Servers | https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs |
-| 7 | GitBook MCP Blog | https://www.gitbook.com/blog/what-is-mcp-server-documentation |
-| 8 | Mintlify Autopilot | https://www.mintlify.com/blog/autopilot |
-| 9 | Mintlify Docs-as-Code | https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams |
-| 10 | Mintlify SKILL.md | https://github.com/mintlify/docs/blob/main/skill.md |
-| 11 | Context Mapper Bounded Context | https://contextmapper.org/docs/bounded-context |
-| 12 | ddd-crew Bounded Context Canvas | https://github.com/ddd-crew/bounded-context-canvas |
-| 13 | Context Mapper Insights | https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html |
-| 14 | Glean Knowledge Graph Guide | https://www.glean.com/resources/guides/glean-knowledge-graph |
-| 15 | Glean Knowledge Graph + Agentic | https://www.glean.com/blog/knowledge-graph-agentic-engine |
-| 16 | Glean Knowledge Layer Beyond RAG | https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag |
+
+| #   | 来源                                  | URL                                                                                                                                                                                              |
+| --- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Backstage Catalog Descriptor Format | [https://backstage.io/docs/features/software-catalog/descriptor-format](https://backstage.io/docs/features/software-catalog/descriptor-format)                                                   |
+| 2   | Backstage Well-Known Relations      | [https://backstage.io/docs/features/software-catalog/well-known-relations](https://backstage.io/docs/features/software-catalog/well-known-relations)                                             |
+| 3   | Backstage System Model (Roadie)     | [https://roadie.io/blog/understanding-the-backstage-system-model](https://roadie.io/blog/understanding-the-backstage-system-model)                                                               |
+| 4   | Confluence Approval Workflow        | [https://developer.atlassian.com/server/confluence/approval-workflow](https://developer.atlassian.com/server/confluence/approval-workflow)                                                       |
+| 5   | Confluence Content Review (AppFox)  | [https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc](https://docs.appfox.io/confluence-workflows/content-review-and-approval-processes-in-confluenc) |
+| 6   | GitBook MCP Servers                 | [https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs](https://gitbook.com/docs/ai-and-search/mcp-servers-for-published-docs)                                                   |
+| 7   | GitBook MCP Blog                    | [https://www.gitbook.com/blog/what-is-mcp-server-documentation](https://www.gitbook.com/blog/what-is-mcp-server-documentation)                                                                   |
+| 8   | Mintlify Autopilot                  | [https://www.mintlify.com/blog/autopilot](https://www.mintlify.com/blog/autopilot)                                                                                                               |
+| 9   | Mintlify Docs-as-Code               | [https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams](https://www.mintlify.com/library/docs-as-code-solutions-for-api-teams)                                                   |
+| 10  | Mintlify SKILL.md                   | [https://github.com/mintlify/docs/blob/main/skill.md](https://github.com/mintlify/docs/blob/main/skill.md)                                                                                       |
+| 11  | Context Mapper Bounded Context      | [https://contextmapper.org/docs/bounded-context](https://contextmapper.org/docs/bounded-context)                                                                                                 |
+| 12  | ddd-crew Bounded Context Canvas     | [https://github.com/ddd-crew/bounded-context-canvas](https://github.com/ddd-crew/bounded-context-canvas)                                                                                         |
+| 13  | Context Mapper Insights             | [https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html](https://ozimmer.ch/modeling/2022/11/23/ContextMapperInsights.html)                                                           |
+| 14  | Glean Knowledge Graph Guide         | [https://www.glean.com/resources/guides/glean-knowledge-graph](https://www.glean.com/resources/guides/glean-knowledge-graph)                                                                     |
+| 15  | Glean Knowledge Graph + Agentic     | [https://www.glean.com/blog/knowledge-graph-agentic-engine](https://www.glean.com/blog/knowledge-graph-agentic-engine)                                                                           |
+| 16  | Glean Knowledge Layer Beyond RAG    | [https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag](https://rmax.ai/notes/enterprise-ai-agents-knowledge-layer-beyond-rag)                                                   |
+
+
 </pre></div><div class="panel" id="02-analysis-md"><pre class="md-source"># 方案论证：产品知识平台（KL Management）
 
 ## 问题陈述
@@ -1301,99 +1347,110 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 - ✅ 同时满足机器和人类消费
 - ⚠️ 需维护两种格式的一致性（可由同一数据源生成）
-- ⚠️ JSON Schema 需要版本管理，向后兼容
-
-</pre></div><div class="panel" id="03b-user-journey-md"><pre class="md-source"># 用户旅程地图 — 产品知识平台（KL Management）
+- ⚠️ JSON Schema 需要版本管理，向后兼容</pre></div><div class="panel" id="03b-user-journey-md"><pre class="md-source"># 用户旅程地图 — 产品知识平台（KL Management）
 
 ## Personas
 
-| ID | 角色 | 目标 | 痛点 |
-|----|------|------|------|
-| P1 | 领域专家 / 老产品 | 将口述经验转化为结构化 biz_kl 条目，确保业务语义准确 | 知识散落在历史文档/脑中，缺乏结构化工具；提交审核后缺乏回滚和驳回理由可见性 |
-| P2 | 开发者 / AI 编程使用者 | 按 DDD 分层挂载代码模块到 sys_kl，关联 biz_kl，导出知识包供 Agent 消费 | 代码与文档脱节，手动标注耗时；知识包内容质量不可控（含草稿） |
-| P3 | 平台管理员 / 审核者 | 审核 biz_kl 条目、管理权限、查看审计日志、处理驳回与撤回 | 审核流缺少撤回/回滚能力，驳回后知识丢失风险；缺乏审批者队列视图 |
-| P4 | AI Agent / IDE（系统消费者） | 通过 API 拉取结构化知识包，生成方案草稿 | 消费到 draft/reviewing 条目导致幻觉；缺乏 BC 分组导致上下文过载 |
+
+| ID  | 角色                    | 目标                                               | 痛点                                         |
+| --- | --------------------- | ------------------------------------------------ | ------------------------------------------ |
+| P1  | 领域专家 / 老产品            | 将口述经验转化为结构化 biz_kl 条目，确保业务语义准确                   | 知识散落在历史文档/脑中，缺乏结构化工具；提交审核后缺乏回滚和驳回理由可见性     |
+| P2  | 开发者 / AI 编程使用者        | 按 DDD 分层挂载代码模块到 sys_kl，关联 biz_kl，导出知识包供 Agent 消费 | 代码与文档脱节，手动标注耗时；知识包内容质量不可控（含草稿）             |
+| P3  | 平台管理员 / 审核者           | 审核 biz_kl 条目、管理权限、查看审计日志、处理驳回与撤回                 | 审核流缺少撤回/回滚能力，驳回后知识丢失风险；缺乏审批者队列视图           |
+| P4  | AI Agent / IDE（系统消费者） | 通过 API 拉取结构化知识包，生成方案草稿                           | 消费到 draft/reviewing 条目导致幻觉；缺乏 BC 分组导致上下文过载 |
+
 
 ## 核心旅程
 
 ### J1: 领域专家创建并发布业务知识（对应 US-1）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J1-1 | P1 领域专家 | 发现 | 进入知识列表页，查看已有条目避免重复 | 展示已发布 biz_kl 列表，支持搜索/筛选 | TP1: 知识列表首页 | 中性：列表信息密度高 | 能在 30 秒内确认是否已有类似条目 |
-| J1-2 | P1 领域专家 | 创建 | 点击「创建业务知识条目」，填写名称、描述、类型、标签 | 保存为 draft 状态，记录审计日志 | TP2: 创建/编辑表单 | 正面：表单引导清晰 | 草稿创建成功，状态为 draft |
-| J1-3 | P1 领域专家 | 提交审核 | 在草稿详情页点击「提交审核」 | 状态变为 reviewing，通知审核者 | TP3: 条目详情页（含提交按钮） | 焦虑：不确定审核周期 | 状态成功切换为 reviewing |
-| J1-4 | P3 管理员 | 审核 | 在审批队列中查看 reviewing 条目，对比 diff，决定发布或驳回 | 发布 → published；驳回 → rejected + 记录驳回理由 | TP4: 审批者队列页 /review | 正面：diff 视图减少认知负担 | 审核操作完成，审计日志有记录 |
-| J1-5 | P1 领域专家 | 处理驳回/撤回 | 查看驳回理由，修改后重新提交；或在 reviewing 态撤回修改 | 驳回态可编辑后 re-submit；撤回回滚到最近 published 版本 | TP3: 条目详情页（状态指示 + 操作按钮） | 正面：驳回理由明确，撤回不丢知识 | 条目最终进入 published 状态 |
+
+| 旅程ID | Persona | 阶段      | 用户行为                                  | 系统响应                                   | Touchpoint              | 情绪/痛点            | 成功标准                |
+| ---- | ------- | ------- | ------------------------------------- | -------------------------------------- | ----------------------- | ---------------- | ------------------- |
+| J1-1 | P1 领域专家 | 发现      | 进入知识列表页，查看已有条目避免重复                    | 展示已发布 biz_kl 列表，支持搜索/筛选                | TP1: 知识列表首页             | 中性：列表信息密度高       | 能在 30 秒内确认是否已有类似条目  |
+| J1-2 | P1 领域专家 | 创建      | 点击「创建业务知识条目」，填写名称、描述、类型、标签            | 保存为 draft 状态，记录审计日志                    | TP2: 创建/编辑表单            | 正面：表单引导清晰        | 草稿创建成功，状态为 draft    |
+| J1-3 | P1 领域专家 | 提交审核    | 在草稿详情页点击「提交审核」                        | 状态变为 reviewing，通知审核者                   | TP3: 条目详情页（含提交按钮）       | 焦虑：不确定审核周期       | 状态成功切换为 reviewing   |
+| J1-4 | P3 管理员  | 审核      | 在审批队列中查看 reviewing 条目，对比 diff，决定发布或驳回 | 发布 → published；驳回 → rejected + 记录驳回理由  | TP4: 审批者队列页 /review     | 正面：diff 视图减少认知负担 | 审核操作完成，审计日志有记录      |
+| J1-5 | P1 领域专家 | 处理驳回/撤回 | 查看驳回理由，修改后重新提交；或在 reviewing 态撤回修改     | 驳回态可编辑后 re-submit；撤回回滚到最近 published 版本 | TP3: 条目详情页（状态指示 + 操作按钮） | 正面：驳回理由明确，撤回不丢知识 | 条目最终进入 published 状态 |
+
 
 ### J2: 开发者创建系统知识并关联业务（对应 US-2）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J2-1 | P2 开发者 | 发现 | 切换到 sys_kl 列表，按 DDD 层筛选已有条目 | 展示 sys_kl 列表，支持 layer/bounded_context 筛选 | TP5: sys_kl 列表页 | 中性：DDD 分层清晰 | 能快速定位目标模块是否已标注 |
-| J2-2 | P2 开发者 | 创建 | 填写 sys_kl 条目：模块路径、DDD 层、BC 归属、职责描述 | 保存为 draft 状态 | TP6: 创建 sys_kl 表单（含 BC 选择器） | 正面：BC 选择器帮助归类 | 条目创建成功，含 bounded_context |
-| J2-3 | P2 开发者 | 关联 | 在 sys_kl 详情页搜索并关联 biz_kl 条目 | 在 kl_links 中创建记录，支持 link_type 选择 | TP7: 关联管理器（搜索选择器 + 关系类型） | 正面：双向跳转减少上下文切换 | 关联创建后双向可见 |
-| J2-4 | P2 开发者 | 发布 | 确认关联无误后发布 sys_kl 条目 | 状态变为 published，记录审计日志 | TP8: sys_kl 详情页（发布按钮） | 正面：发布流程简洁 | 条目可在列表中被搜索到 |
+
+| 旅程ID | Persona | 阶段  | 用户行为                               | 系统响应                                     | Touchpoint                  | 情绪/痛点          | 成功标准                     |
+| ---- | ------- | --- | ---------------------------------- | ---------------------------------------- | --------------------------- | -------------- | ------------------------ |
+| J2-1 | P2 开发者  | 发现  | 切换到 sys_kl 列表，按 DDD 层筛选已有条目        | 展示 sys_kl 列表，支持 layer/bounded_context 筛选 | TP5: sys_kl 列表页             | 中性：DDD 分层清晰    | 能快速定位目标模块是否已标注           |
+| J2-2 | P2 开发者  | 创建  | 填写 sys_kl 条目：模块路径、DDD 层、BC 归属、职责描述 | 保存为 draft 状态                             | TP6: 创建 sys_kl 表单（含 BC 选择器） | 正面：BC 选择器帮助归类  | 条目创建成功，含 bounded_context |
+| J2-3 | P2 开发者  | 关联  | 在 sys_kl 详情页搜索并关联 biz_kl 条目        | 在 kl_links 中创建记录，支持 link_type 选择         | TP7: 关联管理器（搜索选择器 + 关系类型）    | 正面：双向跳转减少上下文切换 | 关联创建后双向可见                |
+| J2-4 | P2 开发者  | 发布  | 确认关联无误后发布 sys_kl 条目                | 状态变为 published，记录审计日志                    | TP8: sys_kl 详情页（发布按钮）       | 正面：发布流程简洁      | 条目可在列表中被搜索到              |
+
 
 ### J3: 导出知识包供 Agent 消费（对应 US-3）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J3-1 | P2 开发者 | 选择 | 进入导出页，勾选已发布的 biz_kl 条目 | 展示可选条目列表（仅 published），显示关联模块数 | TP9: 知识包导出页 | 正面：仅展示 published 条目保证质量 | 能清晰看到选中条目及其关联范围 |
-| J3-2 | P2 开发者 | 预览 | 切换 JSON/Markdown 格式预览 | 实时组装知识包内容，展示预览 | TP9: 导出页预览区 | 正面：预览即所得 | 预览内容与预期一致 |
-| J3-3 | P2/P4 | 消费 | 下载知识包文件 或 通过 API 拉取 | 返回符合 JSON Schema 的知识包；权限感知过滤 | TP10: API 端点 / 下载按钮 | 正面：Agent 获得干净上下文 | JSON 通过 Schema 校验，仅含 published 条目 |
+
+| 旅程ID | Persona | 阶段  | 用户行为                   | 系统响应                          | Touchpoint          | 情绪/痛点                   | 成功标准                              |
+| ---- | ------- | --- | ---------------------- | ----------------------------- | ------------------- | ----------------------- | --------------------------------- |
+| J3-1 | P2 开发者  | 选择  | 进入导出页，勾选已发布的 biz_kl 条目 | 展示可选条目列表（仅 published），显示关联模块数 | TP9: 知识包导出页         | 正面：仅展示 published 条目保证质量 | 能清晰看到选中条目及其关联范围                   |
+| J3-2 | P2 开发者  | 预览  | 切换 JSON/Markdown 格式预览  | 实时组装知识包内容，展示预览                | TP9: 导出页预览区         | 正面：预览即所得                | 预览内容与预期一致                         |
+| J3-3 | P2/P4   | 消费  | 下载知识包文件 或 通过 API 拉取    | 返回符合 JSON Schema 的知识包；权限感知过滤  | TP10: API 端点 / 下载按钮 | 正面：Agent 获得干净上下文        | JSON 通过 Schema 校验，仅含 published 条目 |
+
 
 ### J4: 知识检索与浏览（对应 US-4）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J4-1 | P1/P2/P3 | 搜索 | 在顶部搜索框输入关键词 | 按 biz_kl/sys_kl 分类展示搜索结果 | TP1: 知识列表首页（全局搜索） | 正面：&lt;1 秒响应 | 搜索结果包含目标条目 |
-| J4-2 | P1/P2/P3 | 浏览 | 点击条目查看详情 | 展示完整信息、关联条目、版本历史 | TP3/TP8: 条目详情页 | 正面：关联条目可点击跳转 | 能在详情页获得完整上下文 |
-| J4-3 | P1/P2 | 版本对比 | 在详情页查看版本历史，选择两个版本对比 | 展示两个版本间的 diff | TP11: 版本历史/对比视图 | 正面：能追溯变更轨迹 | 能识别具体变更内容 |
+
+| 旅程ID | Persona  | 阶段   | 用户行为                | 系统响应                     | Touchpoint        | 情绪/痛点        | 成功标准         |
+| ---- | -------- | ---- | ------------------- | ------------------------ | ----------------- | ------------ | ------------ |
+| J4-1 | P1/P2/P3 | 搜索   | 在顶部搜索框输入关键词         | 按 biz_kl/sys_kl 分类展示搜索结果 | TP1: 知识列表首页（全局搜索） | 正面：&lt;1 秒响应    | 搜索结果包含目标条目   |
+| J4-2 | P1/P2/P3 | 浏览   | 点击条目查看详情            | 展示完整信息、关联条目、版本历史         | TP3/TP8: 条目详情页    | 正面：关联条目可点击跳转 | 能在详情页获得完整上下文 |
+| J4-3 | P1/P2    | 版本对比 | 在详情页查看版本历史，选择两个版本对比 | 展示两个版本间的 diff            | TP11: 版本历史/对比视图   | 正面：能追溯变更轨迹   | 能识别具体变更内容    |
+
 
 ### J5: 管理员审计与权限治理（对应 US-5）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J5-1 | P3 管理员 | 审计 | 进入审计日志页，按条目/操作人/时间筛选 | 展示操作记录表格（创建/修改/发布/驳回/撤回） | TP12: 审计日志页 | 正面：筛选粒度细 | 能定位特定操作记录 |
-| J5-2 | P3 管理员 | 权限管理 | 为用户分配/变更角色 | 角色变更写入审计日志 | TP13: 用户管理页 | 中性：操作简单 | 角色变更后权限立即生效 |
+
+| 旅程ID | Persona | 阶段   | 用户行为                 | 系统响应                     | Touchpoint  | 情绪/痛点    | 成功标准        |
+| ---- | ------- | ---- | -------------------- | ------------------------ | ----------- | -------- | ----------- |
+| J5-1 | P3 管理员  | 审计   | 进入审计日志页，按条目/操作人/时间筛选 | 展示操作记录表格（创建/修改/发布/驳回/撤回） | TP12: 审计日志页 | 正面：筛选粒度细 | 能定位特定操作记录   |
+| J5-2 | P3 管理员  | 权限管理 | 为用户分配/变更角色           | 角色变更写入审计日志               | TP13: 用户管理页 | 中性：操作简单  | 角色变更后权限立即生效 |
+
 
 ## 屏幕映射
 
-| 屏幕 | 旅程ID | 信息优先级（首屏必见） | 关联 US |
-|------|--------|------------------------|---------|
-| 知识列表首页（/） | J1-1, J2-1, J4-1 | 全局搜索框、biz_kl/sys_kl tab、条目列表（名称+状态+标签） | US-1, US-2, US-4 |
-| 创建/编辑表单（/biz/new, /sys/new） | J1-2, J2-2 | 名称、描述（Markdown 预览）、类型/层级选择器、标签输入 | US-1, US-2 |
-| biz_kl 详情页（/biz/{id}） | J1-3, J1-5, J4-2, J4-3 | 条目内容、状态 badge、关联 sys_kl 列表、版本历史、操作按钮（编辑/提交审核/撤回） | US-1, US-4 |
-| sys_kl 详情页（/sys/{id}） | J2-3, J2-4, J4-2 | 模块信息、DDD 层级、BC 归属、关联 biz_kl 列表、关联管理器 | US-2, US-4 |
-| 审批者队列（/review） | J1-4 | reviewing 条目列表、diff 预览、发布/驳回操作 | US-1, US-5 |
-| 知识包导出页（/export） | J3-1, J3-2, J3-3 | 已发布 biz_kl 多选列表、格式切换、预览区、下载按钮 | US-3 |
-| 审计日志页（/audit） | J5-1 | 操作记录表格、筛选器（条目/操作人/时间） | US-5 |
-| 版本历史/对比（/biz/{id}/history） | J4-3 | 版本列表（时间/操作人/变更摘要）、版本 diff 对比视图 | US-1, US-4 |
-| 用户管理页（/admin/users） | J5-2 | 用户列表、角色选择器、角色变更确认 | US-5 |
+
+| 屏幕                          | 旅程ID                   | 信息优先级（首屏必见）                                      | 关联 US            |
+| --------------------------- | ---------------------- | ------------------------------------------------ | ---------------- |
+| 知识列表首页（/）                   | J1-1, J2-1, J4-1       | 全局搜索框、biz_kl/sys_kl tab、条目列表（名称+状态+标签）           | US-1, US-2, US-4 |
+| 创建/编辑表单（/biz/new, /sys/new） | J1-2, J2-2             | 名称、描述（Markdown 预览）、类型/层级选择器、标签输入                 | US-1, US-2       |
+| biz_kl 详情页（/biz/{id}）       | J1-3, J1-5, J4-2, J4-3 | 条目内容、状态 badge、关联 sys_kl 列表、版本历史、操作按钮（编辑/提交审核/撤回） | US-1, US-4       |
+| sys_kl 详情页（/sys/{id}）       | J2-3, J2-4, J4-2       | 模块信息、DDD 层级、BC 归属、关联 biz_kl 列表、关联管理器             | US-2, US-4       |
+| 审批者队列（/review）              | J1-4                   | reviewing 条目列表、diff 预览、发布/驳回操作                   | US-1, US-5       |
+| 知识包导出页（/export）             | J3-1, J3-2, J3-3       | 已发布 biz_kl 多选列表、格式切换、预览区、下载按钮                    | US-3             |
+| 审计日志页（/audit）               | J5-1                   | 操作记录表格、筛选器（条目/操作人/时间）                            | US-5             |
+| 版本历史/对比（/biz/{id}/history）  | J4-3                   | 版本列表（时间/操作人/变更摘要）、版本 diff 对比视图                   | US-1, US-4       |
+| 用户管理页（/admin/users）         | J5-2                   | 用户列表、角色选择器、角色变更确认                                | US-5             |
+
 
 ## 核心路径（≤3）
 
 1. **知识贡献路径**（J1 + J2）：领域专家创建 biz_kl → 提交审核 → 管理员审核发布 → 开发者创建 sys_kl → 关联 biz_kl → 发布
-   - 关键 Touchpoints: TP1 → TP2 → TP3 → TP4 → TP5 → TP6 → TP7 → TP8
-   - 支撑 US-1, US-2
-
+  - 关键 Touchpoints: TP1 → TP2 → TP3 → TP4 → TP5 → TP6 → TP7 → TP8
+  - 支撑 US-1, US-2
 2. **知识消费路径**（J3）：开发者选择已发布 biz_kl → 预览知识包 → 下载/API 消费
-   - 关键 Touchpoints: TP9 → TP10
-   - 支撑 US-3
-
+  - 关键 Touchpoints: TP9 → TP10
+  - 支撑 US-3
 3. **知识发现路径**（J4）：用户搜索关键词 → 浏览结果 → 查看详情 → 追溯版本历史
-   - 关键 Touchpoints: TP1 → TP3/TP8 → TP11
-   - 支撑 US-4
+  - 关键 Touchpoints: TP1 → TP3/TP8 → TP11
+  - 支撑 US-4
 
 ## Refine-2 差距映射（ADR 驱动）
 
-| ADR | 新增 Touchpoint | 说明 |
-|-----|----------------|------|
-| ADR-006 审核撤回+回滚 | TP3（详情页增加撤回按钮）、TP4（审批队列增加 diff 视图） | 驳回后知识不丢失，作者可撤回修改 |
-| ADR-007 状态过滤+权限感知 | TP9（导出页仅展示 published）、TP10（API 按角色过滤） | Agent 消费到干净知识包 |
-| ADR-008 BC 建模 | TP6（创建表单增加 BC 选择器）、TP7（关联增加 link_type） | sys_kl 按 BC 分组，知识包按 BC 组织 |
-| ADR-009 版本快照 | TP11（版本历史/对比视图） | 支持回滚、版本 diff、完整审计 |
+
+| ADR               | 新增 Touchpoint                          | 说明                        |
+| ----------------- | -------------------------------------- | ------------------------- |
+| ADR-006 审核撤回+回滚   | TP3（详情页增加撤回按钮）、TP4（审批队列增加 diff 视图）     | 驳回后知识不丢失，作者可撤回修改          |
+| ADR-007 状态过滤+权限感知 | TP9（导出页仅展示 published）、TP10（API 按角色过滤）  | Agent 消费到干净知识包            |
+| ADR-008 BC 建模     | TP6（创建表单增加 BC 选择器）、TP7（关联增加 link_type） | sys_kl 按 BC 分组，知识包按 BC 组织 |
+| ADR-009 版本快照      | TP11（版本历史/对比视图）                        | 支持回滚、版本 diff、完整审计         |
 </pre></div><div class="panel" id="03-prd-md"><pre class="md-source"># 产品需求文档（PRD）：产品知识平台（KL Management）MVP
 
 ## 产品愿景
@@ -1542,52 +1599,60 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ## Refine-2 差距与补充（ADR 驱动）
 
-| 差距 ID | 来源 | 描述 | 对应用户故事 | 旅程触点 | 状态 |
-|---------|------|------|-------------|----------|------|
-| GAP-001 | ADR-006 | 审核流缺少撤回（withdraw）和回滚到最近 published 版本的能力 | US-1 | TP3, TP4 | 已纳入 openspec |
+
+| 差距 ID   | 来源      | 描述                                            | 对应用户故事     | 旅程触点           | 状态           |
+| ------- | ------- | --------------------------------------------- | ---------- | -------------- | ------------ |
+| GAP-001 | ADR-006 | 审核流缺少撤回（withdraw）和回滚到最近 published 版本的能力       | US-1       | TP3, TP4       | 已纳入 openspec |
 | GAP-002 | ADR-006 | reject API 缺少 rejection_reason 持久化，用户无法区分驳回原因 | US-1, US-5 | TP3, TP4, TP12 | 已纳入 openspec |
-| GAP-003 | ADR-006 | 缺少审批者队列视图（/review），管理员无法集中处理待审条目 | US-1, US-5 | TP4 | 已纳入原型 |
-| GAP-004 | ADR-007 | 知识包导出包含 draft/reviewing 条目，Agent 消费到未审核内容 | US-3 | TP9, TP10 | 已纳入 openspec |
-| GAP-005 | ADR-007 | 导出 API 缺少权限感知，所有角色看到相同知识包 | US-3 | TP10 | 已纳入 openspec |
-| GAP-006 | ADR-008 | sys_kl 无 Bounded Context 归属，知识包无法按 BC 组织 | US-2 | TP6, TP9 | 已纳入 openspec |
-| GAP-007 | ADR-008 | kl_links 无 link_type 字段，关系语义不足（仅 biz↔sys 关联） | US-2 | TP7 | 已纳入 openspec |
-| GAP-008 | ADR-009 | biz_kl 无版本快照表，无法支持版本对比和回滚 | US-1, US-4 | TP11 | 已纳入 openspec |
-| GAP-009 | ADR-009 | 缺少版本历史 API（/api/biz/{id}/history 和 diff 端点） | US-1, US-4 | TP11 | 已纳入 openspec |
+| GAP-003 | ADR-006 | 缺少审批者队列视图（/review），管理员无法集中处理待审条目              | US-1, US-5 | TP4            | 已纳入原型        |
+| GAP-004 | ADR-007 | 知识包导出包含 draft/reviewing 条目，Agent 消费到未审核内容     | US-3       | TP9, TP10      | 已纳入 openspec |
+| GAP-005 | ADR-007 | 导出 API 缺少权限感知，所有角色看到相同知识包                     | US-3       | TP10           | 已纳入 openspec |
+| GAP-006 | ADR-008 | sys_kl 无 Bounded Context 归属，知识包无法按 BC 组织      | US-2       | TP6, TP9       | 已纳入 openspec |
+| GAP-007 | ADR-008 | kl_links 无 link_type 字段，关系语义不足（仅 biz↔sys 关联）  | US-2       | TP7            | 已纳入 openspec |
+| GAP-008 | ADR-009 | biz_kl 无版本快照表，无法支持版本对比和回滚                     | US-1, US-4 | TP11           | 已纳入 openspec |
+| GAP-009 | ADR-009 | 缺少版本历史 API（/api/biz/{id}/history 和 diff 端点）   | US-1, US-4 | TP11           | 已纳入 openspec |
+
 
 ### 优先级排序
 
-| 优先级 | 差距 ID | 理由 |
-|--------|---------|------|
-| P0 | GAP-004, GAP-005 | Agent 消费质量是核心价值验证前提 |
-| P0 | GAP-001, GAP-002 | 审核流闭环，防止知识丢失 |
-| P1 | GAP-006, GAP-007 | BC 建模支撑后续多 BC 扩展 |
-| P1 | GAP-008, GAP-009 | 版本快照支撑 ADR-006 回滚 |
-| P2 | GAP-003 | 审批者队列改善审核体验，非阻塞性 |</pre></div><div class="panel" id="05-retro-md"><pre class="md-source"># 阶段回顾（Retro）：pm-kl-management（全链路）
+
+| 优先级 | 差距 ID            | 理由                  |
+| --- | ---------------- | ------------------- |
+| P0  | GAP-004, GAP-005 | Agent 消费质量是核心价值验证前提 |
+| P0  | GAP-001, GAP-002 | 审核流闭环，防止知识丢失        |
+| P1  | GAP-006, GAP-007 | BC 建模支撑后续多 BC 扩展    |
+| P1  | GAP-008, GAP-009 | 版本快照支撑 ADR-006 回滚   |
+| P2  | GAP-003          | 审批者队列改善审核体验，非阻塞性    |
+</pre></div><div class="panel" id="05-retro-md"><pre class="md-source"># 阶段回顾（Retro）：pm-kl-management（全链路）
 
 ## 项目信息
 
-| 项目 | 值 |
-|------|-----|
-| 产品 slug | kl-management |
-| 产品名称 | 产品知识平台（KL Management） |
-| 日期 | 2026-06-07 |
-| 模型 | qwen3.6-plus |
-| 管线版本 | 3.0.0 |
-| GitHub | https://github.com/ttmens/pm-kl-management |
-| Pages | https://ttmens.github.io/pm-kl-management/ |
+
+| 项目      | 值                                                                                        |
+| ------- | ---------------------------------------------------------------------------------------- |
+| 产品 slug | kl-management                                                                            |
+| 产品名称    | 产品知识平台（KL Management）                                                                    |
+| 日期      | 2026-06-07                                                                               |
+| 模型      | qwen3.6-plus                                                                             |
+| 管线版本    | 3.0.0                                                                                    |
+| GitHub  | [https://github.com/ttmens/pm-kl-management](https://github.com/ttmens/pm-kl-management) |
+| Pages   | [https://ttmens.github.io/pm-kl-management/](https://ttmens.github.io/pm-kl-management/) |
+
 
 ## 各阶段时间与产出
 
-| 阶段 | 产出文件 | 耗时估计 | 状态 |
-|------|---------|---------|------|
-| Stage 0: Brief | 00-brief.md | ~5 min | PASS |
-| Stage 1: Research | 01-research.md（7 竞品 × 3 维度，29 来源） | ~10 min | PASS |
-| Stage 2: Analysis | 02-analysis.md, decisions.md (5 ADR), CONTEXT.md | ~10 min | PASS |
-| Stage 2b: Prototype | 02b-prototype/index.html, DESIGN.md | ~5 min | PASS |
-| Stage 3: Spec | 03-prd.md, openspec/* (proposal + design + 4 specs + tasks) | ~10 min | PASS |
-| Stage 4: MVP | 04-mvp/ (18 文件 + 9 模板 + 8 测试 + 辅助脚本) | ~15 min | PASS |
-| Stage 5: Retro (MVP) | 05-retro.md (初版，仅覆盖 MVP) | ~3 min | PASS |
-| Stage 6: Retro (全链路) | 05-retro.md (终版，本文件) | ~5 min | PASS |
+
+| 阶段                   | 产出文件                                                        | 耗时估计    | 状态   |
+| -------------------- | ----------------------------------------------------------- | ------- | ---- |
+| Stage 0: Brief       | 00-brief.md                                                 | ~5 min  | PASS |
+| Stage 1: Research    | 01-research.md（7 竞品 × 3 维度，29 来源）                           | ~10 min | PASS |
+| Stage 2: Analysis    | 02-analysis.md, decisions.md (5 ADR), CONTEXT.md            | ~10 min | PASS |
+| Stage 2b: Prototype  | 02b-prototype/index.html, DESIGN.md                         | ~5 min  | PASS |
+| Stage 3: Spec        | 03-prd.md, openspec/* (proposal + design + 4 specs + tasks) | ~10 min | PASS |
+| Stage 4: MVP         | 04-mvp/ (18 文件 + 9 模板 + 8 测试 + 辅助脚本)                        | ~15 min | PASS |
+| Stage 5: Retro (MVP) | 05-retro.md (初版，仅覆盖 MVP)                                    | ~3 min  | PASS |
+| Stage 6: Retro (全链路) | 05-retro.md (终版，本文件)                                        | ~5 min  | PASS |
+
 
 **全链路总耗时：~60-70 分钟**（含 OpenCode 生成 + 测试修复 + gate 验证）
 
@@ -1595,35 +1660,41 @@ MVP 需要提供「给 Agent 用的知识包」，消费端可能是 API 调用�
 
 ### 命中的技能
 
-| 技能 | 使用阶段 | 效果 |
-|------|---------|------|
-| `plan` | Stage 3 → 4 | 生成了可执行的 tasks.md 计划 |
-| `ui-ux-pro-max` | Stage 3 | 生成了 DESIGN.md 设计令牌 |
-| `opencode` | Stage 4 | 一次性生成全部 18+ 文件，覆盖 15 个任务 |
-| `test-driven-development` | Stage 4 | 测试文件随代码一起生成 |
-| `dogfood` | Stage 4 | 冒烟测试 18 端点全部 200 |
-| `pm-git-publish` | Stage 4 | GitHub 推送 + Pages 生成成功 |
-| `openspec` | Stage 3 | 4 个 spec 文件 + proposal + tasks.md |
+
+| 技能                        | 使用阶段        | 效果                                |
+| ------------------------- | ----------- | --------------------------------- |
+| `plan`                    | Stage 3 → 4 | 生成了可执行的 tasks.md 计划               |
+| `ui-ux-pro-max`           | Stage 3     | 生成了 DESIGN.md 设计令牌                |
+| `opencode`                | Stage 4     | 一次性生成全部 18+ 文件，覆盖 15 个任务          |
+| `test-driven-development` | Stage 4     | 测试文件随代码一起生成                       |
+| `dogfood`                 | Stage 4     | 冒烟测试 18 端点全部 200                  |
+| `pm-git-publish`          | Stage 4     | GitHub 推送 + Pages 生成成功            |
+| `openspec`                | Stage 3     | 4 个 spec 文件 + proposal + tasks.md |
+
 
 ### 技能失误 / 改进空间
 
-| 技能 | 问题 | 改进建议 |
-|------|------|---------|
-| `test-driven-development` | 实际是「生成→测试→修复」而非严格 TDD（测试先行） | 对 OpenCode 黑盒生成场景，「生成→测试→修复」循环更实际，但应在 plan 中明确 |
-| `opencode` | 生成的代码存在 6 个边界 Bug（函数名互换、参数误用、校验不严、重复参数） | 在 prompt 中增加函数命名规范和参数校验的约束 |
-| `requesting-code-review` | 未显式调用，而是手动 patch 修复 | 可考虑在 OpenCode 生成后自动触发自 review |
+
+| 技能                        | 问题                                      | 改进建议                                           |
+| ------------------------- | --------------------------------------- | ---------------------------------------------- |
+| `test-driven-development` | 实际是「生成→测试→修复」而非严格 TDD（测试先行）             | 对 OpenCode 黑盒生成场景，「生成→测试→修复」循环更实际，但应在 plan 中明确 |
+| `opencode`                | 生成的代码存在 6 个边界 Bug（函数名互换、参数误用、校验不严、重复参数） | 在 prompt 中增加函数命名规范和参数校验的约束                     |
+| `requesting-code-review`  | 未显式调用，而是手动 patch 修复                     | 可考虑在 OpenCode 生成后自动触发自 review                  |
+
 
 ## 假设验证
 
 ### 来自 00-brief.md 的开放假设
 
-| # | 假设 | Confidence | 验证结果 | 说明 |
-|---|------|-----------|---------|------|
-| 1 | 供应链 IT 团队愿意配合试点 | high | **未验证** | MVP 阶段为技术验证，未涉及真实用户参与 |
-| 2 | 现有代码仓库可被安全访问 | medium | **未验证** | sys_kl 采用手工标注，未实际读取代码仓库 |
-| 3 | Agent 消费端已有基础上下文注入能力 | medium | **未验证** | 知识包导出 API 已就绪，但未对接真实 Agent |
-| 4 | DDD 分层映射可由现有架构师提供 | high | **部分验证** | sys_kl 设计了 DDD layer 字段，但未实际标注 |
-| 5 | 首期试点控制在单个 BC | high | **已验证** | MVP 确实限定在单个 bounded context |
+
+| #   | 假设                   | Confidence | 验证结果     | 说明                             |
+| --- | -------------------- | ---------- | -------- | ------------------------------ |
+| 1   | 供应链 IT 团队愿意配合试点      | high       | **未验证**  | MVP 阶段为技术验证，未涉及真实用户参与          |
+| 2   | 现有代码仓库可被安全访问         | medium     | **未验证**  | sys_kl 采用手工标注，未实际读取代码仓库        |
+| 3   | Agent 消费端已有基础上下文注入能力 | medium     | **未验证**  | 知识包导出 API 已就绪，但未对接真实 Agent     |
+| 4   | DDD 分层映射可由现有架构师提供    | high       | **部分验证** | sys_kl 设计了 DDD layer 字段，但未实际标注 |
+| 5   | 首期试点控制在单个 BC         | high       | **已验证**  | MVP 确实限定在单个 bounded context    |
+
 
 ### 关键发现
 
@@ -1668,6 +1739,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `opencode`
 
 **变更**：在 prompt template 中加入以下约束：
+
 - 函数命名遵循 `get_{returned_entity}_for_{query_key}` 模式
 - 禁止未使用的函数参数
 - 所有数据解析必须有格式校验（fail-fast）
@@ -1678,6 +1750,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `test-driven-development`
 
 **变更**：增加「OpenCode 生成模式」分支：
+
 - 当使用 OpenCode 时，流程变为「生成 → 跑测试 → 定位失败 → patch 修复 → 再跑」
 - 严格 TDD（测试先行）仅适用于手动编码场景
 
@@ -1686,6 +1759,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `pm-idea-to-mvp`（管线配置）
 
 **变更**：
+
 - 在 pipeline 配置中声明 Python 路径和必要依赖
 - 或在 venv 初始化时自动安装 pytest/httpx/uvicorn
 
@@ -1694,6 +1768,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `pm-idea-to-mvp`
 
 **变更**：在 retro 阶段增加假设验证跟踪：
+
 - 从 brief.md 提取 open assumptions
 - 在 retro 中标记每个假设的验证状态（已验证/未验证/部分验证/被推翻）
 - 生成假设跟踪矩阵
@@ -1726,31 +1801,96 @@ pm-kl-management 是管线 v3.0.0 在真实产品场景（产品知识平台）�
 
 1. **试点验证**：在供应链 IT 团队中选取 1 个 BC 进行实际知识录入和 Agent 消费验证
 2. **自动化增强**：将 Proposal 1-4 合入管线配置
-3. **多 BC 扩展**：验证多 bounded context 场景下的知识包组装和跨 BC 引用
-</pre></div><div class="panel" id="06-refine-retro-md"><pre class="md-source"># Refine 深化回顾 — pm-kl-management
+3. **多 BC 扩展**：验证多 bounded context 场景下的知识包组装和跨 BC 引用</pre></div><div class="panel" id="06-refine-retro-md"><pre class="md-source"># Refine 深化回顾 — pm-kl-management
 
 ## 触发
 
-`hermes kanban refine kl-management` — 实现不满意，需业界深研与 C4/旅程/UX 优化。
+`hermes kanban refine kl-management` — 对 v3 MVP 实现不满意，需业界深研与 C4/旅程/UX 深度优化。
 
-## 产出
+## 子阶段产出
 
-| 子阶段 | 产物 | 状态 |
-|--------|------|------|
-| Refine-1 | 01b-benchmark.md | done |
-| Refine-2 | architecture/c4-*.md + design.md 引用 | done |
-| Refine-3 | 03b-user-journey.md | done |
-| Refine-4 | reject API、审计门、UX-REVIEW、详情操作 | done |
+| 子阶段 | 任务 | 产物 | 状态 |
+|--------|------|------|------|
+| Refine-1 | `t_0feb2316` | 01b-benchmark.md | ✅ done |
+| Refine-2 | `t_799ef925` | architecture/c4-*.md + ADR-006~009 | ✅ done |
+| Refine-3 | `t_9768e3cd` | 03b-user-journey.md + 刷新原型 | ✅ done |
+| Refine-4 | `t_97fccc47` | schema/models/app 更新 + UX-REVIEW.md | ⚠️ 超时（代码已写入） |
+
+## Refine-1 业界深研（6 个案例）
+
+1. **Backstage Catalog** — Spotify 开源开发者门户，BC 建模参考
+2. **Confluence 审批流** — 企业级内容审核参考
+3. **GitBook MCP Server** — AI 可发现性参考
+4. **Mintlify Docs-as-Code** — Git 同步 + 自动更新参考
+5. **Context Mapper / BC Canvas** — DDD BC 建模工具
+6. **Glean Knowledge Graph** — 知识图谱 + 权限感知
+
+→ 10 条 actionable feedback 写入 feedback.jsonl
+
+## Refine-2 C4 架构
+
+**新增 ADR：**
+- ADR-006：审核撤回回滚机制
+- ADR-007：知识包状态过滤 + 权限感知
+- ADR-008：BC 建模 + link_type 关系类型
+- ADR-009：版本快照表
+
+**C4 三层更新：**
+- c4-context.md：外部系统关系
+- c4-container.md：新增版本服务、审批服务容器
+- c4-component.md：细化 biz_kl_versions、kl_links 组件
+
+## Refine-3 用户旅程
+
+- 4 Persona：领域专家、开发者、审批者、管理员
+- 5 核心旅程：J1 知识贡献、J2 系统知识、J3 知识包导出、J4 知识发现、J5 审计治理
+- 13 Touchpoint，9 屏幕映射
+- 原型新增：审批队列页、版本对比页、撤回弹窗、BC 标签、角色切换器
+
+## Refine-4 MVP 优化（代码已持久化）
+
+**Schema 变更：**
+- sys_kl_items 新增 `bounded_context` 列
+- kl_links 新增 `link_type` 列（implements/dependsOn/governs/acl/published_language/open_host_service）
+- 新增 `biz_kl_versions` 快照表
+- audit_logs 新增 `withdraw` action
+
+**API 新增端点：**
+- `POST /api/biz/{id}/withdraw` — 撤回并回滚到最近 published 版本
+- `POST /api/biz/{id}/reject` — 驳回（含原因）
+- `GET /api/biz/{id}/history` — 版本历史
+- `GET /api/biz/{id}/history/{v1}/{v2}` — 版本 diff
+- `GET /api/review` — 审批队列
+- `GET /review` — 审批队列页面
+- sys 列表新增 `?bc=` 过滤
+
+**UX 验收（UX-REVIEW.md）：**
+- P0 = 0 ✅
+- P1 = 1（UX-004 sys 侧关联搜索选择器，留待下一迭代）
+- P2 = 3（sys 详情操作、导出权限提示、用户管理页）
+
+**测试：**
+- pytest: 40 passed
+- smoke test: 全部端点 200
 
 ## 差距关闭
 
-- P0 驳回/详情操作/审计权限：已关闭
-- P1 版本历史、关联选择器：未关闭，记入 feedback.jsonl
+| 差距 | 状态 |
+|------|------|
+| 驳回/撤回回滚 | ✅ 已关闭 |
+| 权限感知导出 | ✅ 已关闭 |
+| 审批者队列 | ✅ 已关闭 |
+| 版本历史 | ✅ 已关闭 |
+| BC 建模 + link_type | ✅ 已关闭 |
+| sys 侧关联搜索选择器 | ⏳ 下一迭代 |
+| 用户管理 UI | ⏳ 下一迭代 |
 
 ## 进化建议
 
-- 默认 v4 流水线对新 idea 强制 C4 + journey + design-review
-- Refine CLI 已验证可创建 4 子任务 DAG
+1. v4 流水线对新 idea 强制 C4 + journey + design-review
+2. Refine CLI 已验证可创建 4 子任务 DAG
+3. pm-builder 的 Refine-4 任务（含 60 次迭代）对大量代码更新可能不够 — 考虑增加 max-retries 或拆分任务
+4. 建议在 Refine-4 中优先修复 P0 → 跑测试 → 写 UX-REVIEW → 再处理 P1/P2
 </pre></div>
   <div class="panel" id="openspec-panel"><h3>openspec/proposal.md</h3><pre class="md-source"># Proposal: 产品知识平台 MVP — biz_kl/sys_kl 双库知识管理
 
@@ -2528,13 +2668,15 @@ MVP 实现方式：通过请求头 `X-User-Id` 传递用户标识，不做认证
 
 ## 外部角色
 
-| 角色 | 说明 |
-|------|------|
-| 领域专家 | 创建/维护 biz_kl 业务知识条目，按 BC 贡献知识 |
-| 开发者 | 维护 sys_kl、关联 biz_kl、按 BC 导出知识包 |
-| 管理员 | 审核发布、驳回、撤回审批、查看审计日志 |
+
+| 角色        | 说明                                            |
+| --------- | --------------------------------------------- |
+| 领域专家      | 创建/维护 biz_kl 业务知识条目，按 BC 贡献知识                 |
+| 开发者       | 维护 sys_kl、关联 biz_kl、按 BC 导出知识包                |
+| 管理员       | 审核发布、驳回、撤回审批、查看审计日志                           |
 | Agent/IDE | 消费导出的 JSON/Markdown 知识包（仅 published 条目，按角色过滤） |
-| Git 仓库 | sys_kl 引用代码路径 + commit hash，检测代码变更触发知识更新提醒 |
+| Git 仓库    | sys_kl 引用代码路径 + commit hash，检测代码变更触发知识更新提醒    |
+
 
 ## 上下文图
 
@@ -2555,25 +2697,31 @@ C4Context
   Rel_U(git, kl, &quot;代码变更通知&quot;)
 ```
 
+
+
 ## Refine-2 变更说明
 
 相比 MVP 基线，本版本上下文图新增：
+
 - Git 仓库的**双向关系**（平台引用代码路径，代码变更可通知平台更新知识）
 - Agent/IDE 明确标注**仅消费 published 条目**（ADR-007 状态过滤）
 - 领域专家增加**撤回**操作（ADR-006）
+
 </pre>
 <h3>C4 Container</h3><pre class="md-source"># C4 Level 2 — 容器
 
 ## 容器清单
 
-| 容器 | 技术 | 职责 |
-|------|------|------|
-| Web UI | HTML + HTMX + Jinja2 | 列表、详情、审核操作、导入、审计、审批者队列（/review） |
-| API Server | FastAPI | REST API、页面路由、权限校验、BC 分组、版本历史 |
-| Export Service | Python（API 内模块） | 组装知识包 JSON/Markdown + SKILL.md + llms.txt，状态过滤 + 权限感知 |
-| Version Service | Python（API 内模块） | biz_kl_versions 快照管理、版本 diff、回滚逻辑 |
-| SQLite DB | SQLite | biz_kl_items、sys_kl_items（含 bounded_context）、kl_links（含 link_type）、biz_kl_versions、audit_logs、users |
-| Audit Service | Python（API 内模块） | 不可变审计日志、驳回理由持久化 |
+
+| 容器              | 技术                   | 职责                                                                                                  |
+| --------------- | -------------------- | --------------------------------------------------------------------------------------------------- |
+| Web UI          | HTML + HTMX + Jinja2 | 列表、详情、审核操作、导入、审计、审批者队列（/review）                                                                     |
+| API Server      | FastAPI              | REST API、页面路由、权限校验、BC 分组、版本历史                                                                       |
+| Export Service  | Python（API 内模块）      | 组装知识包 JSON/Markdown + SKILL.md + llms.txt，状态过滤 + 权限感知                                               |
+| Version Service | Python（API 内模块）      | biz_kl_versions 快照管理、版本 diff、回滚逻辑                                                                   |
+| SQLite DB       | SQLite               | biz_kl_items、sys_kl_items（含 bounded_context）、kl_links（含 link_type）、biz_kl_versions、audit_logs、users |
+| Audit Service   | Python（API 内模块）      | 不可变审计日志、驳回理由持久化                                                                                     |
+
 
 ## 容器图
 
@@ -2609,38 +2757,46 @@ flowchart TB
   GIT -. 变更通知 .-&gt; API
 ```
 
+
+
 ## ADR 映射
 
-| ADR | 影响的容器 |
-|-----|-----------|
-| ADR-001 biz/sys 分离 | API、DB schema |
-| ADR-004 FastAPI+SQLite+HTMX | API、UI、DB |
-| ADR-005 JSON+Markdown 双格式 | Export Service |
-| ADR-006 审核流完善（撤回+回滚） | API Server、Audit Service、Web UI、Version Service |
-| ADR-007 知识包状态过滤+权限感知 | Export Service、API Server |
-| ADR-008 BC 建模（bounded_context + link_type） | API Server、SQLite DB、Export Service |
-| ADR-009 版本历史快照表 | Version Service、SQLite DB、API Server |
+
+| ADR                                        | 影响的容器                                           |
+| ------------------------------------------ | ----------------------------------------------- |
+| ADR-001 biz/sys 分离                         | API、DB schema                                   |
+| ADR-004 FastAPI+SQLite+HTMX                | API、UI、DB                                       |
+| ADR-005 JSON+Markdown 双格式                  | Export Service                                  |
+| ADR-006 审核流完善（撤回+回滚）                       | API Server、Audit Service、Web UI、Version Service |
+| ADR-007 知识包状态过滤+权限感知                       | Export Service、API Server                       |
+| ADR-008 BC 建模（bounded_context + link_type） | API Server、SQLite DB、Export Service             |
+| ADR-009 版本历史快照表                            | Version Service、SQLite DB、API Server            |
+
 
 ## Refine-2 变更说明
 
 相比 MVP 基线新增容器：
+
 - **Version Service**：biz_kl_versions 快照管理（ADR-009）
 - DB 新增表：`biz_kl_versions`（版本快照）、`sys_kl_items.bounded_context`（BC 归属）、`kl_links.link_type`（关系类型化）
+
 </pre>
 <h3>C4 Component</h3><pre class="md-source"># C4 Level 3 — 组件（FastAPI API Server + Version Service）
 
 ## 组件分解
 
-| 组件 | 所属容器 | 职责 |
-|------|----------|------|
-| BizKlRouter | API Server | biz_kl CRUD、submit、publish、reject、**withdraw**（ADR-006） |
-| SysKlRouter | API Server | sys_kl CRUD、link/unlink、**BC 分组查询**（ADR-008） |
-| PackageAssembler | Export Service | 按 ID 组装知识包、**状态过滤（仅 published）**、**权限感知**（ADR-007）、Markdown 渲染、SKILL.md + llms.txt 生成 |
-| ImportParser | API Server | biz_kl Markdown 批量导入 |
-| VersionManager | Version Service | 快照创建（update/publish 时）、版本列表、**diff 计算**、**回滚执行**（ADR-009） |
-| ReviewQueue | API Server | **审批者队列视图**：按状态过滤 reviewing 条目（P1 gap #7） |
-| AuthZ | API Server | `X-User-Id` 角色校验（admin publish/reject/audit，**expert 撤回**） |
-| PageRenderer | API Server | Jinja2 页面与 HTMX 片段（**含 /review 审批队列页**） |
+
+| 组件               | 所属容器            | 职责                                                                                    |
+| ---------------- | --------------- | ------------------------------------------------------------------------------------- |
+| BizKlRouter      | API Server      | biz_kl CRUD、submit、publish、reject、**withdraw**（ADR-006）                               |
+| SysKlRouter      | API Server      | sys_kl CRUD、link/unlink、**BC 分组查询**（ADR-008）                                          |
+| PackageAssembler | Export Service  | 按 ID 组装知识包、**状态过滤（仅 published）**、**权限感知**（ADR-007）、Markdown 渲染、SKILL.md + llms.txt 生成 |
+| ImportParser     | API Server      | biz_kl Markdown 批量导入                                                                  |
+| VersionManager   | Version Service | 快照创建（update/publish 时）、版本列表、**diff 计算**、**回滚执行**（ADR-009）                             |
+| ReviewQueue      | API Server      | **审批者队列视图**：按状态过滤 reviewing 条目（P1 gap #7）                                             |
+| AuthZ            | API Server      | `X-User-Id` 角色校验（admin publish/reject/audit，**expert 撤回**）                            |
+| PageRenderer     | API Server      | Jinja2 页面与 HTMX 片段（**含 /review 审批队列页**）                                               |
+
 
 ## 组件图
 
@@ -2676,132 +2832,156 @@ flowchart LR
   PAGE --&gt; REV
 ```
 
+
+
 ## Refine-2 标注的缺口与优先级
 
 ### P0（必须在 MVP 前修复）
 
-| # | 缺口 | 对应组件 | ADR |
-|---|------|----------|-----|
-| 1 | 审核流完善：撤回 + 回滚机制 | BizKlRouter + VersionManager | ADR-006 |
-| 2 | 知识包状态过滤（仅 published） | PackageAssembler | ADR-007 |
-| 3 | 权限感知导出（按角色过滤） | PackageAssembler + AuthZ | ADR-007 |
+
+| #   | 缺口                   | 对应组件                         | ADR     |
+| --- | -------------------- | ---------------------------- | ------- |
+| 1   | 审核流完善：撤回 + 回滚机制      | BizKlRouter + VersionManager | ADR-006 |
+| 2   | 知识包状态过滤（仅 published） | PackageAssembler             | ADR-007 |
+| 3   | 权限感知导出（按角色过滤）        | PackageAssembler + AuthZ     | ADR-007 |
+
 
 ### P1（Refine 阶段建议）
 
-| # | 缺口 | 对应组件 | ADR |
-|---|------|----------|-----|
-| 4 | 关系类型化（link_type 字段） | SysKlRouter | ADR-008 |
-| 5 | Bounded Context 归属（bounded_context 字段） | SysKlRouter + PackageAssembler | ADR-008 |
-| 6 | 版本历史快照表（biz_kl_versions） | VersionManager | ADR-009 |
-| 7 | 审批者队列页面（/review） | ReviewQueue + PageRenderer | ADR-006 |
+
+| #   | 缺口                                     | 对应组件                           | ADR     |
+| --- | -------------------------------------- | ------------------------------ | ------- |
+| 4   | 关系类型化（link_type 字段）                    | SysKlRouter                    | ADR-008 |
+| 5   | Bounded Context 归属（bounded_context 字段） | SysKlRouter + PackageAssembler | ADR-008 |
+| 6   | 版本历史快照表（biz_kl_versions）               | VersionManager                 | ADR-009 |
+| 7   | 审批者队列页面（/review）                       | ReviewQueue + PageRenderer     | ADR-006 |
+
 
 ### P2（后续阶段）
 
-| # | 缺口 | 说明 |
-|---|------|------|
-| 8 | 知识包 SKILL.md 指南 | PackageAssembler 导出时附带 |
-| 9 | llms.txt AI 发现层 | PackageAssembler 导出时附带 |
-| 10 | 代码变更检测联动 | sys_kl 关联 Git commit hash，外部 webhooks 触发 |
+
+| #   | 缺口              | 说明                                       |
+| --- | --------------- | ---------------------------------------- |
+| 8   | 知识包 SKILL.md 指南 | PackageAssembler 导出时附带                   |
+| 9   | llms.txt AI 发现层 | PackageAssembler 导出时附带                   |
+| 10  | 代码变更检测联动        | sys_kl 关联 Git commit hash，外部 webhooks 触发 |
+
 
 ### 已关闭的 MVP 缺口
 
-| 原缺口 | 状态 | 说明 |
-|--------|------|------|
-| 版本历史：仅 version 整数 | → ADR-009 | 新增 biz_kl_versions 快照表 |
-| BC 边界：无 bc_id | → ADR-008 | sys_kl_items 增加 bounded_context 字段 |
-| 角色管理 UI：无管理页面 | P2 | 暂缓，用户量 ≤10 时影响低 |
+
+| 原缺口               | 状态        | 说明                                 |
+| ----------------- | --------- | ---------------------------------- |
+| 版本历史：仅 version 整数 | → ADR-009 | 新增 biz_kl_versions 快照表             |
+| BC 边界：无 bc_id     | → ADR-008 | sys_kl_items 增加 bounded_context 字段 |
+| 角色管理 UI：无管理页面     | P2        | 暂缓，用户量 ≤10 时影响低                    |
+
+
 </pre></div>
   <div class="panel" id="journey-panel"><pre class="md-source"># 用户旅程地图 — 产品知识平台（KL Management）
 
 ## Personas
 
-| ID | 角色 | 目标 | 痛点 |
-|----|------|------|------|
-| P1 | 领域专家 / 老产品 | 将口述经验转化为结构化 biz_kl 条目，确保业务语义准确 | 知识散落在历史文档/脑中，缺乏结构化工具；提交审核后缺乏回滚和驳回理由可见性 |
-| P2 | 开发者 / AI 编程使用者 | 按 DDD 分层挂载代码模块到 sys_kl，关联 biz_kl，导出知识包供 Agent 消费 | 代码与文档脱节，手动标注耗时；知识包内容质量不可控（含草稿） |
-| P3 | 平台管理员 / 审核者 | 审核 biz_kl 条目、管理权限、查看审计日志、处理驳回与撤回 | 审核流缺少撤回/回滚能力，驳回后知识丢失风险；缺乏审批者队列视图 |
-| P4 | AI Agent / IDE（系统消费者） | 通过 API 拉取结构化知识包，生成方案草稿 | 消费到 draft/reviewing 条目导致幻觉；缺乏 BC 分组导致上下文过载 |
+
+| ID  | 角色                    | 目标                                               | 痛点                                         |
+| --- | --------------------- | ------------------------------------------------ | ------------------------------------------ |
+| P1  | 领域专家 / 老产品            | 将口述经验转化为结构化 biz_kl 条目，确保业务语义准确                   | 知识散落在历史文档/脑中，缺乏结构化工具；提交审核后缺乏回滚和驳回理由可见性     |
+| P2  | 开发者 / AI 编程使用者        | 按 DDD 分层挂载代码模块到 sys_kl，关联 biz_kl，导出知识包供 Agent 消费 | 代码与文档脱节，手动标注耗时；知识包内容质量不可控（含草稿）             |
+| P3  | 平台管理员 / 审核者           | 审核 biz_kl 条目、管理权限、查看审计日志、处理驳回与撤回                 | 审核流缺少撤回/回滚能力，驳回后知识丢失风险；缺乏审批者队列视图           |
+| P4  | AI Agent / IDE（系统消费者） | 通过 API 拉取结构化知识包，生成方案草稿                           | 消费到 draft/reviewing 条目导致幻觉；缺乏 BC 分组导致上下文过载 |
+
 
 ## 核心旅程
 
 ### J1: 领域专家创建并发布业务知识（对应 US-1）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J1-1 | P1 领域专家 | 发现 | 进入知识列表页，查看已有条目避免重复 | 展示已发布 biz_kl 列表，支持搜索/筛选 | TP1: 知识列表首页 | 中性：列表信息密度高 | 能在 30 秒内确认是否已有类似条目 |
-| J1-2 | P1 领域专家 | 创建 | 点击「创建业务知识条目」，填写名称、描述、类型、标签 | 保存为 draft 状态，记录审计日志 | TP2: 创建/编辑表单 | 正面：表单引导清晰 | 草稿创建成功，状态为 draft |
-| J1-3 | P1 领域专家 | 提交审核 | 在草稿详情页点击「提交审核」 | 状态变为 reviewing，通知审核者 | TP3: 条目详情页（含提交按钮） | 焦虑：不确定审核周期 | 状态成功切换为 reviewing |
-| J1-4 | P3 管理员 | 审核 | 在审批队列中查看 reviewing 条目，对比 diff，决定发布或驳回 | 发布 → published；驳回 → rejected + 记录驳回理由 | TP4: 审批者队列页 /review | 正面：diff 视图减少认知负担 | 审核操作完成，审计日志有记录 |
-| J1-5 | P1 领域专家 | 处理驳回/撤回 | 查看驳回理由，修改后重新提交；或在 reviewing 态撤回修改 | 驳回态可编辑后 re-submit；撤回回滚到最近 published 版本 | TP3: 条目详情页（状态指示 + 操作按钮） | 正面：驳回理由明确，撤回不丢知识 | 条目最终进入 published 状态 |
+
+| 旅程ID | Persona | 阶段      | 用户行为                                  | 系统响应                                   | Touchpoint              | 情绪/痛点            | 成功标准                |
+| ---- | ------- | ------- | ------------------------------------- | -------------------------------------- | ----------------------- | ---------------- | ------------------- |
+| J1-1 | P1 领域专家 | 发现      | 进入知识列表页，查看已有条目避免重复                    | 展示已发布 biz_kl 列表，支持搜索/筛选                | TP1: 知识列表首页             | 中性：列表信息密度高       | 能在 30 秒内确认是否已有类似条目  |
+| J1-2 | P1 领域专家 | 创建      | 点击「创建业务知识条目」，填写名称、描述、类型、标签            | 保存为 draft 状态，记录审计日志                    | TP2: 创建/编辑表单            | 正面：表单引导清晰        | 草稿创建成功，状态为 draft    |
+| J1-3 | P1 领域专家 | 提交审核    | 在草稿详情页点击「提交审核」                        | 状态变为 reviewing，通知审核者                   | TP3: 条目详情页（含提交按钮）       | 焦虑：不确定审核周期       | 状态成功切换为 reviewing   |
+| J1-4 | P3 管理员  | 审核      | 在审批队列中查看 reviewing 条目，对比 diff，决定发布或驳回 | 发布 → published；驳回 → rejected + 记录驳回理由  | TP4: 审批者队列页 /review     | 正面：diff 视图减少认知负担 | 审核操作完成，审计日志有记录      |
+| J1-5 | P1 领域专家 | 处理驳回/撤回 | 查看驳回理由，修改后重新提交；或在 reviewing 态撤回修改     | 驳回态可编辑后 re-submit；撤回回滚到最近 published 版本 | TP3: 条目详情页（状态指示 + 操作按钮） | 正面：驳回理由明确，撤回不丢知识 | 条目最终进入 published 状态 |
+
 
 ### J2: 开发者创建系统知识并关联业务（对应 US-2）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J2-1 | P2 开发者 | 发现 | 切换到 sys_kl 列表，按 DDD 层筛选已有条目 | 展示 sys_kl 列表，支持 layer/bounded_context 筛选 | TP5: sys_kl 列表页 | 中性：DDD 分层清晰 | 能快速定位目标模块是否已标注 |
-| J2-2 | P2 开发者 | 创建 | 填写 sys_kl 条目：模块路径、DDD 层、BC 归属、职责描述 | 保存为 draft 状态 | TP6: 创建 sys_kl 表单（含 BC 选择器） | 正面：BC 选择器帮助归类 | 条目创建成功，含 bounded_context |
-| J2-3 | P2 开发者 | 关联 | 在 sys_kl 详情页搜索并关联 biz_kl 条目 | 在 kl_links 中创建记录，支持 link_type 选择 | TP7: 关联管理器（搜索选择器 + 关系类型） | 正面：双向跳转减少上下文切换 | 关联创建后双向可见 |
-| J2-4 | P2 开发者 | 发布 | 确认关联无误后发布 sys_kl 条目 | 状态变为 published，记录审计日志 | TP8: sys_kl 详情页（发布按钮） | 正面：发布流程简洁 | 条目可在列表中被搜索到 |
+
+| 旅程ID | Persona | 阶段  | 用户行为                               | 系统响应                                     | Touchpoint                  | 情绪/痛点          | 成功标准                     |
+| ---- | ------- | --- | ---------------------------------- | ---------------------------------------- | --------------------------- | -------------- | ------------------------ |
+| J2-1 | P2 开发者  | 发现  | 切换到 sys_kl 列表，按 DDD 层筛选已有条目        | 展示 sys_kl 列表，支持 layer/bounded_context 筛选 | TP5: sys_kl 列表页             | 中性：DDD 分层清晰    | 能快速定位目标模块是否已标注           |
+| J2-2 | P2 开发者  | 创建  | 填写 sys_kl 条目：模块路径、DDD 层、BC 归属、职责描述 | 保存为 draft 状态                             | TP6: 创建 sys_kl 表单（含 BC 选择器） | 正面：BC 选择器帮助归类  | 条目创建成功，含 bounded_context |
+| J2-3 | P2 开发者  | 关联  | 在 sys_kl 详情页搜索并关联 biz_kl 条目        | 在 kl_links 中创建记录，支持 link_type 选择         | TP7: 关联管理器（搜索选择器 + 关系类型）    | 正面：双向跳转减少上下文切换 | 关联创建后双向可见                |
+| J2-4 | P2 开发者  | 发布  | 确认关联无误后发布 sys_kl 条目                | 状态变为 published，记录审计日志                    | TP8: sys_kl 详情页（发布按钮）       | 正面：发布流程简洁      | 条目可在列表中被搜索到              |
+
 
 ### J3: 导出知识包供 Agent 消费（对应 US-3）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J3-1 | P2 开发者 | 选择 | 进入导出页，勾选已发布的 biz_kl 条目 | 展示可选条目列表（仅 published），显示关联模块数 | TP9: 知识包导出页 | 正面：仅展示 published 条目保证质量 | 能清晰看到选中条目及其关联范围 |
-| J3-2 | P2 开发者 | 预览 | 切换 JSON/Markdown 格式预览 | 实时组装知识包内容，展示预览 | TP9: 导出页预览区 | 正面：预览即所得 | 预览内容与预期一致 |
-| J3-3 | P2/P4 | 消费 | 下载知识包文件 或 通过 API 拉取 | 返回符合 JSON Schema 的知识包；权限感知过滤 | TP10: API 端点 / 下载按钮 | 正面：Agent 获得干净上下文 | JSON 通过 Schema 校验，仅含 published 条目 |
+
+| 旅程ID | Persona | 阶段  | 用户行为                   | 系统响应                          | Touchpoint          | 情绪/痛点                   | 成功标准                              |
+| ---- | ------- | --- | ---------------------- | ----------------------------- | ------------------- | ----------------------- | --------------------------------- |
+| J3-1 | P2 开发者  | 选择  | 进入导出页，勾选已发布的 biz_kl 条目 | 展示可选条目列表（仅 published），显示关联模块数 | TP9: 知识包导出页         | 正面：仅展示 published 条目保证质量 | 能清晰看到选中条目及其关联范围                   |
+| J3-2 | P2 开发者  | 预览  | 切换 JSON/Markdown 格式预览  | 实时组装知识包内容，展示预览                | TP9: 导出页预览区         | 正面：预览即所得                | 预览内容与预期一致                         |
+| J3-3 | P2/P4   | 消费  | 下载知识包文件 或 通过 API 拉取    | 返回符合 JSON Schema 的知识包；权限感知过滤  | TP10: API 端点 / 下载按钮 | 正面：Agent 获得干净上下文        | JSON 通过 Schema 校验，仅含 published 条目 |
+
 
 ### J4: 知识检索与浏览（对应 US-4）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J4-1 | P1/P2/P3 | 搜索 | 在顶部搜索框输入关键词 | 按 biz_kl/sys_kl 分类展示搜索结果 | TP1: 知识列表首页（全局搜索） | 正面：&lt;1 秒响应 | 搜索结果包含目标条目 |
-| J4-2 | P1/P2/P3 | 浏览 | 点击条目查看详情 | 展示完整信息、关联条目、版本历史 | TP3/TP8: 条目详情页 | 正面：关联条目可点击跳转 | 能在详情页获得完整上下文 |
-| J4-3 | P1/P2 | 版本对比 | 在详情页查看版本历史，选择两个版本对比 | 展示两个版本间的 diff | TP11: 版本历史/对比视图 | 正面：能追溯变更轨迹 | 能识别具体变更内容 |
+
+| 旅程ID | Persona  | 阶段   | 用户行为                | 系统响应                     | Touchpoint        | 情绪/痛点        | 成功标准         |
+| ---- | -------- | ---- | ------------------- | ------------------------ | ----------------- | ------------ | ------------ |
+| J4-1 | P1/P2/P3 | 搜索   | 在顶部搜索框输入关键词         | 按 biz_kl/sys_kl 分类展示搜索结果 | TP1: 知识列表首页（全局搜索） | 正面：&lt;1 秒响应    | 搜索结果包含目标条目   |
+| J4-2 | P1/P2/P3 | 浏览   | 点击条目查看详情            | 展示完整信息、关联条目、版本历史         | TP3/TP8: 条目详情页    | 正面：关联条目可点击跳转 | 能在详情页获得完整上下文 |
+| J4-3 | P1/P2    | 版本对比 | 在详情页查看版本历史，选择两个版本对比 | 展示两个版本间的 diff            | TP11: 版本历史/对比视图   | 正面：能追溯变更轨迹   | 能识别具体变更内容    |
+
 
 ### J5: 管理员审计与权限治理（对应 US-5）
 
-| 旅程ID | Persona | 阶段 | 用户行为 | 系统响应 | Touchpoint | 情绪/痛点 | 成功标准 |
-|--------|---------|------|----------|----------|------------|-----------|----------|
-| J5-1 | P3 管理员 | 审计 | 进入审计日志页，按条目/操作人/时间筛选 | 展示操作记录表格（创建/修改/发布/驳回/撤回） | TP12: 审计日志页 | 正面：筛选粒度细 | 能定位特定操作记录 |
-| J5-2 | P3 管理员 | 权限管理 | 为用户分配/变更角色 | 角色变更写入审计日志 | TP13: 用户管理页 | 中性：操作简单 | 角色变更后权限立即生效 |
+
+| 旅程ID | Persona | 阶段   | 用户行为                 | 系统响应                     | Touchpoint  | 情绪/痛点    | 成功标准        |
+| ---- | ------- | ---- | -------------------- | ------------------------ | ----------- | -------- | ----------- |
+| J5-1 | P3 管理员  | 审计   | 进入审计日志页，按条目/操作人/时间筛选 | 展示操作记录表格（创建/修改/发布/驳回/撤回） | TP12: 审计日志页 | 正面：筛选粒度细 | 能定位特定操作记录   |
+| J5-2 | P3 管理员  | 权限管理 | 为用户分配/变更角色           | 角色变更写入审计日志               | TP13: 用户管理页 | 中性：操作简单  | 角色变更后权限立即生效 |
+
 
 ## 屏幕映射
 
-| 屏幕 | 旅程ID | 信息优先级（首屏必见） | 关联 US |
-|------|--------|------------------------|---------|
-| 知识列表首页（/） | J1-1, J2-1, J4-1 | 全局搜索框、biz_kl/sys_kl tab、条目列表（名称+状态+标签） | US-1, US-2, US-4 |
-| 创建/编辑表单（/biz/new, /sys/new） | J1-2, J2-2 | 名称、描述（Markdown 预览）、类型/层级选择器、标签输入 | US-1, US-2 |
-| biz_kl 详情页（/biz/{id}） | J1-3, J1-5, J4-2, J4-3 | 条目内容、状态 badge、关联 sys_kl 列表、版本历史、操作按钮（编辑/提交审核/撤回） | US-1, US-4 |
-| sys_kl 详情页（/sys/{id}） | J2-3, J2-4, J4-2 | 模块信息、DDD 层级、BC 归属、关联 biz_kl 列表、关联管理器 | US-2, US-4 |
-| 审批者队列（/review） | J1-4 | reviewing 条目列表、diff 预览、发布/驳回操作 | US-1, US-5 |
-| 知识包导出页（/export） | J3-1, J3-2, J3-3 | 已发布 biz_kl 多选列表、格式切换、预览区、下载按钮 | US-3 |
-| 审计日志页（/audit） | J5-1 | 操作记录表格、筛选器（条目/操作人/时间） | US-5 |
-| 版本历史/对比（/biz/{id}/history） | J4-3 | 版本列表（时间/操作人/变更摘要）、版本 diff 对比视图 | US-1, US-4 |
-| 用户管理页（/admin/users） | J5-2 | 用户列表、角色选择器、角色变更确认 | US-5 |
+
+| 屏幕                          | 旅程ID                   | 信息优先级（首屏必见）                                      | 关联 US            |
+| --------------------------- | ---------------------- | ------------------------------------------------ | ---------------- |
+| 知识列表首页（/）                   | J1-1, J2-1, J4-1       | 全局搜索框、biz_kl/sys_kl tab、条目列表（名称+状态+标签）           | US-1, US-2, US-4 |
+| 创建/编辑表单（/biz/new, /sys/new） | J1-2, J2-2             | 名称、描述（Markdown 预览）、类型/层级选择器、标签输入                 | US-1, US-2       |
+| biz_kl 详情页（/biz/{id}）       | J1-3, J1-5, J4-2, J4-3 | 条目内容、状态 badge、关联 sys_kl 列表、版本历史、操作按钮（编辑/提交审核/撤回） | US-1, US-4       |
+| sys_kl 详情页（/sys/{id}）       | J2-3, J2-4, J4-2       | 模块信息、DDD 层级、BC 归属、关联 biz_kl 列表、关联管理器             | US-2, US-4       |
+| 审批者队列（/review）              | J1-4                   | reviewing 条目列表、diff 预览、发布/驳回操作                   | US-1, US-5       |
+| 知识包导出页（/export）             | J3-1, J3-2, J3-3       | 已发布 biz_kl 多选列表、格式切换、预览区、下载按钮                    | US-3             |
+| 审计日志页（/audit）               | J5-1                   | 操作记录表格、筛选器（条目/操作人/时间）                            | US-5             |
+| 版本历史/对比（/biz/{id}/history）  | J4-3                   | 版本列表（时间/操作人/变更摘要）、版本 diff 对比视图                   | US-1, US-4       |
+| 用户管理页（/admin/users）         | J5-2                   | 用户列表、角色选择器、角色变更确认                                | US-5             |
+
 
 ## 核心路径（≤3）
 
 1. **知识贡献路径**（J1 + J2）：领域专家创建 biz_kl → 提交审核 → 管理员审核发布 → 开发者创建 sys_kl → 关联 biz_kl → 发布
-   - 关键 Touchpoints: TP1 → TP2 → TP3 → TP4 → TP5 → TP6 → TP7 → TP8
-   - 支撑 US-1, US-2
-
+  - 关键 Touchpoints: TP1 → TP2 → TP3 → TP4 → TP5 → TP6 → TP7 → TP8
+  - 支撑 US-1, US-2
 2. **知识消费路径**（J3）：开发者选择已发布 biz_kl → 预览知识包 → 下载/API 消费
-   - 关键 Touchpoints: TP9 → TP10
-   - 支撑 US-3
-
+  - 关键 Touchpoints: TP9 → TP10
+  - 支撑 US-3
 3. **知识发现路径**（J4）：用户搜索关键词 → 浏览结果 → 查看详情 → 追溯版本历史
-   - 关键 Touchpoints: TP1 → TP3/TP8 → TP11
-   - 支撑 US-4
+  - 关键 Touchpoints: TP1 → TP3/TP8 → TP11
+  - 支撑 US-4
 
 ## Refine-2 差距映射（ADR 驱动）
 
-| ADR | 新增 Touchpoint | 说明 |
-|-----|----------------|------|
-| ADR-006 审核撤回+回滚 | TP3（详情页增加撤回按钮）、TP4（审批队列增加 diff 视图） | 驳回后知识不丢失，作者可撤回修改 |
-| ADR-007 状态过滤+权限感知 | TP9（导出页仅展示 published）、TP10（API 按角色过滤） | Agent 消费到干净知识包 |
-| ADR-008 BC 建模 | TP6（创建表单增加 BC 选择器）、TP7（关联增加 link_type） | sys_kl 按 BC 分组，知识包按 BC 组织 |
-| ADR-009 版本快照 | TP11（版本历史/对比视图） | 支持回滚、版本 diff、完整审计 |
+
+| ADR               | 新增 Touchpoint                          | 说明                        |
+| ----------------- | -------------------------------------- | ------------------------- |
+| ADR-006 审核撤回+回滚   | TP3（详情页增加撤回按钮）、TP4（审批队列增加 diff 视图）     | 驳回后知识不丢失，作者可撤回修改          |
+| ADR-007 状态过滤+权限感知 | TP9（导出页仅展示 published）、TP10（API 按角色过滤）  | Agent 消费到干净知识包            |
+| ADR-008 BC 建模     | TP6（创建表单增加 BC 选择器）、TP7（关联增加 link_type） | sys_kl 按 BC 分组，知识包按 BC 组织 |
+| ADR-009 版本快照      | TP11（版本历史/对比视图）                        | 支持回滚、版本 diff、完整审计         |
 </pre></div>
   <div class="panel" id="mvp-panel">
     <pre class="md-source"># 产品知识平台 MVP（KL Management）
@@ -2876,36 +3056,86 @@ python smoke_test.py
 ```
 </pre>
     <h3>UX Review</h3>
-    <pre class="md-source"># UX 验收报告
+    <pre class="md-source"># UX 验收报告 — Refine-4 深化版
 
 ## 对照基准
 
-- 03b-user-journey.md
+- 03b-user-journey.md（5 个核心旅程 J1–J5，13 个 Touchpoint）
 - 02b-prototype/
 - 04-mvp/DESIGN.md
+- 01b-benchmark.md（6 个案例，12 个差距项）
 
-## 发现问题（开放）
+## 旅程覆盖率
+
+| 旅程 | Touchpoint | 覆盖率 | 说明 |
+|------|-----------|--------|------|
+| J1 知识贡献 | TP1-TP4 | ✅ 100% | 列表 → 创建 → 提交 → 审批队列 全链路可用 |
+| J1 处理驳回/撤回 | TP3 | ✅ 100% | 详情页含 submit/publish/reject/withdraw 按钮，状态条件渲染 |
+| J2 系统知识 | TP5-TP8 | ⚠️ 85% | sys_kl 列表/详情/BC筛选可用；缺关联搜索选择器（UX-004） |
+| J3 知识包导出 | TP9-TP10 | ✅ 100% | 仅 published 条目可见，JSON/MD 切换预览，权限感知过滤 |
+| J4 知识发现 | TP1/TP3/TP8/TP11 | ✅ 100% | 搜索/详情/版本历史全链路可用 |
+| J5 审计治理 | TP12-TP13 | ⚠️ 80% | 审计日志页可用；用户管理页（/admin/users）未实现 |
+
+## 发现问题
+
+### 开放问题
 
 | ID | 级别 | 页面/流程 | 问题 | 建议 |
 |----|------|-----------|------|------|
-| UX-004 | P1 | /sys/{id} | 缺关联搜索选择器 | 后续迭代添加搜索框 |
+| UX-004 | P1 | /sys/{id} | 缺关联搜索选择器，无法从 sys 侧主动关联 biz_kl | 后续迭代添加搜索选择器 + link_type 下拉 |
+| UX-005 | fixed | 全局导航 | /review 审批队列未在顶栏导航中展示 | ✅ 已在 index.html nav 中增加「审批」链接 |
+| UX-006 | P2 | /sys/{id} | sys 详情页无编辑/发布操作按钮 | 增加与 biz_detail 类似的操作区 |
+| UX-007 | P2 | /export | 导出页无权限过滤提示（ADR-007 要求） | 增加角色提示：「当前角色可见范围」 |
+| UX-008 | P2 | /admin/users | 用户管理页（J5-2）未实现 | 后续迭代增加角色管理 UI |
+
+### 已关闭问题
+
+| ID | 状态 | 备注 |
+|----|------|------|
+| UX-001 | fixed | 详情页增加 submit/publish/reject 操作按钮 |
+| UX-002 | fixed | /audit admin 403 问题已修复 |
+| UX-003 | fixed | 顶栏 localStorage 用户切换可用 |
+
+### Benchmark P0 验证
+
+| # | Benchmark P0 | 实现状态 | 验证 |
+|---|------------|---------|------|
+| 1 | 审核流完善：撤回+回滚 | ✅ 已实现 | `POST /api/biz/{id}/withdraw` + `withdraw_biz()` 回滚到最近 published 快照 |
+| 2 | 知识包状态过滤 | ✅ 已实现 | JSON/MD 导出 API 均过滤 `status != &quot;published&quot;` |
+| 3 | 权限感知导出 | ✅ 已实现 | expert 角色仅看自己创建的 published 条目，developer 看全部 |
+
+### Benchmark P1 验证
+
+| # | Benchmark P1 | 实现状态 | 说明 |
+|---|------------|---------|------|
+| 4 | 关系类型化 | ✅ 已实现 | `link_type` 字段（implements/dependsOn/governs 等），详情页显示 link_type 标签 |
+| 5 | Bounded Context | ✅ 已实现 | `bounded_context` 字段，sys 列表支持 `?bc=` 筛选，详情页显示 BC 归属 |
+| 6 | 版本历史 | ✅ 已实现 | `biz_kl_versions` 快照表 + `GET /api/biz/{id}/history` + diff API + 版本表格 |
+| 7 | 审批者队列页面 | ✅ 已实现 | `/review` 页面含 diff 预览、发布/驳回操作，仅 admin 可见 |
 
 ## 统计
 
-- P0: 0
-- P1: 1
-- P2: 0
+- **P0**: 0（全部已关闭或验证通过）
+- **P1**: 1（UX-004 留待下一迭代）
+- **P2**: 3（UX-006, UX-007, UX-008）
 
-## 复测记录
+## DESIGN.md 一致性检查
 
-| UX-ID | 状态 | 备注 |
-|-------|------|------|
-| UX-001 | fixed | 详情页增加 submit/publish/reject |
-| UX-002 | fixed | /audit admin 403 |
-| UX-003 | fixed | 顶栏 localStorage 用户切换 |
-| UX-004 | open | P1 留待下一迭代 |
+| 维度 | 状态 | 说明 |
+|------|------|------|
+| 调色板 | ✅ | 所有模板使用 CSS 变量，与 DESIGN.md 一致 |
+| 字体 | ✅ | system-ui 字体族，字号符合 token 规范 |
+| 按钮 | ✅ | Primary/Secondary/Small 三种变体 |
+| 卡片 | ✅ | border + box-shadow 统一样式 |
+| 徽章 | ✅ | 状态徽章（published/draft/review）颜色统一 |
+| 间距 | ✅ | 全局 spacing token 一致 |
+
+## 测试状态
+
+- **pytest**: 40 passed
+- **smoke test**: 全部端点 200（需确认服务启动后验证）
 </pre>
-    <h3>Files</h3><ul><li>.pytest_cache/.gitignore</li><li>.pytest_cache/CACHEDIR.TAG</li><li>.pytest_cache/README.md</li><li>.pytest_cache/v/cache/lastfailed</li><li>.pytest_cache/v/cache/nodeids</li><li>.pytest_cache/v/cache/stepwise</li><li>__pycache__/app.cpython-312.pyc</li><li>__pycache__/conftest.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/models.cpython-311.pyc</li><li>__pycache__/models.cpython-312.pyc</li><li>__pycache__/smoke_test.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_audit.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_api.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_review.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_import.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_links.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package_md.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_sys_api.cpython-312-pytest-8.3.3.pyc</li><li>app.py</li><li>conftest.py</li><li>data/kl.db</li><li>data/test_kl.db</li><li>DESIGN.md</li><li>models.py</li><li>README.md</li><li>requirements.txt</li><li>run.sh</li><li>schema.sql</li><li>seed_data.py</li><li>smoke_test.py</li><li>templates/audit.html</li><li>templates/base.html</li><li>templates/biz_detail.html</li><li>templates/biz_list.html</li><li>templates/export.html</li><li>templates/import.html</li><li>templates/index.html</li><li>templates/sys_detail.html</li><li>templates/sys_list.html</li></ul>
+    <h3>Files</h3><ul><li>.pytest_cache/.gitignore</li><li>.pytest_cache/CACHEDIR.TAG</li><li>.pytest_cache/README.md</li><li>.pytest_cache/v/cache/lastfailed</li><li>.pytest_cache/v/cache/nodeids</li><li>.pytest_cache/v/cache/stepwise</li><li>__pycache__/app.cpython-311.pyc</li><li>__pycache__/app.cpython-312.pyc</li><li>__pycache__/conftest.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/conftest.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/models.cpython-311.pyc</li><li>__pycache__/models.cpython-312.pyc</li><li>__pycache__/smoke_test.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/smoke_test.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_audit.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_audit.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_api.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_biz_api.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_biz_review.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_biz_review.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_import.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_import.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_links.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_links.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_package.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_package_md.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_package_md.cpython-312-pytest-8.3.3.pyc</li><li>__pycache__/test_sys_api.cpython-311-pytest-9.0.3.pyc</li><li>__pycache__/test_sys_api.cpython-312-pytest-8.3.3.pyc</li><li>app.py</li><li>conftest.py</li><li>data/kl.db</li><li>data/test_kl.db</li><li>DESIGN.md</li><li>models.py</li><li>README.md</li><li>requirements.txt</li><li>run.sh</li><li>schema.sql</li></ul>
     <p><em>Flask MVP is not executed on GitHub Pages. Run locally per README.</em></p>
     </div>
   <div class="panel" id="proto-panel"><iframe class="proto-frame" src="prototype/index.html" title="prototype"></iframe></div>

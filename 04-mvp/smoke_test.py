@@ -63,8 +63,12 @@ def main():
     all_ok &= check("GET", f"{BASE}/biz")
     all_ok &= check("GET", f"{BASE}/sys")
     all_ok &= check("GET", f"{BASE}/export")
-    all_ok &= check("GET", f"{BASE}/audit")
+    all_ok &= check("GET", f"{BASE}/review", headers=headers)
+    all_ok &= check("GET", f"{BASE}/audit", headers=headers)
     all_ok &= check("GET", f"{BASE}/import")
+
+    # review API
+    all_ok &= check("GET", f"{BASE}/api/review", headers=headers)
 
     if all_ok:
         print("\nAll smoke tests passed!")

@@ -207,3 +207,5 @@
 | 27  | DDD Bounded Contexts for LLMs                       | [https://understandingdata.com/posts/ddd-bounded-contexts-for-llms](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms)                                                                                                                 |
 | 28  | Domain-Driven Agent Design                          | [https://engineeringagents.substack.com/p/domain-driven-agent-design](https://engineeringagents.substack.com/p/domain-driven-agent-design)                                                                                                             |
 | 29  | DDD + Multi-Agent AI                                | [https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems](https://www.jamescroft.co.uk/applying-domain-driven-design-principles-to-multi-agent-ai-systems)                                                     |
+
+

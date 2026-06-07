@@ -2,13 +2,12 @@
   "run": "pm-kl-management",
   "path": "D:\\workspace\\projects\\pm-kl-management",
   "pipeline_version": "4.0.0",
-  "validated_at": "2026-06-07T11:44:22.408937+00:00",
+  "validated_at": "2026-06-07T12:30:43.041632+00:00",
   "stages": {
-    "journey": {
+    "refine": {
       "pass": true,
       "checks": [
-        "personas>=49",
-        "screen_map"
+        "refine_retro_exists"
       ],
       "notes": ""
     }

@@ -11,7 +11,7 @@ def clean_db():
     models.DB_PATH = TEST_DB
     models.init_db()
     db = models.get_db()
-    for table in ["audit_logs", "kl_links", "biz_kl_items", "sys_kl_items", "users"]:
+    for table in ["audit_logs", "biz_kl_versions", "kl_links", "biz_kl_items", "sys_kl_items", "users"]:
         db.execute(f"DELETE FROM {table}")
     db.commit()
     db.close()

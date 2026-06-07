@@ -2,28 +2,32 @@
 
 ## 项目信息
 
-| 项目 | 值 |
-|------|-----|
-| 产品 slug | kl-management |
-| 产品名称 | 产品知识平台（KL Management） |
-| 日期 | 2026-06-07 |
-| 模型 | qwen3.6-plus |
-| 管线版本 | 3.0.0 |
-| GitHub | https://github.com/ttmens/pm-kl-management |
-| Pages | https://ttmens.github.io/pm-kl-management/ |
+
+| 项目      | 值                                                                                        |
+| ------- | ---------------------------------------------------------------------------------------- |
+| 产品 slug | kl-management                                                                            |
+| 产品名称    | 产品知识平台（KL Management）                                                                    |
+| 日期      | 2026-06-07                                                                               |
+| 模型      | qwen3.6-plus                                                                             |
+| 管线版本    | 3.0.0                                                                                    |
+| GitHub  | [https://github.com/ttmens/pm-kl-management](https://github.com/ttmens/pm-kl-management) |
+| Pages   | [https://ttmens.github.io/pm-kl-management/](https://ttmens.github.io/pm-kl-management/) |
+
 
 ## 各阶段时间与产出
 
-| 阶段 | 产出文件 | 耗时估计 | 状态 |
-|------|---------|---------|------|
-| Stage 0: Brief | 00-brief.md | ~5 min | PASS |
-| Stage 1: Research | 01-research.md（7 竞品 × 3 维度，29 来源） | ~10 min | PASS |
-| Stage 2: Analysis | 02-analysis.md, decisions.md (5 ADR), CONTEXT.md | ~10 min | PASS |
-| Stage 2b: Prototype | 02b-prototype/index.html, DESIGN.md | ~5 min | PASS |
-| Stage 3: Spec | 03-prd.md, openspec/* (proposal + design + 4 specs + tasks) | ~10 min | PASS |
-| Stage 4: MVP | 04-mvp/ (18 文件 + 9 模板 + 8 测试 + 辅助脚本) | ~15 min | PASS |
-| Stage 5: Retro (MVP) | 05-retro.md (初版，仅覆盖 MVP) | ~3 min | PASS |
-| Stage 6: Retro (全链路) | 05-retro.md (终版，本文件) | ~5 min | PASS |
+
+| 阶段                   | 产出文件                                                        | 耗时估计    | 状态   |
+| -------------------- | ----------------------------------------------------------- | ------- | ---- |
+| Stage 0: Brief       | 00-brief.md                                                 | ~5 min  | PASS |
+| Stage 1: Research    | 01-research.md（7 竞品 × 3 维度，29 来源）                           | ~10 min | PASS |
+| Stage 2: Analysis    | 02-analysis.md, decisions.md (5 ADR), CONTEXT.md            | ~10 min | PASS |
+| Stage 2b: Prototype  | 02b-prototype/index.html, DESIGN.md                         | ~5 min  | PASS |
+| Stage 3: Spec        | 03-prd.md, openspec/* (proposal + design + 4 specs + tasks) | ~10 min | PASS |
+| Stage 4: MVP         | 04-mvp/ (18 文件 + 9 模板 + 8 测试 + 辅助脚本)                        | ~15 min | PASS |
+| Stage 5: Retro (MVP) | 05-retro.md (初版，仅覆盖 MVP)                                    | ~3 min  | PASS |
+| Stage 6: Retro (全链路) | 05-retro.md (终版，本文件)                                        | ~5 min  | PASS |
+
 
 **全链路总耗时：~60-70 分钟**（含 OpenCode 生成 + 测试修复 + gate 验证）
 
@@ -31,35 +35,41 @@
 
 ### 命中的技能
 
-| 技能 | 使用阶段 | 效果 |
-|------|---------|------|
-| `plan` | Stage 3 → 4 | 生成了可执行的 tasks.md 计划 |
-| `ui-ux-pro-max` | Stage 3 | 生成了 DESIGN.md 设计令牌 |
-| `opencode` | Stage 4 | 一次性生成全部 18+ 文件，覆盖 15 个任务 |
-| `test-driven-development` | Stage 4 | 测试文件随代码一起生成 |
-| `dogfood` | Stage 4 | 冒烟测试 18 端点全部 200 |
-| `pm-git-publish` | Stage 4 | GitHub 推送 + Pages 生成成功 |
-| `openspec` | Stage 3 | 4 个 spec 文件 + proposal + tasks.md |
+
+| 技能                        | 使用阶段        | 效果                                |
+| ------------------------- | ----------- | --------------------------------- |
+| `plan`                    | Stage 3 → 4 | 生成了可执行的 tasks.md 计划               |
+| `ui-ux-pro-max`           | Stage 3     | 生成了 DESIGN.md 设计令牌                |
+| `opencode`                | Stage 4     | 一次性生成全部 18+ 文件，覆盖 15 个任务          |
+| `test-driven-development` | Stage 4     | 测试文件随代码一起生成                       |
+| `dogfood`                 | Stage 4     | 冒烟测试 18 端点全部 200                  |
+| `pm-git-publish`          | Stage 4     | GitHub 推送 + Pages 生成成功            |
+| `openspec`                | Stage 3     | 4 个 spec 文件 + proposal + tasks.md |
+
 
 ### 技能失误 / 改进空间
 
-| 技能 | 问题 | 改进建议 |
-|------|------|---------|
-| `test-driven-development` | 实际是「生成→测试→修复」而非严格 TDD（测试先行） | 对 OpenCode 黑盒生成场景，「生成→测试→修复」循环更实际，但应在 plan 中明确 |
-| `opencode` | 生成的代码存在 6 个边界 Bug（函数名互换、参数误用、校验不严、重复参数） | 在 prompt 中增加函数命名规范和参数校验的约束 |
-| `requesting-code-review` | 未显式调用，而是手动 patch 修复 | 可考虑在 OpenCode 生成后自动触发自 review |
+
+| 技能                        | 问题                                      | 改进建议                                           |
+| ------------------------- | --------------------------------------- | ---------------------------------------------- |
+| `test-driven-development` | 实际是「生成→测试→修复」而非严格 TDD（测试先行）             | 对 OpenCode 黑盒生成场景，「生成→测试→修复」循环更实际，但应在 plan 中明确 |
+| `opencode`                | 生成的代码存在 6 个边界 Bug（函数名互换、参数误用、校验不严、重复参数） | 在 prompt 中增加函数命名规范和参数校验的约束                     |
+| `requesting-code-review`  | 未显式调用，而是手动 patch 修复                     | 可考虑在 OpenCode 生成后自动触发自 review                  |
+
 
 ## 假设验证
 
 ### 来自 00-brief.md 的开放假设
 
-| # | 假设 | Confidence | 验证结果 | 说明 |
-|---|------|-----------|---------|------|
-| 1 | 供应链 IT 团队愿意配合试点 | high | **未验证** | MVP 阶段为技术验证，未涉及真实用户参与 |
-| 2 | 现有代码仓库可被安全访问 | medium | **未验证** | sys_kl 采用手工标注，未实际读取代码仓库 |
-| 3 | Agent 消费端已有基础上下文注入能力 | medium | **未验证** | 知识包导出 API 已就绪，但未对接真实 Agent |
-| 4 | DDD 分层映射可由现有架构师提供 | high | **部分验证** | sys_kl 设计了 DDD layer 字段，但未实际标注 |
-| 5 | 首期试点控制在单个 BC | high | **已验证** | MVP 确实限定在单个 bounded context |
+
+| #   | 假设                   | Confidence | 验证结果     | 说明                             |
+| --- | -------------------- | ---------- | -------- | ------------------------------ |
+| 1   | 供应链 IT 团队愿意配合试点      | high       | **未验证**  | MVP 阶段为技术验证，未涉及真实用户参与          |
+| 2   | 现有代码仓库可被安全访问         | medium     | **未验证**  | sys_kl 采用手工标注，未实际读取代码仓库        |
+| 3   | Agent 消费端已有基础上下文注入能力 | medium     | **未验证**  | 知识包导出 API 已就绪，但未对接真实 Agent     |
+| 4   | DDD 分层映射可由现有架构师提供    | high       | **部分验证** | sys_kl 设计了 DDD layer 字段，但未实际标注 |
+| 5   | 首期试点控制在单个 BC         | high       | **已验证**  | MVP 确实限定在单个 bounded context    |
+
 
 ### 关键发现
 
@@ -104,6 +114,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `opencode`
 
 **变更**：在 prompt template 中加入以下约束：
+
 - 函数命名遵循 `get_{returned_entity}_for_{query_key}` 模式
 - 禁止未使用的函数参数
 - 所有数据解析必须有格式校验（fail-fast）
@@ -114,6 +125,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `test-driven-development`
 
 **变更**：增加「OpenCode 生成模式」分支：
+
 - 当使用 OpenCode 时，流程变为「生成 → 跑测试 → 定位失败 → patch 修复 → 再跑」
 - 严格 TDD（测试先行）仅适用于手动编码场景
 
@@ -122,6 +134,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `pm-idea-to-mvp`（管线配置）
 
 **变更**：
+
 - 在 pipeline 配置中声明 Python 路径和必要依赖
 - 或在 venv 初始化时自动安装 pytest/httpx/uvicorn
 
@@ -130,6 +143,7 @@ stage-complete 的 eval-stage 检查 README 是否引用了 MVP 流程/任务，
 **目标技能**: `pm-idea-to-mvp`
 
 **变更**：在 retro 阶段增加假设验证跟踪：
+
 - 从 brief.md 提取 open assumptions
 - 在 retro 中标记每个假设的验证状态（已验证/未验证/部分验证/被推翻）
 - 生成假设跟踪矩阵

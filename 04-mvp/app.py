@@ -10,12 +10,14 @@ from datetime import datetime
 
 import models
 from models import (
-    get_db, init_db, BizKlItem, SysKlItem, KlLink, AuditLog, User,
+    get_db, init_db, BizKlItem, SysKlItem, KlLink, AuditLog, User, BizKlVersion,
     get_user, audit,
-    create_biz, get_biz, list_biz, update_biz, submit_biz, publish_biz, reject_biz,
+    create_biz, get_biz, list_biz, update_biz, submit_biz, publish_biz, reject_biz, withdraw_biz,
     create_sys, get_sys, list_sys, update_sys,
     create_link, delete_link, get_links_for_biz, get_links_for_sys,
     list_audit, import_biz_from_markdown,
+    save_version_snapshot, get_biz_versions, get_version_diff,
+    list_reviewing,
 )
 
 app = FastAPI(title="产品知识平台 MVP")
@@ -46,15 +48,18 @@ class SysCreateRequest(BaseModel):
     description: str = ""
     layer: str
     file_path: str = ""
+    bounded_context: str = ""
 
 class SysUpdateRequest(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     layer: Optional[str] = None
     file_path: Optional[str] = None
+    bounded_context: Optional[str] = None
 
 class LinkRequest(BaseModel):
     biz_id: str
+    link_type: str = "implements"
 
 class PackageResponse(BaseModel):
     version: str
@@ -104,7 +109,7 @@ def api_biz_detail(item_id: str):
             "type": item.type, "tags": item.tags, "status": item.status,
             "version": item.version, "created_by": item.created_by,
             "created_at": item.created_at, "updated_at": item.updated_at,
-            "linked_sys": [{"id": s.id, "name": s.name, "layer": s.layer, "file_path": s.file_path} for s in linked_sys],
+            "linked_sys": linked_sys,
         }
     finally:
         db.close()
@@ -145,6 +150,60 @@ def api_biz_publish(item_id: str, x_user_id: str = Header(...)):
     finally:
         db.close()
 
+@app.post("/api/biz/{item_id}/reject")
+def api_biz_reject(item_id: str, req: RejectRequest, x_user_id: str = Header(...)):
+    db = get_db()
+    try:
+        item = reject_biz(db, item_id, x_user_id, req.reason)
+        if not item:
+            raise HTTPException(400, "Cannot reject")
+        return {"id": item.id, "status": item.status}
+    finally:
+        db.close()
+
+@app.post("/api/biz/{item_id}/withdraw")
+def api_biz_withdraw(item_id: str, x_user_id: str = Header(...)):
+    db = get_db()
+    try:
+        item = withdraw_biz(db, item_id, x_user_id)
+        if not item:
+            raise HTTPException(400, "Cannot withdraw")
+        return {"id": item.id, "status": item.status}
+    finally:
+        db.close()
+
+@app.get("/api/biz/{item_id}/history")
+def api_biz_history(item_id: str):
+    db = get_db()
+    try:
+        versions = get_biz_versions(db, item_id)
+        return [{"id": v.id, "version": v.version, "name": v.name, "type": v.type,
+                 "status": v.status, "tags": v.tags, "snapshot_at": v.snapshot_at,
+                 "snapshot_by": v.snapshot_by} for v in versions]
+    finally:
+        db.close()
+
+@app.get("/api/biz/{item_id}/history/{v1}/{v2}")
+def api_biz_diff(item_id: str, v1: int, v2: int):
+    db = get_db()
+    try:
+        diff = get_version_diff(db, item_id, v1, v2)
+        return diff
+    finally:
+        db.close()
+
+@app.get("/api/review")
+def api_review_queue(x_user_id: str = Header(default="user-1")):
+    db = get_db()
+    try:
+        user = get_user(db, x_user_id)
+        if not user or user.role != "admin":
+            raise HTTPException(403, "Admin required")
+        items = list_reviewing(db)
+        return items
+    finally:
+        db.close()
+
 
 # ===== sys_kl API =====
 
@@ -152,17 +211,17 @@ def api_biz_publish(item_id: str, x_user_id: str = Header(...)):
 def api_sys_create(req: SysCreateRequest, x_user_id: str = Header(...)):
     db = get_db()
     try:
-        item = create_sys(db, req.name, req.description, req.layer, req.file_path, x_user_id)
+        item = create_sys(db, req.name, req.description, req.layer, req.file_path, x_user_id, req.bounded_context)
         return JSONResponse({"id": item.id, "name": item.name, "status": item.status})
     finally:
         db.close()
 
 @app.get("/api/sys")
-def api_sys_list(layer: Optional[str] = None, q: Optional[str] = None):
+def api_sys_list(layer: Optional[str] = None, q: Optional[str] = None, bc: Optional[str] = None):
     db = get_db()
     try:
-        items = list_sys(db, layer, q)
-        return [{"id": i.id, "name": i.name, "layer": i.layer, "file_path": i.file_path, "status": i.status, "updated_at": i.updated_at} for i in items]
+        items = list_sys(db, layer, q, bc)
+        return [{"id": i.id, "name": i.name, "layer": i.layer, "file_path": i.file_path, "bounded_context": i.bounded_context, "status": i.status, "updated_at": i.updated_at} for i in items]
     finally:
         db.close()
 
@@ -176,9 +235,9 @@ def api_sys_detail(item_id: str):
         linked_bz = get_links_for_sys(db, item_id)
         return {
             "id": item.id, "name": item.name, "description": item.description,
-            "layer": item.layer, "file_path": item.file_path, "status": item.status,
+            "layer": item.layer, "file_path": item.file_path, "bounded_context": item.bounded_context, "status": item.status,
             "created_by": item.created_by, "created_at": item.created_at, "updated_at": item.updated_at,
-            "linked_biz": [{"id": b.id, "name": b.name, "type": b.type, "status": b.status} for b in linked_bz],
+            "linked_biz": linked_bz,
         }
     finally:
         db.close()
@@ -187,7 +246,7 @@ def api_sys_detail(item_id: str):
 def api_sys_update(item_id: str, req: SysUpdateRequest, x_user_id: str = Header(...)):
     db = get_db()
     try:
-        item = update_sys(db, item_id, req.name, req.description, req.layer, req.file_path, x_user_id)
+        item = update_sys(db, item_id, req.name, req.description, req.layer, req.file_path, req.bounded_context, x_user_id)
         if not item:
             raise HTTPException(404, "Not found")
         return {"id": item.id}
@@ -198,10 +257,10 @@ def api_sys_update(item_id: str, req: SysUpdateRequest, x_user_id: str = Header(
 def api_sys_link(item_id: str, req: LinkRequest, x_user_id: str = Header(...)):
     db = get_db()
     try:
-        link = create_link(db, item_id, req.biz_id, x_user_id)
+        link = create_link(db, item_id, req.biz_id, x_user_id, req.link_type)
         if not link:
             raise HTTPException(404, "biz_id not found")
-        return {"id": link.id}
+        return {"id": link.id, "link_type": link.link_type}
     finally:
         db.close()
 
@@ -244,7 +303,7 @@ def api_import_biz(req: ImportRequest, x_user_id: str = Header(...)):
 # ===== Package API =====
 
 @app.get("/api/packages")
-def api_package_json(biz_ids: str = Query(...)):
+def api_package_json(biz_ids: str = Query(...), x_user_id: str = Header(default="user-1")):
     db = get_db()
     try:
         ids = [i.strip() for i in biz_ids.split(",") if i.strip()]
@@ -253,9 +312,16 @@ def api_package_json(biz_ids: str = Query(...)):
         links = []
         lineage = {}
 
+        # Role-based filtering: expert only sees their own published items
+        user = get_user(db, x_user_id)
+        role = user.role if user else "developer"
+
         for bid in ids:
             biz = get_biz(db, bid)
             if not biz or biz.status != "published":
+                continue
+            # Permission filter: expert can only see their own published items
+            if role == "expert" and biz.created_by != x_user_id:
                 continue
             biz_items.append({
                 "id": biz.id, "name": biz.name, "type": biz.type,
@@ -266,13 +332,14 @@ def api_package_json(biz_ids: str = Query(...)):
 
             linked_sys = get_links_for_biz(db, bid)
             for s in linked_sys:
-                if s.status == "published":
+                if s["status"] == "published":
                     sys_items.append({
-                        "id": s.id, "name": s.name, "layer": s.layer,
-                        "description": s.description, "file_path": s.file_path,
+                        "id": s["id"], "name": s["name"], "layer": s["layer"],
+                        "description": s["description"], "file_path": s["file_path"],
+                        "bounded_context": s.get("bounded_context", ""),
                         "linked_biz": [bid],
                     })
-                    links.append({"biz_id": bid, "sys_id": s.id})
+                    links.append({"biz_id": bid, "sys_id": s["id"], "link_type": s.get("link_type", "implements")})
 
         return {
             "version": "1.0",
@@ -308,7 +375,7 @@ def api_package_md(biz_ids: str):
                 lines.append("| 名称 | 层级 | 路径 |\n")
                 lines.append("|------|------|------|\n")
                 for s in linked_sys:
-                    lines.append(f"| {s.name} | {s.layer} | {s.file_path or '-'} |\n")
+                    lines.append(f"| {s['name']} | {s['layer']} | {s.get('file_path', '') or '-'} |\n")
 
         return HTMLResponse(content="\n".join(lines), media_type="text/markdown")
     finally:
@@ -342,12 +409,12 @@ async def page_biz_list(request: Request, q: Optional[str] = None, status: Optio
         db.close()
 
 @app.get("/sys", response_class=HTMLResponse)
-async def page_sys_list(request: Request, q: Optional[str] = None, layer: Optional[str] = None):
+async def page_sys_list(request: Request, q: Optional[str] = None, layer: Optional[str] = None, bc: Optional[str] = None):
     db = get_db()
     try:
-        items = list_sys(db, layer, q)
+        items = list_sys(db, layer, q, bc)
         return templates.TemplateResponse("sys_list.html", {
-            "request": request, "items": items, "q": q or "", "layer": layer or "",
+            "request": request, "items": items, "q": q or "", "layer": layer or "", "bc": bc or "",
         })
     finally:
         db.close()
@@ -360,8 +427,9 @@ async def page_biz_detail(request: Request, item_id: str):
         if not item:
             raise HTTPException(404, "Not found")
         linked_sys = get_links_for_biz(db, item_id)
+        versions = get_biz_versions(db, item_id)
         return templates.TemplateResponse("biz_detail.html", {
-            "request": request, "item": item, "linked_sys": linked_sys, "json": json,
+            "request": request, "item": item, "linked_sys": linked_sys, "versions": versions, "json": json,
         })
     finally:
         db.close()
@@ -409,6 +477,20 @@ async def page_audit(request: Request, item_id: Optional[str] = None, actor_id: 
 async def page_import(request: Request):
     return templates.TemplateResponse("import.html", {"request": request})
 
+@app.get("/review", response_class=HTMLResponse)
+async def page_review(request: Request, x_user_id: str = Header(default="user-1")):
+    db = get_db()
+    try:
+        user = get_user(db, x_user_id)
+        if not user or user.role != "admin":
+            raise HTTPException(403, "仅管理员可查看审批队列")
+        items = list_reviewing(db)
+        return templates.TemplateResponse("review.html", {
+            "request": request, "items": items, "json": json,
+        })
+    finally:
+        db.close()
+
 
 # ===== HTML snippets for HTMX =====
 
@@ -424,12 +506,12 @@ def hx_biz_list(request: Request, q: Optional[str] = None, status: Optional[str]
         db.close()
 
 @app.get("/hx/sys-list")
-def hx_sys_list(request: Request, q: Optional[str] = None, layer: Optional[str] = None):
+def hx_sys_list(request: Request, q: Optional[str] = None, layer: Optional[str] = None, bc: Optional[str] = None):
     db = get_db()
     try:
-        items = list_sys(db, layer, q)
+        items = list_sys(db, layer, q, bc)
         return templates.TemplateResponse("sys_list.html", {
-            "request": request, "items": items, "q": q or "", "layer": layer or "",
+            "request": request, "items": items, "q": q or "", "layer": layer or "", "bc": bc or "",
         })
     finally:
         db.close()

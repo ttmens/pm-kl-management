@@ -25,6 +25,10 @@
             {% if item.status == 'reviewing' %}
             <button class="btn btn-small" onclick="bizAction('publish')">发布</button>
             <button class="btn btn-secondary btn-small" onclick="bizAction('reject')">驳回</button>
+            <button class="btn btn-secondary btn-small" onclick="bizAction('withdraw')" style="border-color:var(--warning);color:var(--warning)">撤回</button>
+            {% endif %}
+            {% if item.status == 'rejected' %}
+            <button class="btn btn-secondary btn-small" onclick="bizAction('withdraw')" style="border-color:var(--warning);color:var(--warning)">撤回（回滚到已发布版本）</button>
             {% endif %}
         </div>
     </div>
@@ -36,11 +40,34 @@
         <div class="link-card">
             <div>
                 <span class="sys-tag">{{ s.layer }}</span>
+                {% if s.get('link_type') %}<span class="biz-tag" style="background:#dbeafe;color:#2563eb">{{ s['link_type'] }}</span>{% endif %}
                 <a href="/sys/{{ s.id }}">{{ s.name }}</a>
                 {% if s.file_path %}<span style="font-family:var(--font-code);font-size:12px;color:var(--text-secondary);margin-left:8px">{{ s.file_path }}</span>{% endif %}
+                {% if s.get('bounded_context') %}<span style="font-size:12px;color:var(--text-secondary);margin-left:8px">BC: {{ s['bounded_context'] }}</span>{% endif %}
             </div>
         </div>
         {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if versions %}
+    <div class="card">
+        <h3 style="margin-bottom:8px">📋 版本历史</h3>
+        <table>
+            <thead><tr><th>版本</th><th>名称</th><th>类型</th><th>状态</th><th>快照时间</th><th>操作人</th></tr></thead>
+            <tbody>
+            {% for v in versions %}
+            <tr>
+                <td>v{{ v.version }}</td>
+                <td>{{ v.name }}</td>
+                <td>{{ v.type }}</td>
+                <td><span class="badge badge-{{ v.status }}">{{ v.status }}</span></td>
+                <td style="font-size:12px">{{ v.snapshot_at[:19] if v.snapshot_at else '' }}</td>
+                <td style="font-size:12px">{{ v.snapshot_by or '-' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endif %}
 

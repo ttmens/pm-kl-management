@@ -11,7 +11,10 @@
             <h2 style="color:var(--sys-accent)">{{ item.name }}</h2>
             <span class="badge badge-{{ item.status }}">{{ item.status }}</span>
         </div>
-        <p style="color:var(--text-secondary);margin-bottom:8px"><span class="sys-tag">{{ item.layer }}</span></p>
+        <p style="color:var(--text-secondary);margin-bottom:8px">
+            <span class="sys-tag">{{ item.layer }}</span>
+            {% if item.bounded_context %}<span class="biz-tag" style="background:#dbeafe;color:#2563eb">BC: {{ item.bounded_context }}</span>{% endif %}
+        </p>
         <div style="margin-bottom:12px">{{ item.description }}</div>
         {% if item.file_path %}
         <div style="font-family:var(--font-code);font-size:12px;color:var(--text-secondary);margin-bottom:8px">路径: {{ item.file_path }}</div>
@@ -28,6 +31,7 @@
         <div class="link-card">
             <div>
                 <span class="biz-tag">{{ b.type }}</span>
+                {% if b.get('link_type') %}<span class="biz-tag" style="background:#dbeafe;color:#2563eb">{{ b['link_type'] }}</span>{% endif %}
                 <a href="/biz/{{ b.id }}">{{ b.name }}</a>
                 <span class="badge badge-{{ b.status }}" style="margin-left:8px">{{ b.status }}</span>
             </div>
